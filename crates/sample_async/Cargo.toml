@@ -1,0 +1,69 @@
+[package]
+name = "sample_async"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+keywords.workspace = true
+
+
+[dependencies]
+## --Async--
+futures = { workspace = true }
+tokio = { workspace = true, features = ["full"] }
+### - Remote -
+reqwest = { workspace = true, features = ["blocking", "json"] }
+sqlx = { version = "0.8.3", features = ["sqlite", "runtime-tokio", "tls-rustls"] }
+
+## --Ergonomics--
+bon = { workspace = true }
+derive_more = { workspace = true, features = ["full"] }
+indoc = { workspace = true }
+itertools = { workspace = true }
+nestify = { workspace = true }
+strum = { workspace = true, features = ["derive", "phf"] }
+
+## --Interface--
+### - CLI -
+clap = { workspace = true, features = [
+    "env",
+    "cargo",
+    "derive",
+    "string",
+    "unicode",
+    "wrap_help",
+] }
+clap-verbosity-flag = { workspace = true }
+dialoguer = { workspace = true }
+owo-colors = { workspace = true }
+tabled = { workspace = true }
+json_to_table = { workspace = true }
+
+## --Parsing--
+monostate = { workspace = true }                     # serde: constraining, zero-sized type
+serde = { workspace = true, features = ["derive"] }
+serde_json = { workspace = true }
+
+[dev-dependencies]
+# Dev-Dependencies
+##__Benchmarking__
+divan = { workspace = true }
+## __Test_Ergonomics__
+pretty_assertions = { workspace = true }
+test-log = { workspace = true, features = ["trace"] }
+## __Property Sample Testing__
+quickcheck = { workspace = true }
+quickcheck_macros = { workspace = true }
+## __Snapshot Testing__
+insta = { workspace = true, features = [
+    "clap",
+    "csv",
+    "json",
+    "redactions",
+    "serde",
+    "toml",
+    "walkdir",
+] }
+
+
+[lints]
+workspace = true
