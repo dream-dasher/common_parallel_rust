@@ -4576,6 +4576,12 @@ dependencies = [
  "tabled",
  "test-log",
  "tokio",
+ "tracing",
+ "tracing-appender",
+ "tracing-error",
+ "tracing-subscriber",
+ "tracing-timing",
+ "url",
 ]
 
 [[package]]
@@ -4630,6 +4636,7 @@ dependencies = [
  "tracing-error",
  "tracing-subscriber",
  "tracing-timing",
+ "url",
  "walkdir",
 ]
 

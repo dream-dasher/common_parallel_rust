@@ -31,6 +31,8 @@
 //! // Reqwest { source: reqwest::Error },
 //! // #[display("Error setting tracing subscriber default: {}", source)]
 //! // TracingSubscriber { source: SetGlobalDefaultError },
+//! // #[display("url parse error: {}", source)]
+//! // Url { source: url::ParseError },
 //! // //
 //! // // `other` errors
 //! // #[from(ignore)] // use `make_dyn_error` instead; would conflict with auto-derives
@@ -46,11 +48,11 @@
 
 use std::io;
 
-use derive_more::{Display, Error, From};
+use derive_more::{Display, Error};
 use tracing::{instrument, subscriber::SetGlobalDefaultError};
 
 // use derive_more::{Display, Error, derive::From};
-#[derive(Debug, Display, From, Error)]
+#[derive(Debug, Display, derive_more::From, Error)]
 pub enum ErrKind {
         // `custom` errors //
 
@@ -73,6 +75,9 @@ pub enum ErrKind {
         #[display("Error setting tracing subscriber default: {}", source)]
         TracingSubscriber { source: SetGlobalDefaultError },
 
+        #[display("url parse error: {}", source)]
+        Url { source: url::ParseError },
+
         // `other` errors //
         #[from(ignore)] // use `make_dyn_error` instead; would conflict with auto-derives
         #[display("Uncategorized Error (dyn error object): {}", source)]
@@ -91,7 +96,7 @@ impl ErrKind {
         }
 }
 
-#[derive(Display, Error, From)]
+#[derive(Display, Error)]
 #[display(
         "error: {:#}\n\n\nspantrace capture: {:?}\n\n\nspantrace: {:#}",
         source,
@@ -110,12 +115,12 @@ impl std::fmt::Debug for ErrWrapper {
                 write!(f, "{}", self)
         }
 }
-impl<T> From<T> for ErrWrapper
+impl<E> From<E> for ErrWrapper
 where
-        T: Into<ErrKind>,
+        E: Into<ErrKind>,
 {
         #[instrument(skip_all)]
-        fn from(error: T) -> Self {
+        fn from(error: E) -> Self {
                 Self {
                         source:    error.into(),
                         spantrace: tracing_error::SpanTrace::capture(),

@@ -31,6 +31,8 @@
 //! // Reqwest { source: reqwest::Error },
 //! // #[display("Error setting tracing subscriber default: {}", source)]
 //! // TracingSubscriber { source: SetGlobalDefaultError },
+//! // #[display("url parse error: {}", source)]
+//! // Url { source: url::ParseError },
 //! // //
 //! // // `other` errors
 //! // #[from(ignore)] // use `make_dyn_error` instead; would conflict with auto-derives
