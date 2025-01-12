@@ -29,7 +29,7 @@ debug = true
 futures = "0.3.31"
 tokio = { version = "1.42.0", features = ["full"] }
 ### - Remote -
-reqwest = { version = "0.12.9", features = ["blocking", "json"] }
+reqwest = { version = "0.12.9", features = ["cookies", "json", "rustls-tls"] }
 sqlx = { version = "0.8.3", features = ["sqlite", "runtime-tokio", "tls-rustls"] }
 
 ## --Diagnostics--
