@@ -122,10 +122,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                                         DEFAULT_PRIMES_TILL
                                 }
                                 Some(p) => {
-                                        println!(
-                                                "Hi from scratch_prime.rs.  You requested primes for said: {}",
-                                                p.blue()
-                                        );
+                                        println!("You requested primes up to: {}", p.blue());
                                         p
                                 }
                         };
