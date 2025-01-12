@@ -50,7 +50,7 @@ toml = "0.8.19"
 walkdir = "2.5.0"
 ### Config
 config = "0.15.4"
-directories = "5.0.1"
+directories = "6.0.0"
 ### System & Processes
 rexpect = { version = "0.6.0", features = ["which"] }
 
