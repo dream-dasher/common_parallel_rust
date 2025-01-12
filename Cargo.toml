@@ -30,7 +30,12 @@ futures = "0.3.31"
 tokio = { version = "1.42.0", features = ["full"] }
 ### - Remote -
 reqwest = { version = "0.12.9", features = ["cookies", "json", "rustls-tls"] }
-sqlx = { version = "0.8.3", features = ["sqlite", "runtime-tokio", "tls-rustls"] }
+sqlx = { version = "0.8.3", features = [
+    "sqlite",
+    "runtime-tokio",
+    "tls-rustls",
+] }
+url = { version = "2.5.4" }
 
 ## --Diagnostics--
 tracing = { version = "0.1.41", features = [] }
@@ -65,12 +70,12 @@ strum = { version = "0.26.3", features = ["derive", "phf"] }
 ## --Interface--
 ### - CLI -
 clap = { version = "4.5.22", features = [
-  "env",
-  "cargo",
-  "derive",
-  "string",
-  "unicode",
-  "wrap_help",
+    "env",
+    "cargo",
+    "derive",
+    "string",
+    "unicode",
+    "wrap_help",
 ] }
 clap-verbosity-flag = "3.0.1"
 dialoguer = "0.11.0"
@@ -103,7 +108,7 @@ rand = "0.8.5"
 
 ## --Parsing--
 regex = { version = "1.11.1", features = ["logging"] }
-monostate = "0.1.13"  # serde: constraining, zero-sized type
+monostate = "0.1.13"                                   # serde: constraining, zero-sized type
 serde = { version = "1.0.215", features = ["derive"] }
 serde_json = "1.0.133"
 
@@ -121,11 +126,11 @@ quickcheck = "1.0.3"
 quickcheck_macros = "1.0.0"
 ## __Snapshot Testing__
 insta = { version = "1.41.1", features = [
-  "clap",
-  "csv",
-  "json",
-  "redactions",
-  "serde",
-  "toml",
-  "walkdir",
+    "clap",
+    "csv",
+    "json",
+    "redactions",
+    "serde",
+    "toml",
+    "walkdir",
 ] }

@@ -13,6 +13,7 @@ tokio = { workspace = true }
 ### - Remote -
 reqwest = { workspace = true }
 sqlx = { workspace = true }
+url = { workspace = true }
 
 ## --Diagnostics--
 tracing = { workspace = true }  # features = ["release_max_level_warn"] | ["release_max_level_off"]
