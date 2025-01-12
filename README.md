@@ -26,3 +26,34 @@ git fetch $LOCAL_ALIAS
 git merge --allow-unrelated-histories $ALIAS_OF_REMOTE/$REMOTE_BRANCH_TO_MERGE
 ```
 `(opt: --strategy-option theirs)`
+
+
+## Updating Branches
+The default branch-merge strategy is to only modify files and not add them.
+(Again, branches are by-file subsets of `main`)
+```zsh
+echo "Merging main without commit of fast-forward."
+git merge --no-commit --no-ff main
+echo "Removing all files in HEAD that are new relative to main."
+gd --name-only --diff-filter=A HEAD main | 
+  xargs -I _ rm -rf _
+echo "Re-adding all changes; only modified files should be set for merge."
+git add .
+```
+Caveats:
+ - we are comparing `HEAD` and `main`, which is correct for precisely the above, but a bit indirect
+ - this does not filter within-file references to non-merged files
+   - by design the system should work that way
+   - this can create minor issues with the justfile (e.g. where `x` is a `cargo xtask` alias for centralization of control)
+     - acceptable for now
+     - if we couldn't accept errors we wouldn't be running shell scripts
+
+## Cloning Repo
+(using local aliases)
+```zsh
+ghrg common_par
+gh repo clone <cmd-y shift-_>
+c common_par...
+gfa
+<for each: git checkout <x>>
+```
