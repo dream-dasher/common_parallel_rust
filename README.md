@@ -14,7 +14,7 @@
       - simple_config + a justfile, which is likely to see repo-specific changes and *and* should have any merges manually reviewed.
       - if more repo-scripting moves to cargo xtask we may also add a version of this with xtask files.  (until then manual synch is expected)
     - `workspace_init`
-      - this is close to `main`, and could be a living repo in its own right.  It is not intended to be used to upstream changes for synchronization.  It's merely an alternative to repo-templating that takes advatnage of the livign repository approach already in use here.
+      - this is close to `main`, and could be a living repo in its own right.  It is not intended to be used to upstream changes for synchronization.  It's merely an alternative to repo-templating that takes advatnage of the living repository approach already in use here.
 
 ## Merging Code
 ```zsh
