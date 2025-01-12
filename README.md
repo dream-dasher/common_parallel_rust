@@ -23,9 +23,10 @@ ALIAS_OF_REMOTE='common_par'
 REMOTE_BRANCH_TO_MERGE='workspace_init|config_with_just|simple_config'
 git remote add $ALIAS_OF_REMOTE $REMOTE_REPO
 git fetch $LOCAL_ALIAS
-git merge --allow-unrelated-histories $ALIAS_OF_REMOTE/$REMOTE_BRANCH_TO_MERGE
+git merge --allow-unrelated-histories $ALIAS_OF_REMOTE/$REMOTE_BRANCH_TO_MERGE 
 ```
 `(opt: --strategy-option theirs)`
+`(opt: --no-commit --no-ff)`
 
 
 ## Updating Branches
