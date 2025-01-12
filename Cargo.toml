@@ -9,8 +9,7 @@ resolver = "3"
 version = "0.1.0"
 edition = "2024"
 authors = ["Ethan Skowronski-Lutz"]
-keywords = ["scratch", "api", "pagerduty"]
-
+keywords = []
 
 [workspace.lints.rust]
 unsafe_code = "forbid"
