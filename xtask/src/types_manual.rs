@@ -1,5 +1,5 @@
 //! Interface to allow getting information about Types
-use std::fmt;
+use std::{fmt, num::NonZero};
 
 use clap::ValueEnum;
 use owo_colors::OwoColorize;
@@ -44,6 +44,21 @@ pub enum TypesManual {
         // signed - float
         F32,
         F64,
+        // non-zero
+        // // non-zero unsigned
+        NonZeroU8,
+        NonZeroU16,
+        NonZeroU32,
+        NonZeroU64,
+        NonZeroU128,
+        NonZeroUsize,
+        // // non-zero signed
+        NonZeroI8,
+        NonZeroI16,
+        NonZeroI32,
+        NonZeroI64,
+        NonZeroI128,
+        NonZeroIsize,
 }
 impl TypesManual {
         /// Get info about type indicatd by type handle (`TypesManual` variant)
@@ -63,6 +78,18 @@ impl TypesManual {
                         TypesManual::ISize => get_type_details::<isize>().as_strings(),
                         TypesManual::F32 => get_type_details::<f32>().as_strings(),
                         TypesManual::F64 => get_type_details::<f64>().as_strings(),
+                        TypesManual::NonZeroU8 => get_type_details::<NonZero<u8>>().as_strings(),
+                        TypesManual::NonZeroU16 => get_type_details::<NonZero<u16>>().as_strings(),
+                        TypesManual::NonZeroU32 => get_type_details::<NonZero<u32>>().as_strings(),
+                        TypesManual::NonZeroU64 => get_type_details::<NonZero<u64>>().as_strings(),
+                        TypesManual::NonZeroU128 => get_type_details::<NonZero<u128>>().as_strings(),
+                        TypesManual::NonZeroUsize => get_type_details::<NonZero<usize>>().as_strings(),
+                        TypesManual::NonZeroI8 => get_type_details::<NonZero<i8>>().as_strings(),
+                        TypesManual::NonZeroI16 => get_type_details::<NonZero<i16>>().as_strings(),
+                        TypesManual::NonZeroI32 => get_type_details::<NonZero<i32>>().as_strings(),
+                        TypesManual::NonZeroI64 => get_type_details::<NonZero<i64>>().as_strings(),
+                        TypesManual::NonZeroI128 => get_type_details::<NonZero<i128>>().as_strings(),
+                        TypesManual::NonZeroIsize => get_type_details::<NonZero<isize>>().as_strings(),
                 }
         }
 }
@@ -93,7 +120,34 @@ macro_rules! impl_type_info {
             };
 }
 // NOTE: cannot do (i|u)size statically.
-impl_type_info!(u8, u16, u32, u64, u128, usize, i8, i16, i32, i64, i128, isize, f32, f64);
+impl_type_info!(
+        u8,
+        u16,
+        u32,
+        u64,
+        u128,
+        usize,
+        i8,
+        i16,
+        i32,
+        i64,
+        i128,
+        isize,
+        f32,
+        f64,
+        NonZero<i8>,
+        NonZero<i16>,
+        NonZero<i32>,
+        NonZero<i64>,
+        NonZero<i128>,
+        NonZero<isize>,
+        NonZero<u8>,
+        NonZero<u16>,
+        NonZero<u32>,
+        NonZero<u64>,
+        NonZero<u128>,
+        NonZero<usize>
+);
 
 /// Convenience wrapper for usefil information about types.
 #[derive(Debug, Clone)]
