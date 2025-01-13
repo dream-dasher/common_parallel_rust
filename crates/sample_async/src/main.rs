@@ -6,7 +6,10 @@
 //!   - works with raw strings or a fragile/foot-gunning `Url` crate re-export
 //!   - unfortunate necessity
 //!     - `httpx` (python) or `ureq` (rust) are similar - string-like operation appears to be the norm
-//!   -
+//! - Sqlx
+//!   - straight SQL in your rust, but with compile time checking of of Rust types and that database supports the requests
+//! - Tokio
+//!
 //! ## Note
 //! **tokio** is not compatible with wasm target.
 
@@ -44,6 +47,8 @@ async fn main() -> Result<()> {
         // header-module
         // - HeaderName
         // - HeaderMap
+        // - various constant header names available, but don't seem necessary
+        // - client can be builg with default_headers for general use
         let default_headers = {
                 let mut headers = HeaderMap::new();
                 headers.insert("Accept", "application/json".parse().unwrap());
@@ -69,6 +74,7 @@ async fn main() -> Result<()> {
                 .request(Method::GET, base_httpbin.join("/headers")?)
                 .header("Authorization", "prettyplease")
                 .header("Fanciful", "ladeeda")
+                .query(&[("query_key", "query_value")])
                 .body("the exact body that is sent")
                 .build()?;
         tea!(L::DEBUG, ?request);
