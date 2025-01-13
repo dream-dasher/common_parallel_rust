@@ -44,6 +44,12 @@ git clean -f .
 echo 'Re-adding all changes; only modified files should be set for merge.'
 git add .
 ```
+To *add* new files (which may have been previously ignored) the following may be necessary:
+(Some non-clarity around how by-file merge decisions are made relative to previous merges points.)
+```zsh
+git restore --source=main -- <path/to/that_directory>
+```
+
 Caveats:
  - we are comparing `HEAD` and `main`, which is correct for precisely the above, but a bit indirect
  - this does not filter within-file references to non-merged files
@@ -51,6 +57,7 @@ Caveats:
    - this can create minor issues with the justfile (e.g. where `x` is a `cargo xtask` alias for centralization of control)
      - acceptable for now
      - if we couldn't accept errors we wouldn't be running shell scripts
+
 
 ## Cloning Repo
 (using local aliases)
