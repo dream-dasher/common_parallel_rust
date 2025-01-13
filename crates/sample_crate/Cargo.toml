@@ -13,6 +13,8 @@ tokio = { workspace = true }
 ### - Remote -
 reqwest = { workspace = true }
 sqlx = { workspace = true }
+### - Accessory -
+governor = { workspace = true }
 url = { workspace = true }
 
 ## --Diagnostics--

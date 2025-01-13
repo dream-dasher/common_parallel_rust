@@ -35,6 +35,8 @@ sqlx = { version = "0.8.3", features = [
     "runtime-tokio",
     "tls-rustls",
 ] }
+### - Accessory -
+governor = { version = "0.8.0" }
 url = { version = "2.5.4" }
 
 ## --Diagnostics--
