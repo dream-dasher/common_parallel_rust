@@ -1,27 +1,27 @@
 [package]
 name = "sample_crate"
-version = "0.1.0"
+version.workspace = true
 edition.workspace = true
 authors.workspace = true
-
-[lints]
-workspace = true
+keywords.workspace = true
 
 
 [dependencies]
 ## --Async--
 futures = { workspace = true }
-tokio = { workspace = true, features = ["full"] }
+tokio = { workspace = true }
 ### - Remote -
-reqwest = { workspace = true, features = ["blocking", "json"] }
-sqlx = { version = "0.8.3", features = ["sqlite", "runtime-tokio", "tls-rustls"] }
+reqwest = { workspace = true }
+sqlx = { workspace = true }
+### - Accessory -
+governor = { workspace = true }
+url = { workspace = true }
 
 ## --Diagnostics--
-tracing = { workspace = true, features = [] }
-#                  "release_max_level_warn"^"release_max_level_off"
+tracing = { workspace = true }  # features = ["release_max_level_warn"] | ["release_max_level_off"]
 tracing-appender = { workspace = true }
 tracing-error = { workspace = true }
-tracing-subscriber = { workspace = true, features = ["env-filter", "json"] }
+tracing-subscriber = { workspace = true }
 tracing-timing = { workspace = true }
 
 ## --Env & Files--
@@ -36,45 +36,28 @@ walkdir = { workspace = true }
 config = { workspace = true }
 directories = { workspace = true }
 ### System & Processes
-rexpect = { workspace = true, features = ["which"] }
+rexpect = { workspace = true }
 
 ## --Ergonomics--
 bon = { workspace = true }
-derive_more = { workspace = true, features = ["full"] }
+derive_more = { workspace = true }
 indoc = { workspace = true }
 itertools = { workspace = true }
 nestify = { workspace = true }
-strum = { workspace = true, features = ["derive", "phf"] }
+strum = { workspace = true }
 
 ## --Interface--
 ### - CLI -
-clap = { workspace = true, features = [
-    "env",
-    "cargo",
-    "derive",
-    "string",
-    "unicode",
-    "wrap_help",
-] }
+clap = { workspace = true }
 clap-verbosity-flag = { workspace = true }
 dialoguer = { workspace = true }
 owo-colors = { workspace = true }
 tabled = { workspace = true }
 json_to_table = { workspace = true }
 ### - egui -
-eframe = { workspace = true, default-features = false, features = [
-    "default_fonts", # Embed the default egui fonts.
-    "glow",          # Use the glow rendering backend. Alternative: "wgpu".
-    "persistence",   # Enable restoring app state when restarting the app.
-    "wayland",       # To support Linux (and CI)
-] }
-egui = { workspace = true, features = ["callstack", "document-features"] }
-egui_extras = { workspace = true, features = [
-    "datepicker",
-    "document-features",
-    "serde",
-    "syntect",
-] }
+eframe = { workspace = true }
+egui = { workspace = true }
+egui_extras = { workspace = true }
 egui_table = { workspace = true }
 egui_inbox = { workspace = true }
 
@@ -86,13 +69,13 @@ faer = { workspace = true }
 rand = { workspace = true }
 
 ## --Parsing--
-regex = { workspace = true, features = ["logging"] }
+regex = { workspace = true }
 monostate = { workspace = true }                     # serde: constraining, zero-sized type
-serde = { workspace = true, features = ["derive"] }
+serde = { workspace = true }
 serde_json = { workspace = true }
 
 ## --Time--
-jiff = { workspace = true, features = ["js", "logging", "serde"] }
+jiff = { workspace = true }
 
 
 [dev-dependencies]
@@ -101,17 +84,13 @@ jiff = { workspace = true, features = ["js", "logging", "serde"] }
 divan = { workspace = true }
 ## __Test_Ergonomics__
 pretty_assertions = { workspace = true }
-test-log = { workspace = true, features = ["trace"] }
+test-log = { workspace = true }
 ## __Property Sample Testing__
 quickcheck = { workspace = true }
 quickcheck_macros = { workspace = true }
 ## __Snapshot Testing__
-insta = { workspace = true, features = [
-    "clap",
-    "csv",
-    "json",
-    "redactions",
-    "serde",
-    "toml",
-    "walkdir",
-] }
+insta = { workspace = true }
+
+
+[lints]
+workspace = true

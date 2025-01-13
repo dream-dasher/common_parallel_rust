@@ -9,8 +9,7 @@ resolver = "3"
 version = "0.1.0"
 edition = "2024"
 authors = ["Ethan Skowronski-Lutz"]
-keywords = ["scratch", "api", "pagerduty"]
-
+keywords = []
 
 [workspace.lints.rust]
 unsafe_code = "forbid"
@@ -30,8 +29,15 @@ debug = true
 futures = "0.3.31"
 tokio = { version = "1.42.0", features = ["full"] }
 ### - Remote -
-reqwest = { version = "0.12.9", features = ["blocking", "json"] }
-sqlx = { version = "0.8.3", features = ["sqlite", "runtime-tokio", "tls-rustls"] }
+reqwest = { version = "0.12.9", features = ["cookies", "json", "rustls-tls"] }
+sqlx = { version = "0.8.3", features = [
+    "sqlite",
+    "runtime-tokio",
+    "tls-rustls",
+] }
+### - Accessory -
+governor = { version = "0.8.0" }
+url = { version = "2.5.4" }
 
 ## --Diagnostics--
 tracing = { version = "0.1.41", features = [] }
@@ -51,7 +57,7 @@ toml = "0.8.19"
 walkdir = "2.5.0"
 ### Config
 config = "0.15.4"
-directories = "5.0.1"
+directories = "6.0.0"
 ### System & Processes
 rexpect = { version = "0.6.0", features = ["which"] }
 
@@ -66,12 +72,12 @@ strum = { version = "0.26.3", features = ["derive", "phf"] }
 ## --Interface--
 ### - CLI -
 clap = { version = "4.5.22", features = [
-  "env",
-  "cargo",
-  "derive",
-  "string",
-  "unicode",
-  "wrap_help",
+    "env",
+    "cargo",
+    "derive",
+    "string",
+    "unicode",
+    "wrap_help",
 ] }
 clap-verbosity-flag = "3.0.1"
 dialoguer = "0.11.0"
@@ -104,7 +110,7 @@ rand = "0.8.5"
 
 ## --Parsing--
 regex = { version = "1.11.1", features = ["logging"] }
-monostate = "0.1.13"  # serde: constraining, zero-sized type
+monostate = "0.1.13"                                   # serde: constraining, zero-sized type
 serde = { version = "1.0.215", features = ["derive"] }
 serde_json = "1.0.133"
 
@@ -122,11 +128,11 @@ quickcheck = "1.0.3"
 quickcheck_macros = "1.0.0"
 ## __Snapshot Testing__
 insta = { version = "1.41.1", features = [
-  "clap",
-  "csv",
-  "json",
-  "redactions",
-  "serde",
-  "toml",
-  "walkdir",
+    "clap",
+    "csv",
+    "json",
+    "redactions",
+    "serde",
+    "toml",
+    "walkdir",
 ] }

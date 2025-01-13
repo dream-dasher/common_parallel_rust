@@ -3,6 +3,9 @@
 //! ## Common ErrorKinds
 //! // //
 //! // // `custom` errors
+//! // #[from(ignore)] // manually generate; would conflict with `OtherStringError` auto-derive
+//! // #[display("Error splitting on ':' : {}", source_input)]
+//! // InputNoColon { source_input: String },
 //! // #[from(ignore)]
 //! // #[display("Error extracting lines from input: {}", source_input)]
 //! // InputNoLines { source_input: String },
@@ -24,8 +27,12 @@
 //! // EFrame { source: eframe::Error },
 //! // #[display("io error: {}", source)]
 //! // Io { source: io::Error },
+//! // #[display("reqwest error: {}", source)]
+//! // Reqwest { source: reqwest::Error },
 //! // #[display("Error setting tracing subscriber default: {}", source)]
 //! // TracingSubscriber { source: SetGlobalDefaultError },
+//! // #[display("url parse error: {}", source)]
+//! // Url { source: url::ParseError },
 //! // //
 //! // // `other` errors
 //! // #[from(ignore)] // use `make_dyn_error` instead; would conflict with auto-derives
