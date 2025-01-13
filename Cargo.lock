@@ -4616,6 +4616,44 @@ dependencies = [
 ]
 
 [[package]]
+name = "sample_async"
+version = "0.1.0"
+dependencies = [
+ "bon",
+ "clap",
+ "clap-verbosity-flag",
+ "derive_more",
+ "dialoguer",
+ "divan",
+ "futures",
+ "governor",
+ "indoc",
+ "insta",
+ "itertools",
+ "json_to_table",
+ "monostate",
+ "nestify",
+ "owo-colors",
+ "pretty_assertions",
+ "quickcheck",
+ "quickcheck_macros",
+ "reqwest",
+ "serde",
+ "serde_json",
+ "sqlx",
+ "strum",
+ "tabled",
+ "test-log",
+ "tokio",
+ "tracing",
+ "tracing-appender",
+ "tracing-error",
+ "tracing-subscriber",
+ "tracing-timing",
+ "url",
+]
+
+[[package]]
 name = "sample_crate"
 version = "0.1.0"
 dependencies = [

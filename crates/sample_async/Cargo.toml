@@ -1,0 +1,64 @@
+[package]
+name = "sample_async"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+keywords.workspace = true
+
+
+[dependencies]
+## --Async--
+futures = { workspace = true }
+tokio = { workspace = true }
+### - Remote -
+reqwest = { workspace = true }
+sqlx = { workspace = true }
+### - Accessory -
+governor = { workspace = true }
+url = { workspace = true }
+
+## --Diagnostics--
+tracing = { workspace = true }  # features = ["release_max_level_warn"] | ["release_max_level_off"]
+tracing-appender = { workspace = true }
+tracing-error = { workspace = true }
+tracing-subscriber = { workspace = true }
+tracing-timing = { workspace = true }
+
+## --Ergonomics--
+bon = { workspace = true }
+derive_more = { workspace = true }
+indoc = { workspace = true }
+itertools = { workspace = true }
+nestify = { workspace = true }
+strum = { workspace = true }
+
+## --Interface--
+### - CLI -
+clap = { workspace = true }
+clap-verbosity-flag = { workspace = true }
+dialoguer = { workspace = true }
+owo-colors = { workspace = true }
+tabled = { workspace = true }
+json_to_table = { workspace = true }
+
+## --Parsing--
+monostate = { workspace = true }                     # serde: constraining, zero-sized type
+serde = { workspace = true }
+serde_json = { workspace = true }
+
+[dev-dependencies]
+# Dev-Dependencies
+##__Benchmarking__
+divan = { workspace = true }
+## __Test_Ergonomics__
+pretty_assertions = { workspace = true }
+test-log = { workspace = true }
+## __Property Sample Testing__
+quickcheck = { workspace = true }
+quickcheck_macros = { workspace = true }
+## __Snapshot Testing__
+insta = { workspace = true }
+
+
+[lints]
+workspace = true
