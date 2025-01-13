@@ -13,11 +13,11 @@
 mod support;
 use std::time::Duration;
 
-use reqwest::Url;
+use reqwest::{Method, Url, header::HeaderMap};
 use support::{Result, activate_global_default_tracing_subscriber};
 use tracing::{Level as L, event as tea};
 
-#[cfg(not(target_arch = "wasm32"))]
+// #[cfg(not(target_arch = "wasm32"))]
 #[tokio::main]
 async fn main() -> Result<()> {
         let _writer_guard = activate_global_default_tracing_subscriber(None, None)?;
@@ -41,6 +41,16 @@ async fn main() -> Result<()> {
         tea!(L::DEBUG, ?base_httpbin, ?base_typicode, ?todos_typicode, ?delay_httpbin, ?json_httpbin);
         tea!(L::INFO, a_url=?json_httpbin.as_str());
 
+        // header-module
+        // - HeaderName
+        // - HeaderMap
+        let default_headers = {
+                let mut headers = HeaderMap::new();
+                headers.insert("Accept", "application/json".parse().unwrap());
+                headers.insert("User-Agent", "rust-reqwest-client".parse().unwrap());
+                headers
+        };
+        // xhs httpbin.org/headers accept:'application/json' Authorization:'prettyplease' Fanciful:'yesm'
         // `Client`
         // - prefer `::builder()`
         //   - alt: `::new()` is effectively `::default()`
@@ -50,12 +60,17 @@ async fn main() -> Result<()> {
         let client = reqwest::Client::builder()
                 .https_only(true) // this will error for `http` (WARN: not compile-time checked)
                 .use_rustls_tls()
-                // .default_headers(headers)
+                .default_headers(default_headers)
                 .timeout(Duration::from_secs(30)) // default is *no* timeout
                 .build()?;
 
         // see RequestBuilder
-        let request = client.get(todos_typicode).body("the exact body that is sent").build()?;
+        let request = client
+                .request(Method::GET, base_httpbin.join("/headers")?)
+                .header("Authorization", "prettyplease")
+                .header("Fanciful", "ladeeda")
+                .body("the exact body that is sent")
+                .build()?;
         tea!(L::DEBUG, ?request);
 
         // Response:
@@ -72,5 +87,5 @@ async fn main() -> Result<()> {
         Ok(())
 }
 
-#[cfg(target_arch = "wasm32")]
-fn main() {}
+// #[cfg(target_arch = "wasm32")]
+// fn main() {}
