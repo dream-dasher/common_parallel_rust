@@ -34,12 +34,14 @@ git merge --allow-unrelated-histories $ALIAS_OF_REMOTE/$REMOTE_BRANCH_TO_MERGE
 The default branch-merge strategy is to only modify files and not add them.
 (Again, branches are by-file subsets of `main`)
 ```zsh
-echo "Merging main without commit of fast-forward."
+echo 'Merging main without commit of fast-forward.'
 git merge --no-commit --no-ff main
-echo "Removing all files in HEAD that are new relative to main."
-gd --name-only --diff-filter=A HEAD main | 
+echo 'Removing all files in HEAD that are new relative to main.'
+gd --name-only --diff-filter=A HEAD main |
   xargs -I _ rm -rf _
-echo "Re-adding all changes; only modified files should be set for merge."
+echo 'Removing all untracked files.'
+git clean -f .
+echo 'Re-adding all changes; only modified files should be set for merge.'
 git add .
 ```
 Caveats:
