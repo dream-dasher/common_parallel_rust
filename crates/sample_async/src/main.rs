@@ -10,6 +10,11 @@
 //!   - straight SQL in your rust, but with compile time checking of of Rust types and that database supports the requests
 //! - Tokio
 //!
+//! ## Accessories
+//! - sites set up to allow http request testing/experimenting
+//!   - [htpbin](https://httpbin.org)
+//!   - [typicode: jsonplaceholder](https://jsonplaceholder.typicode.com)
+//!
 //! ## Note
 //! **tokio** is not compatible with wasm target.
 
@@ -149,12 +154,12 @@ async fn main() -> Result<()> {
                                 .map(|url| client.request(Method::GET, url.clone()).send())
                                 .collect();
 
-                        let start_timer = std::time::Instant::now();
+                        let start_time = std::time::Instant::now();
                         let results = future::join_all(futures).await;
                         for result in results.iter() {
                                 tea!(L::DEBUG, ?result);
                         }
-                        let time_passed = start_timer.elapsed();
+                        let time_passed = start_time.elapsed();
                         tea!(L::DEBUG, "All requests completed in {:?}", time_passed);
                         println!(
                                 "`Join_All`: {} results returned, each with a delay of 2 or 3 seconds, in a total of {} seconds.",
@@ -168,21 +173,19 @@ async fn main() -> Result<()> {
                         use futures::stream::{self, StreamExt};
 
                         const BUFFER_SIZE: usize = 2;
-                        let start_timer = std::time::Instant::now();
+                        let start_time = std::time::Instant::now();
                         let mut count = 0;
-                        let stream = stream::iter(urls)
+                        let mut buffered_stream = stream::iter(urls)
                                 .map(|url| client.get(url).send())
-                                // .boxed()
-                                .buffer_unordered(BUFFER_SIZE) // Only 2 requests in flight at once
                                 // .buffered(2) // yields responses only in the order futures were arranged
-                                .collect::<Vec<_>>()
-                                .await;
+                                .buffer_unordered(BUFFER_SIZE); // Only 2 requests in flight at once
 
-                        for res in stream {
+                        while let Some(result) = buffered_stream.next().await {
+                                println!("{}: {:.2}", count, start_time.elapsed().as_secs_f64());
                                 count += 1;
-                                tea!(L::DEBUG, ?res);
+                                tea!(L::DEBUG, ?result);
                         }
-                        let time_passed = start_timer.elapsed();
+                        let time_passed = start_time.elapsed();
                         tea!(L::DEBUG, "All requests completed in {:?}", time_passed);
                         println!(
                                 "`Stream.buffer_unordered({})`: {} results streamed back, each with a delay of 2 or 3 seconds, in a total of {} seconds.",
@@ -192,6 +195,53 @@ async fn main() -> Result<()> {
                         );
                 }
         }
+
+        // # `Governor`
+        // - single or keyed rate limiting
+        // - leaky-bucket ("generic cell rate algorithm")
+        // - only takes non-zeroes
+        // - appears flexible and nominally quite perofmrant
+        // - only takes non-zeroes for quite a few things
+        // - `DefaultDirectRateLiminter` & `DefaultKeyedRatelimiter` type aliases to allow easy passing around (!)
+        {
+                use std::{num::NonZeroU32, sync::Arc};
+
+                use futures::stream::{self, StreamExt};
+                use governor::{DefaultDirectRateLimiter, Quota, RateLimiter};
+
+                const PER_SECOND_RATE_LIMIT: NonZeroU32 = NonZeroU32::new(12).unwrap();
+                const BURST_LIMIT: NonZeroU32 = NonZeroU32::new(6).unwrap();
+
+                let quota = Quota::per_second(PER_SECOND_RATE_LIMIT).allow_burst(BURST_LIMIT);
+
+                // use Default_RateLimiter type alias if you need to refer to these (e.g. in a struct or function)
+                let _rate_limiter = RateLimiter::direct(quota);
+                let rate_limiter: DefaultDirectRateLimiter = RateLimiter::direct(quota);
+                // wrap in an `Arc` to share with various futures/threads
+                let arc_rate_limiter = Arc::new(rate_limiter);
+
+                let single_url = [base_httpbin.join("/json")?];
+
+                let start_time = std::time::Instant::now();
+                let mut regulated_request_stream = stream::iter(single_url.into_iter().cycle().take(27))
+                        .map(|url| {
+                                let client = client.clone();
+                                let arc_rate_limiter = arc_rate_limiter.clone();
+                                async move {
+                                        arc_rate_limiter.until_ready().await;
+                                        client.get(url).send().await
+                                }
+                        })
+                        .buffer_unordered(BURST_LIMIT.get() as usize);
+
+                let mut count = 0;
+                while let Some(result) = regulated_request_stream.next().await {
+                        println!("{}: {:.2}", count, start_time.elapsed().as_secs_f64());
+                        count += 1;
+                        tea!(L::DEBUG, ?result);
+                }
+        }
+
         Ok(())
 }
 
@@ -204,6 +254,30 @@ struct Todo {
         id:        i32,
         title:     String,
         completed: bool,
+}
+
+/// Example async function with retries
+async fn _fetch_with_retry(client: &reqwest::Client, url: &str, max_retries: u32) -> Result<reqwest::Response> {
+        let mut retries = 0;
+        loop {
+                match client.get(url).send().await {
+                        Ok(response) => return Ok(response),
+                        Err(e) if retries < max_retries => {
+                                tea!(L::WARN, "Request failed, retrying: {}", e);
+                                retries += 1;
+                                tokio::time::sleep(Duration::from_millis(2u64.pow(retries))).await;
+                        }
+                        Err(e) => {
+                                tea!(
+                                        L::ERROR,
+                                        "Retries maxxed out.  Request tried {} times without success. Last error returned: {}",
+                                        retries,
+                                        e
+                                );
+                                return Err(e.into());
+                        }
+                }
+        }
 }
 
 // #[cfg(target_arch = "wasm32")]
