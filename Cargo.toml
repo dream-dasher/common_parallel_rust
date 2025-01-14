@@ -105,7 +105,7 @@ egui_inbox = "0.7.0"
 # ### - Data -
 # polars = { version = "0.45.1", features = [] }
 # ### - Math -
-faer = "0.20.2"
+faer = "0.21.2"
 rand = "0.8.5"
 
 ## --Parsing--
