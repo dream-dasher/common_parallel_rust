@@ -25,6 +25,8 @@
 //! // EnvError { source: tracing_subscriber::filter::FromEnvError },
 //! // #[display("eframe (egui) error: {}", source)]
 //! // EFrame { source: eframe::Error },
+//! // EFrame { source: eframe::Error },
+//! // HiddenValError { source: crate::HiddenValueError },
 //! // #[display("io error: {}", source)]
 //! // Io { source: io::Error },
 //! // #[display("reqwest error: {}", source)]
@@ -72,6 +74,9 @@ pub enum ErrKind {
 
         #[display("Error with tracing_subscriber::EnvFilter parsing env directive: {}", source)]
         EnvError { source: tracing_subscriber::filter::FromEnvError },
+
+        #[display("hiddenvalue error: {}", source)]
+        HiddenValError { source: crate::HiddenValueError },
 
         #[display("io error: {}", source)]
         Io { source: io::Error },
