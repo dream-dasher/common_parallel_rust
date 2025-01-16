@@ -22,6 +22,33 @@
 //! **TLDR**: memory safety is interesting, but that is an express non-goal.  This is just to prevent logging or similar
 //! textual leaks.
 //!
+//! ## Example
+//! ```ignore
+//! use std::{env, num::NonZeroUsize};
+//!
+//! use dotenvy::dotenv;
+//! use hidden_value::*;
+//!
+//! fn main() -> Result<(), Box<dyn std::error::Error>> {
+//!         tracing_subscriber::fmt::init();
+//!         const TEST_KEY: &str = "EXAMPLE_LOCAL_ENV_KEY_MESSAGE";
+//!         // dotenv()?; // this will prefer existing env vars over .env file
+//!         // let test_key = env::var(TEST_KEY)?;
+//!         // println!("direct read of test_key from env: {}", test_key);
+//!         let asv: HiddenValue<String> = HiddenValue::from_env_builder()
+//!                 .key("TEST_KEY")
+//!                 .load_env_file(true)
+//!                 .reveal_len(NonZeroUsize::new(4).unwrap())
+//!                 .build()?;
+//!         println!("key:{}\n obfuscated val: {:?}", TEST_KEY, &asv);
+//!         println!("key:{}\n exposed val: {}", TEST_KEY, &asv.expose_value());
+//!         let hnum: HiddenValue<u32> = HiddenValue::builder().value(123_456_789).build()?;
+//!         println!("hidden number: obfuscated: {:?}", &hnum);
+//!         println!("hidden number: exposed: {}", &hnum.expose_value());
+//!
+//!         Ok(())
+//! }
+//! ```
 use core::fmt;
 use std::{env, ffi::OsStr, num::NonZeroUsize};
 
