@@ -134,7 +134,6 @@ where
 }
 
 pub trait ToOther {
-        #[expect(dead_code)]
         fn to_other(self) -> ErrWrapper;
 }
 impl<E> ToOther for E

@@ -1,6 +1,6 @@
-use sample_crate::{Result, TemplateApp};
+use sample_crate::*;
 
-fn main() -> Result<()> {
+fn main() -> SampleResult<()> {
         // #[cfg(debug_assertions)]
         use sample_crate::activate_global_default_tracing_subscriber;
         let _writer_guard: tracing_appender::non_blocking::WorkerGuard = activate_global_default_tracing_subscriber()

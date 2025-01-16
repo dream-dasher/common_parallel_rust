@@ -19,7 +19,7 @@ use tracing_appender::non_blocking::WorkerGuard;
 use tracing_error::ErrorLayer;
 use tracing_subscriber::prelude::*;
 
-use crate::Result;
+use crate::SampleResult;
 
 #[cfg(debug_assertions)]
 const DEFAULT_LOGGING_LEVEL: LevelFilter = LevelFilter::INFO;
@@ -37,7 +37,7 @@ const DEFAULT_ERROR_LOGGING_LEVEL: LevelFilter = LevelFilter::WARN;
 ///
 /// # Use:
 /// ```text
-/// fn main() -> Result<()> {
+/// fn main() -> SampleResult<()> {
 ///     let _tracing_writer_worker_guard = generate_tracing_subscriber()?;
 ///    // ...
 ///    Ok(())
@@ -46,7 +46,7 @@ const DEFAULT_ERROR_LOGGING_LEVEL: LevelFilter = LevelFilter::WARN;
 pub fn activate_global_default_tracing_subscriber(
         env_default_level: Option<LevelFilter>,
         trace_error_level: Option<LevelFilter>,
-) -> Result<WorkerGuard> {
+) -> SampleResult<WorkerGuard> {
         let env_default_level = env_default_level.unwrap_or(DEFAULT_LOGGING_LEVEL);
         let trace_error_level = trace_error_level.unwrap_or(DEFAULT_ERROR_LOGGING_LEVEL);
         let log_writer = std::io::stderr(); // can't set as constant or static

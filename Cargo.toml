@@ -11,10 +11,13 @@ edition = "2024"
 authors = ["Ethan Skowronski-Lutz"]
 keywords = []
 
+
 [workspace.lints.rust]
-unsafe_code = "forbid"
+unsafe_code = "deny"
 [workspace.lints.clippy]
 allow_attributes = "warn"
+undocumented_unsafe_blocks = "deny"  # "forbid" lint level appears buggy
+
 
 [profile.release]
 codegen-units = 1
@@ -105,7 +108,7 @@ egui_inbox = "0.7.0"
 # ### - Data -
 # polars = { version = "0.45.1", features = [] }
 # ### - Math -
-faer = "0.20.2"
+faer = "0.21.2"
 rand = "0.8.5"
 
 ## --Parsing--
@@ -116,6 +119,7 @@ serde_json = "1.0.133"
 
 ## --Time--
 jiff = { version = "0.1.16", features = ["js", "logging", "serde"] }
+
 
 # Dev-Dependencies
 ##__Benchmarking__

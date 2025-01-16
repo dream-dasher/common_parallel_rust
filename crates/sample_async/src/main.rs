@@ -18,17 +18,17 @@
 //! ## Note
 //! **tokio** is not compatible with wasm target.
 
-mod support;
 use std::time::Duration;
 
-use reqwest::{Method, Url, header::HeaderMap};
+use reqwest::{Method, Url,
+              header::{self, HeaderMap}};
+use sample_async::*;
 use serde::{Deserialize, Serialize};
-use support::{Result, activate_global_default_tracing_subscriber};
-use tracing::{Level as L, event as tea};
+use tracing::{debug, error, info, warn};
 
 // #[cfg(not(target_arch = "wasm32"))]
 #[tokio::main]
-async fn main() -> Result<()> {
+async fn main() -> SampleResult<()> {
         let _writer_guard = activate_global_default_tracing_subscriber(None, None)?;
 
         // # `Url`
@@ -47,20 +47,29 @@ async fn main() -> Result<()> {
         let base_httpbin = Url::parse(URL_HTTPBIN)?;
         let delay_httpbin = base_httpbin.join("/delay/")?;
         let json_httpbin = base_httpbin.join("/json")?;
-        tea!(L::DEBUG, ?base_httpbin, ?base_typicode, ?todos_typicode, ?delay_httpbin, ?json_httpbin);
-        tea!(L::INFO, a_url=?json_httpbin.as_str());
+        debug!(?base_httpbin, ?base_typicode, ?todos_typicode, ?delay_httpbin, ?json_httpbin);
+        info!(a_url=?json_httpbin.as_str());
 
-        // # header-module
-        // - HeaderName
-        // - HeaderMap
+        // # Header-module
+        // - `HeaderMap`
+        //   - key:value map; static hashing for common values
+        //   - *multi*map - presumably corresponding to repeated header values (which are in spec)
+        //   - re-export from `http` (hyperium)
+        //   - many Const values for common headers
+        //   - map insertion can panic >32e+3 values
         // - various constant header names available, but don't seem necessary
         // - client can be builg with default_headers for general use
         let default_headers = {
                 let mut headers = HeaderMap::new();
-                headers.insert("Accept", "application/json".parse().unwrap());
-                headers.insert("User-Agent", "rust-reqwest-client".parse().unwrap());
+                headers.insert(header::ACCEPT, "application/json".parse().unwrap());
+                headers.insert(header::CONTENT_TYPE, "application/json".parse().unwrap());
+                headers.insert(header::USER_AGENT, "rust-reqwest-client".parse().unwrap());
+                // headers.insert(header::AUTHORIZATION, _);
+                // headers.insert(header::COOKIE, _);
+                // headers.insert(header::DATE, _);
                 headers
         };
+        debug!(?default_headers);
 
         // # `Client`
         // - prefer `::builder()`
@@ -74,6 +83,7 @@ async fn main() -> Result<()> {
                 .default_headers(default_headers)
                 .timeout(Duration::from_secs(30)) // default is *no* timeout
                 .build()?;
+        debug!(?client);
 
         // # `Request`
         // see RequestBuilder
@@ -84,7 +94,7 @@ async fn main() -> Result<()> {
                 .query(&[("query_key", "query_value")])
                 .body("the exact body that is sent")
                 .build()?;
-        tea!(L::DEBUG, ?request);
+        debug!(?request);
 
         // # Response:
         // - status
@@ -94,8 +104,8 @@ async fn main() -> Result<()> {
         // - text
         // - json
         let response = client.execute(request).await?;
-        tea!(L::DEBUG, ?response);
-        tea!(L::INFO, resp_status=?response.status());
+        debug!(?response);
+        info!(resp_status=?response.status());
 
         // # JSON, typed
         // (see struct `Todo` below)
@@ -107,9 +117,9 @@ async fn main() -> Result<()> {
                         .await?;
 
                 let todos_type_matched: Vec<Todo> = response.json().await?;
-                tea!(L::INFO, "Retrieved {} todos", todos_type_matched.len());
-                tea!(L::DEBUG, two_todos = ?todos_type_matched.get(0..=1));
-                tea!(L::DEBUG, ?todos_type_matched);
+                info!("Retrieved {} todos", todos_type_matched.len());
+                debug!(two_todos = ?todos_type_matched.get(0..=1));
+                debug!(?todos_type_matched);
                 println!("-------,\nFirst Todo, Type-Matched:\n{:#?}\n-------", todos_type_matched.first());
         }
         // # JSON, ad hoc
@@ -121,7 +131,7 @@ async fn main() -> Result<()> {
                         .await?;
 
                 let todos_ad_hoc: serde_json::Value = response.json().await?;
-                tea!(L::DEBUG, ?todos_ad_hoc);
+                debug!(?todos_ad_hoc);
                 println!("-------,\nFirst Todo, Ad Hoc Construction:\n{:#?}\n-------", todos_ad_hoc.get(0));
         }
 
@@ -157,10 +167,10 @@ async fn main() -> Result<()> {
                         let start_time = std::time::Instant::now();
                         let results = future::join_all(futures).await;
                         for result in results.iter() {
-                                tea!(L::DEBUG, ?result);
+                                debug!(?result);
                         }
                         let time_passed = start_time.elapsed();
-                        tea!(L::DEBUG, "All requests completed in {:?}", time_passed);
+                        debug!("All requests completed in {:?}", time_passed);
                         println!(
                                 "`Join_All`: {} results returned, each with a delay of 2 or 3 seconds, in a total of {} seconds.",
                                 results.len(),
@@ -183,10 +193,10 @@ async fn main() -> Result<()> {
                         while let Some(result) = buffered_stream.next().await {
                                 println!("{}: {:.2}", count, start_time.elapsed().as_secs_f64());
                                 count += 1;
-                                tea!(L::DEBUG, ?result);
+                                debug!(?result);
                         }
                         let time_passed = start_time.elapsed();
-                        tea!(L::DEBUG, "All requests completed in {:?}", time_passed);
+                        debug!("All requests completed in {:?}", time_passed);
                         println!(
                                 "`Stream.buffer_unordered({})`: {} results streamed back, each with a delay of 2 or 3 seconds, in a total of {} seconds.",
                                 BUFFER_SIZE,
@@ -238,7 +248,7 @@ async fn main() -> Result<()> {
                 while let Some(result) = regulated_request_stream.next().await {
                         println!("{}: {:.2}", count, start_time.elapsed().as_secs_f64());
                         count += 1;
-                        tea!(L::DEBUG, ?result);
+                        debug!(?result);
                 }
         }
 
@@ -257,23 +267,18 @@ struct Todo {
 }
 
 /// Example async function with retries
-async fn _fetch_with_retry(client: &reqwest::Client, url: &str, max_retries: u32) -> Result<reqwest::Response> {
+async fn _fetch_with_retry(client: &reqwest::Client, url: &str, max_retries: u32) -> SampleResult<reqwest::Response> {
         let mut retries = 0;
         loop {
                 match client.get(url).send().await {
                         Ok(response) => return Ok(response),
                         Err(e) if retries < max_retries => {
-                                tea!(L::WARN, "Request failed, retrying: {}", e);
+                                warn!("Request failed, retrying: {}", e);
                                 retries += 1;
                                 tokio::time::sleep(Duration::from_millis(2u64.pow(retries))).await;
                         }
                         Err(e) => {
-                                tea!(
-                                        L::ERROR,
-                                        "Retries maxxed out.  Request tried {} times without success. Last error returned: {}",
-                                        retries,
-                                        e
-                                );
+                                error!("Request tried {} times without success. Last error returned: {}", retries, e);
                                 return Err(e.into());
                         }
                 }
