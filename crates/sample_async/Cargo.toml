@@ -24,6 +24,17 @@ tracing-error = { workspace = true }
 tracing-subscriber = { workspace = true }
 tracing-timing = { workspace = true }
 
+## --Env & Files--
+arboard = { workspace = true }
+csv = { workspace = true }
+dotenvy = { workspace = true }
+include_dir = { workspace = true }
+### Config
+config = { workspace = true }
+directories = { workspace = true }
+### System & Processes
+rexpect = { workspace = true }
+
 ## --Ergonomics--
 bon = { workspace = true }
 derive_more = { workspace = true }

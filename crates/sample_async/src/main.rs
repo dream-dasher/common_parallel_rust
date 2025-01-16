@@ -18,18 +18,17 @@
 //! ## Note
 //! **tokio** is not compatible with wasm target.
 
-mod support;
 use std::time::Duration;
 
 use reqwest::{Method, Url,
               header::{self, HeaderMap}};
+use sample_async::*;
 use serde::{Deserialize, Serialize};
-use support::{Result, activate_global_default_tracing_subscriber};
 use tracing::{debug, error, info, warn};
 
 // #[cfg(not(target_arch = "wasm32"))]
 #[tokio::main]
-async fn main() -> Result<()> {
+async fn main() -> SampleResult<()> {
         let _writer_guard = activate_global_default_tracing_subscriber(None, None)?;
 
         // # `Url`
@@ -268,7 +267,7 @@ struct Todo {
 }
 
 /// Example async function with retries
-async fn _fetch_with_retry(client: &reqwest::Client, url: &str, max_retries: u32) -> Result<reqwest::Response> {
+async fn _fetch_with_retry(client: &reqwest::Client, url: &str, max_retries: u32) -> SampleResult<reqwest::Response> {
         let mut retries = 0;
         loop {
                 match client.get(url).send().await {
