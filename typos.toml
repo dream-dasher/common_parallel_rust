@@ -8,6 +8,12 @@
 #
 # files -> "identifiers" -> words
 # (I *believe* 'identifiers' are some sort of pre-word chunk that will later tbe split into words for checking.)
+#
+# toml parsing note: single quotes (`'`) seems to allow literal strings.  Important for regexes; double quote s(`"`) will create
+#                    toml parse errors when encounterint (at least) `\` chars.
+
+[default]
+extend-ignore-re =['assert_eq!\(.*\);']
 
 [default.extend-words]
 egui = "egui"
