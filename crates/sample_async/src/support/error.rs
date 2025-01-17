@@ -91,8 +91,14 @@ pub enum ErrKind {
         OtherStringError { source_string: String },
 }
 impl ErrKind {
+        /// Convenience asscfunction for transforming an error into a compabtible *dyn error*.
+        ///
+        /// ```ignore
+        /// use support::ErrKind;
+        /// let clip = arboard::Clipboard::new().map_err(ErrKind::into_dyn_error)?;
+        /// ```
         #[instrument(skip_all)]
-        pub fn make_dyn_error<E>(error: E) -> Self
+        pub fn into_dyn_error<E>(error: E) -> Self
         where
                 E: Into<Box<dyn std::error::Error + Send + Sync>>,
         {
