@@ -19,6 +19,8 @@
 //! // ParseOther { source_char: char },
 //! // //
 //! // // `packed` errors
+//! // #[display("Clipboard error: {}", source)]
+//! // Arboard { source: arboard::Error },
 //! // #[display("CLI parsing library error: {}", source)]
 //! // Clap { source: clap::Error },
 //! // #[display("Error with tracing_subscriber::EnvFilter parsing env directive: {}", source)]
@@ -58,6 +60,9 @@ pub enum ErrKind {
         // `custom` errors //
 
         // `packed` errors //
+        #[display("Clipboard error: {}", source)]
+        Arboard { source: arboard::Error },
+
         #[display("CLI parsing library error: {}", source)]
         Clap { source: clap::Error },
 
