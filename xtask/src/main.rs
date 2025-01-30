@@ -145,7 +145,8 @@ fn main() -> Result<(), Box<dyn Error>> {
                                 "which makes the range ({}..={}) {:.1}% prime.",
                                 primes_from_or_default.blue(),
                                 primes_till_or_default.blue(),
-                                (100. * (found_primes.len() as f32) / (primes_till_or_default as f32 + 2.))
+                                (100. * (found_primes.len() as f32)
+                                        / ((primes_till_or_default - primes_from_or_default) as f32 + 2.))
                                         .cyan()
                                         .bold()
                         );
