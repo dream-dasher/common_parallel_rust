@@ -19,12 +19,16 @@
 //! // ParseOther { source_char: char },
 //! // //
 //! // // `packed` errors
+//! // #[display("Clipboard error: {}", source)]
+//! // Arboard { source: arboard::Error },
 //! // #[display("CLI parsing library error: {}", source)]
 //! // Clap { source: clap::Error },
 //! // #[display("Error with tracing_subscriber::EnvFilter parsing env directive: {}", source)]
 //! // EnvError { source: tracing_subscriber::filter::FromEnvError },
 //! // #[display("eframe (egui) error: {}", source)]
 //! // EFrame { source: eframe::Error },
+//! // EFrame { source: eframe::Error },
+//! // HiddenValError { source: crate::HiddenValueError },
 //! // #[display("io error: {}", source)]
 //! // Io { source: io::Error },
 //! // #[display("reqwest error: {}", source)]
@@ -64,6 +68,9 @@ pub enum ErrKind {
         InputNoLines { source_input: String },
 
         // `packed` errors //
+        #[display("Clipboard error: {}", source)]
+        Arboard { source: arboard::Error },
+
         #[display("CLI parsing library error: {}", source)]
         Clap { source: clap::Error },
 
@@ -72,6 +79,9 @@ pub enum ErrKind {
 
         #[display("Error with tracing_subscriber::EnvFilter parsing env directive: {}", source)]
         EnvError { source: tracing_subscriber::filter::FromEnvError },
+
+        #[display("hiddenvalue error: {}", source)]
+        HiddenValError { source: crate::HiddenValueError },
 
         #[display("io error: {}", source)]
         Io { source: io::Error },
@@ -91,8 +101,14 @@ pub enum ErrKind {
         OtherStringError { source_string: String },
 }
 impl ErrKind {
+        /// Convenience asscfunction for transforming an error into a compabtible *dyn error*.
+        ///
+        /// ```ignore
+        /// use support::ErrKind;
+        /// let clip = arboard::Clipboard::new().map_err(ErrKind::into_dyn_error)?;
+        /// ```
         #[instrument(skip_all)]
-        pub fn make_dyn_error<E>(error: E) -> Self
+        pub fn into_dyn_error<E>(error: E) -> Self
         where
                 E: Into<Box<dyn std::error::Error + Send + Sync>>,
         {
