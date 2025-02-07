@@ -1,7 +1,9 @@
 //! Utility code for other Workspace Crates
 
 mod app;
-mod support;
+mod error;
 
 pub use app::TemplateApp;
-pub use support::*;
+pub use error::{ErrKind, ErrWrapper, ToOther};
+
+pub type SampleResult<T> = std::result::Result<T, ErrWrapper>;

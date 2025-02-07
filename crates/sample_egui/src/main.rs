@@ -1,8 +1,8 @@
 use sample_egui::*;
+use utilities::activate_global_default_tracing_subscriber;
 
 fn main() -> SampleResult<()> {
         // #[cfg(debug_assertions)]
-        use sample_egui::activate_global_default_tracing_subscriber;
         let _writer_guard: tracing_appender::non_blocking::WorkerGuard = activate_global_default_tracing_subscriber()
                 .maybe_env_default_level(None)
                 .maybe_trace_error_level(None)

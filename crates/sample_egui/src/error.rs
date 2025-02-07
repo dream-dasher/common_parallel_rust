@@ -81,7 +81,7 @@ pub enum ErrKind {
         EnvError { source: tracing_subscriber::filter::FromEnvError },
 
         #[display("hiddenvalue error: {}", source)]
-        HiddenValError { source: crate::HiddenValueError },
+        HiddenValError { source: utilities::HiddenValueError },
 
         #[display("io error: {}", source)]
         Io { source: io::Error },
