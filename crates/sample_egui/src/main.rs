@@ -19,6 +19,6 @@ fn main() -> SampleResult<()> {
                 // ),
                 ..Default::default()
         };
-        eframe::run_native("Egui Xp", native_options, Box::new(|cc| Ok(Box::new(TemplateApp::new(cc)))))?;
+        eframe::run_native("Egui Xp", native_options, Box::new(|cc| Ok(Box::new(SampleApp::new(cc)))))?;
         Ok(())
 }
