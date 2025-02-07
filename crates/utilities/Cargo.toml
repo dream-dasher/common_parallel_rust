@@ -1,0 +1,57 @@
+[package]
+name = "utilities"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+keywords.workspace = true
+
+
+[dependencies]
+## --Diagnostics--
+tracing = { workspace = true }  # features = ["release_max_level_warn"] | ["release_max_level_off"]
+tracing-appender = { workspace = true }
+tracing-error = { workspace = true }
+tracing-subscriber = { workspace = true }
+tracing-timing = { workspace = true }
+
+## --Env & Files--
+arboard = { workspace = true }
+csv = { workspace = true }
+dotenvy = { workspace = true }
+include_dir = { workspace = true }
+secrecy = { workspace = true }
+toml = { workspace = true }
+walkdir = { workspace = true }
+### Config
+config = { workspace = true }
+directories = { workspace = true }
+### System & Processes
+rexpect = { workspace = true }
+
+## --Ergonomics--
+bon = { workspace = true }
+derive_more = { workspace = true }
+indoc = { workspace = true }
+itertools = { workspace = true }
+nestify = { workspace = true }
+strum = { workspace = true }
+
+## --Time--
+jiff = { workspace = true }
+
+[dev-dependencies]
+# Dev-Dependencies
+##__Benchmarking__
+divan = { workspace = true }
+## __Test_Ergonomics__
+pretty_assertions = { workspace = true }
+test-log = { workspace = true }
+## __Property Sample Testing__
+quickcheck = { workspace = true }
+quickcheck_macros = { workspace = true }
+## __Snapshot Testing__
+insta = { workspace = true }
+
+
+[lints]
+workspace = true

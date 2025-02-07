@@ -5891,6 +5891,40 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "06abde3611657adf66d383f00b093d7faecc7fa57071cce2578660c9f1010821"
 
 [[package]]
+name = "utilities"
+version = "0.1.0"
+dependencies = [
+ "arboard",
+ "bon",
+ "config",
+ "csv",
+ "derive_more",
+ "directories",
+ "divan",
+ "dotenvy",
+ "include_dir",
+ "indoc",
+ "insta",
+ "itertools",
+ "jiff",
+ "nestify",
+ "pretty_assertions",
+ "quickcheck",
+ "quickcheck_macros",
+ "rexpect",
+ "secrecy",
+ "strum",
+ "test-log",
+ "toml 0.8.19",
+ "tracing",
+ "tracing-appender",
+ "tracing-error",
+ "tracing-subscriber",
+ "tracing-timing",
+ "walkdir",
+]
+
+[[package]]
 name = "valuable"
 version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
