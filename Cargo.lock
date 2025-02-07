@@ -4581,6 +4581,7 @@ dependencies = [
  "tracing-subscriber",
  "tracing-timing",
  "url",
+ "utilities",
 ]
 
 [[package]]
@@ -4637,6 +4638,7 @@ dependencies = [
  "tracing-subscriber",
  "tracing-timing",
  "url",
+ "utilities",
  "walkdir",
 ]
 

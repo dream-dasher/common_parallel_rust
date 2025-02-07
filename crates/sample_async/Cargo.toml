@@ -7,6 +7,9 @@ keywords.workspace = true
 
 
 [dependencies]
+# --- local ---
+utilities = { path = "../utilities" }
+
 ## --Async--
 futures = { workspace = true }
 tokio = { workspace = true }

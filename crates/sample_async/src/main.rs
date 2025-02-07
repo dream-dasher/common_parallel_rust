@@ -18,18 +18,25 @@
 //! ## Note
 //! **tokio** is not compatible with wasm target.
 
+mod error;
+use crate::error::ErrWrapper;
+pub type SampleResult<T> = std::result::Result<T, ErrWrapper>;
+
 use std::time::Duration;
 
 use reqwest::{Method, Url,
               header::{self, HeaderMap}};
-use sample_async::*;
 use serde::{Deserialize, Serialize};
 use tracing::{debug, error, info, warn};
+use utilities::activate_global_default_tracing_subscriber;
 
 // #[cfg(not(target_arch = "wasm32"))]
 #[tokio::main]
 async fn main() -> SampleResult<()> {
-        let _writer_guard = activate_global_default_tracing_subscriber(None, None)?;
+        let _writer_guard = activate_global_default_tracing_subscriber()
+                .maybe_env_default_level(None)
+                .maybe_trace_error_level(None)
+                .call()?;
 
         // # `Url`
         // - (sealed) trait `IntoUrl`
