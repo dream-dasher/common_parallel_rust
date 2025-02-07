@@ -85,6 +85,7 @@ impl eframe::App for SampleApp {
                                 "Source code."
                         ));
 
+                        // info lines at bottom of panel
                         ui.with_layout(egui::Layout::bottom_up(egui::Align::LEFT), |ui| {
                                 powered_by_egui_and_eframe(ui);
                                 egui::warn_if_debug_build(ui);
@@ -93,6 +94,7 @@ impl eframe::App for SampleApp {
         }
 }
 
+/// Short, uncentered, horozontal line noting `egui` and `eframe` are both used and ofering hyperlinks to each.
 fn powered_by_egui_and_eframe(ui: &mut egui::Ui) {
         ui.horizontal(|ui| {
                 ui.spacing_mut().item_spacing.x = 0.0;
