@@ -87,13 +87,8 @@ owo-colors = "4.1.0"
 tabled = "0.17.0"
 json_to_table = "0.9"
 # ### - egui -
-eframe = { version = "0.30", default-features = false, features = [
-    "default_fonts", # Embed the default egui fonts.
-    "glow",          # Use the glow rendering backend. Alternative: "wgpu".
-    "persistence",   # Enable restoring app state when restarting the app.
-    "wayland",       # To support Linux (and CI)
-] }
-egui = { version = "0.30.0", features = ["callstack", "document-features"] }
+eframe = { version = "0.31", default-features = false, features = ["default_fonts", "glow", "persistence", "wayland"] }
+egui = { version = "0.31.0", features = ["callstack", "document-features"] }
 egui_extras = { version = "0.30.0", features = [
     "datepicker",
     "document-features",
