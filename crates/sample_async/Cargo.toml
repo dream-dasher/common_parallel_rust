@@ -25,38 +25,29 @@ tracing = { workspace = true }  # features = ["release_max_level_warn"] | ["rele
 tracing-appender = { workspace = true }
 tracing-error = { workspace = true }
 tracing-subscriber = { workspace = true }
-tracing-timing = { workspace = true }
+# tracing-timing = { workspace = true }
 
 ## --Env & Files--
 arboard = { workspace = true }
-csv = { workspace = true }
-dotenvy = { workspace = true }
-include_dir = { workspace = true }
-### Config
-config = { workspace = true }
-directories = { workspace = true }
-### System & Processes
-rexpect = { workspace = true }
+# include_dir = { workspace = true }
 
 ## --Ergonomics--
 bon = { workspace = true }
 derive_more = { workspace = true }
-indoc = { workspace = true }
-itertools = { workspace = true }
-nestify = { workspace = true }
-strum = { workspace = true }
+# indoc = { workspace = true }
+# itertools = { workspace = true }
+# nestify = { workspace = true }
+# strum = { workspace = true }
 
 ## --Interface--
 ### - CLI -
 clap = { workspace = true }
 clap-verbosity-flag = { workspace = true }
-dialoguer = { workspace = true }
+# dialoguer = { workspace = true }
 owo-colors = { workspace = true }
-tabled = { workspace = true }
-json_to_table = { workspace = true }
 
 ## --Parsing--
-monostate = { workspace = true }                     # serde: constraining, zero-sized type
+# monostate = { workspace = true }                     # serde: constraining, zero-sized type
 serde = { workspace = true }
 serde_json = { workspace = true }
 

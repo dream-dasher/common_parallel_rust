@@ -67,13 +67,6 @@ pub enum ErrKind {
         #[display("Error extracting lines from input: {}", source_input)]
         InputNoLines { source_input: String },
 
-        // `packed` errors //
-        #[display("Clipboard error: {}", source)]
-        Arboard { source: arboard::Error },
-
-        #[display("CLI parsing library error: {}", source)]
-        Clap { source: clap::Error },
-
         #[display("eframe (egui) error: {}", source)]
         EFrame { source: eframe::Error },
 
