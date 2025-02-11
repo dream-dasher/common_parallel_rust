@@ -19,4 +19,4 @@ extend-ignore-re =['assert_eq!\(.*\);']
 egui = "egui"
 
 [files]
-extend-exclude = ["**/data/**", ".output/**", "*.log", "*.csv"]
+extend-exclude = ["**/data/**", ".output/**", "*.log", "*.csv", "target/*"]
