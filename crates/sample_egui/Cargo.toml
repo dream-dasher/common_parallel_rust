@@ -12,13 +12,13 @@ keywords.workspace = true
 utilities = { path = "../utilities" }
 
 ## --Async--
-futures = { workspace = true }
-tokio = { workspace = true }
+# futures = { workspace = true }
+# tokio = { workspace = true }
 ### - Remote -
-reqwest = { workspace = true }
-sqlx = { workspace = true }
+# reqwest = { workspace = true }
+# sqlx = { workspace = true }
 ### - Accessory -
-governor = { workspace = true }
+# governor = { workspace = true }
 url = { workspace = true }
 
 ## --Diagnostics--
@@ -26,7 +26,7 @@ tracing = { workspace = true }  # features = ["release_max_level_warn"] | ["rele
 tracing-appender = { workspace = true }
 tracing-error = { workspace = true }
 tracing-subscriber = { workspace = true }
-tracing-timing = { workspace = true }
+# tracing-timing = { workspace = true }
 
 ## --Env & Files--
 # arboard = { workspace = true }
@@ -42,13 +42,13 @@ derive_more = { workspace = true }
 
 ## --Interface--
 ### - CLI -
-owo-colors = { workspace = true }
+# owo-colors = { workspace = true }
 ### - egui -
 eframe = { workspace = true }
 egui = { workspace = true }
-egui_extras = { workspace = true }
-egui_table = { workspace = true }
-egui_inbox = { workspace = true }
+# egui_extras = { workspace = true }
+# egui_table = { workspace = true }
+# egui_inbox = { workspace = true }
 
 # ## --Math & Science--
 # ### - Data -

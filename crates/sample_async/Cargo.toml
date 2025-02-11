@@ -16,7 +16,7 @@ futures = { workspace = true }
 tokio = { workspace = true }
 ### - Remote -
 reqwest = { workspace = true }
-sqlx = { workspace = true }
+# sqlx = { workspace = true }
 ### - Accessory -
 governor = { workspace = true }
 url = { workspace = true }
@@ -43,9 +43,9 @@ derive_more = { workspace = true }
 ## --Interface--
 ### - CLI -
 clap = { workspace = true }
-clap-verbosity-flag = { workspace = true }
+# clap-verbosity-flag = { workspace = true }
 # dialoguer = { workspace = true }
-owo-colors = { workspace = true }
+# owo-colors = { workspace = true }
 
 ## --Parsing--
 # monostate = { workspace = true }                     # serde: constraining, zero-sized type
