@@ -163,7 +163,7 @@ async fn main() -> SampleResult<()> {
                 // - single future gives a single return of a vec (e.g. of results)
                 // - no concurrency limit
                 // - held up by longest running component future
-                // - will hold onto memory for all futures whiel it waits
+                // - will hold onto memory for all futures while it waits
                 // - for large requests it will use `FuturedOrdered` (instead of Unordered)
                 {
                         let futures: Vec<_> = urls
