@@ -16,7 +16,7 @@
 
 mod types_manual;
 
-use std::{error::Error, result::Result};
+use std::{error::Error, result::Result, time::Instant};
 
 use clap::Parser;
 use owo_colors::OwoColorize;
@@ -52,6 +52,9 @@ enum Args {
                 /// Show all primes found
                 #[arg(short, long)]
                 show:         bool,
+                /// Show timing of core prime calculation and reaping. (Ignoring UI and display times.)
+                #[arg(short, long = "time")]
+                time_calc:    bool,
         },
 }
 
@@ -109,10 +112,10 @@ fn main() -> Result<(), Box<dyn Error>> {
                                 100. * (found_primes.len() as f32) / (upper_bound as f32 + 2.)
                         );
                 }
-                Args::Primes { primes_until: primes_till, primes_from, show } => {
+                Args::Primes { primes_until, primes_from, show, time_calc } => {
                         const DEFAULT_PRIMES_TILL: usize = 12_345;
                         let primes_from_or_default = primes_from.unwrap_or(0);
-                        let primes_till_or_default = match primes_till {
+                        let primes_till_or_default = match primes_until {
                                 None => {
                                         println!(
                                                 "No `{}` input given, defaulting to : {}",
@@ -135,7 +138,9 @@ fn main() -> Result<(), Box<dyn Error>> {
                                 Err("Error: your minimum is larger than your maximum.  Cancelling search.")?
                         };
 
+                        let start_time = Instant::now();
                         let found_primes = prime_sieve(primes_from, primes_till_or_default);
+                        let finish_duration = start_time.elapsed();
                         println!(
                                 "Number of primes found <= {}: {}",
                                 primes_till_or_default.blue(),
@@ -152,6 +157,9 @@ fn main() -> Result<(), Box<dyn Error>> {
                         );
                         if show {
                                 println!("{:?}", found_primes.magenta());
+                        }
+                        if time_calc {
+                                println!("Time taken: {:?}", finish_duration.red());
                         }
                 }
         }
