@@ -44,7 +44,7 @@ enum Args {
 
         /// Calculate prime numbers in a range. (In debug mode slows down by 100 million.)
         Primes {
-                /// Calculate all primes till some number
+                /// Calculate all primes until some number (inclusive)
                 primes_until: Option<usize>,
                 /// Only show primes above this number
                 #[arg(short = 'n', long = "min")]
