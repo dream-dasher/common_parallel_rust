@@ -54,7 +54,9 @@ jobs:
         uses: Swatinem/rust-cache@v2
 
       - name: Download and install Trunk binary
-        run: wget -qO- https://github.com/thedodd/trunk/releases/latest/download/trunk-x86_64-unknown-linux-gnu.tar.gz | tar -xzf-
+        run: |
+          wget -qO- https://github.com/thedodd/trunk/releases/latest/download/trunk-x86_64-unknown-linux-gnu.tar.gz | tar -xzf-
+          sudo mv trunk /usr/local/bin/
         # uses: jetli/trunk-action@v0.4.0 <-- an alternate option?; above comes from emilk/eframe_template
 
       - name: Build # build
@@ -65,7 +67,7 @@ jobs:
         # relatively as egui_xp/favicon.ico. if we skip public-url option, the href paths will instead request username.github.io/favicon.ico which
         # will obviously return error 404 not found.
         working-directory: crates/${{ env.WASM_TRUNK_DEPLOY_CRATE }}
-        run: ./trunk build --release --public-url $PUBLIC_URL
+        run: trunk build --release --public-url $PUBLIC_URL
         env:
           PUBLIC_URL: "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}"
 
