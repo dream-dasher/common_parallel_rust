@@ -117,7 +117,7 @@ impl ErrKind {
         spantrace,
 )]
 pub struct ErrWrapper {
-        source:    ErrKind,
+        source: ErrKind,
         spantrace: tracing_error::SpanTrace,
         // backtrace: backtrace::Backtrace,
 }
@@ -135,7 +135,7 @@ where
         #[instrument(skip_all)]
         fn from(error: T) -> Self {
                 Self {
-                        source:    error.into(),
+                        source: error.into(),
                         spantrace: tracing_error::SpanTrace::capture(),
                         // backtrace: backtrace::Backtrace::capture(),
                 }

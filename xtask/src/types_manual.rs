@@ -156,8 +156,8 @@ where
         T: std::fmt::Display,
 {
         pub name: &'static str,
-        pub min:  T,
-        pub max:  T,
+        pub min: T,
+        pub max: T,
 }
 impl<T> TypeDetails<T>
 where

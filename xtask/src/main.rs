@@ -48,13 +48,13 @@ enum Args {
                 primes_until: Option<usize>,
                 /// Only show primes above this number
                 #[arg(short = 'n', long = "min")]
-                primes_from:  Option<usize>,
+                primes_from: Option<usize>,
                 /// Show all primes found
                 #[arg(short, long)]
-                show:         bool,
+                show: bool,
                 /// Show timing of core prime calculation and reaping. (Ignoring UI and display times.)
                 #[arg(short, long = "time")]
-                time_calc:    bool,
+                time_calc: bool,
         },
 }
 

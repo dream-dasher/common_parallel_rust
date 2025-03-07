@@ -24,8 +24,10 @@ pub type SampleResult<T> = std::result::Result<T, ErrWrapper>;
 
 use std::time::Duration;
 
-use reqwest::{Method, Url,
-              header::{self, HeaderMap}};
+use reqwest::{
+        Method, Url,
+        header::{self, HeaderMap},
+};
 use serde::{Deserialize, Serialize};
 use tracing::{debug, error, info, warn};
 use utilities::activate_global_default_tracing_subscriber;
@@ -267,9 +269,9 @@ async fn main() -> SampleResult<()> {
 #[derive(Debug, Serialize, Deserialize)]
 struct Todo {
         #[serde(rename = "userId")]
-        user_id:   i32,
-        id:        i32,
-        title:     String,
+        user_id: i32,
+        id: i32,
+        title: String,
         completed: bool,
 }
 

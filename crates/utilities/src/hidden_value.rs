@@ -72,7 +72,7 @@ pub enum HiddenValueError {
 /// Note `rest_key` is "REST" in the sense of particular-CRUD flavored RPC
 #[derive(Clone)]
 pub struct HiddenValue<T> {
-        value:      T,
+        value: T,
         obf_string: Option<String>,
 }
 impl<T> fmt::Debug for HiddenValue<T> {
@@ -134,7 +134,7 @@ impl HiddenValue<std::string::String> {
                         if value.len() <= reveal_len {
                                 Err(HiddenValueError::RevealLengthTooLong {
                                         requested: reveal_len,
-                                        actual:    value.len(),
+                                        actual: value.len(),
                                 })?
                         }
                         // last n chars (UTF-8)
