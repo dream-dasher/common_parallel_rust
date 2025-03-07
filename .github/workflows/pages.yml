@@ -66,6 +66,7 @@ jobs:
         # this is necessary for github pages where the site is deployed to username.github.io/repo_name and all files must be requested
         # relatively as egui_xp/favicon.ico. if we skip public-url option, the href paths will instead request username.github.io/favicon.ico which
         # will obviously return error 404 not found.
+        # NOTE: running in local directory will create a dist/ in that local directory as well. (so `./crates/cratename/dist`)
         working-directory: crates/${{ env.WASM_TRUNK_DEPLOY_CRATE }}
         run: trunk build --release --public-url $PUBLIC_URL
         env:
@@ -75,8 +76,7 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           # branch: gh-pages # gh-pages is the default branch to push to and deploy from
-          working-directory: crates/${{ env.WASM_TRUNK_DEPLOY_CRATE }}
-          folder: dist
+          folder: crates/${{ env.WASM_TRUNK_DEPLOY_CRATE }}/dist
           # this option will not maintain any history of your previous pages deployment
           # set to false if you want all page build to be committed to your gh-pages branch history
           single-commit: true
