@@ -2,6 +2,7 @@ name: Github Pages
 
 # only trigger when relevant files change on main branch
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
