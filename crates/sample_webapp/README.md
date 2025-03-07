@@ -1,5 +1,8 @@
 # egui w/ eframe - local ~~and wasm~~ builds
 
+## Sample WebApp
+Sample WebApp Deployed at: [**local github pages site**](https://dream-dasher.github.io/common_parallel_rust/)
+
 # live examples
 
 - core: [www.egui.rs/#demo](https://www.egui.rs/#demo)

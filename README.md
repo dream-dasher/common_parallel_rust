@@ -1,5 +1,8 @@
 # Common Parallel Rust
 
+## Sample WebApp
+Sample WebApp Deployed at: [**local github pages site**](https://dream-dasher.github.io/common_parallel_rust/)
+
 ## Gist
 - This repo exists to support synchronizing boilerplate elements across rust repos.
   - It houses branches designed for use with `git merge --allow-unrelated-histories`. ('parallel merge')
