@@ -3197,7 +3197,6 @@ name = "sample_async"
 version = "0.1.0"
 dependencies = [
  "arboard",
- "bon",
  "clap",
  "derive_more",
  "divan",
@@ -3213,7 +3212,6 @@ dependencies = [
  "test-log",
  "tokio",
  "tracing",
- "tracing-appender",
  "tracing-error",
  "tracing-subscriber",
  "url",
@@ -3224,7 +3222,6 @@ dependencies = [
 name = "sample_egui"
 version = "0.1.0"
 dependencies = [
- "bon",
  "derive_more",
  "divan",
  "eframe",
@@ -3234,13 +3231,11 @@ dependencies = [
  "quickcheck",
  "quickcheck_macros",
  "serde",
- "serde_json",
  "test-log",
  "tracing",
  "tracing-appender",
  "tracing-error",
  "tracing-subscriber",
- "url",
  "utilities",
 ]
 
@@ -3248,7 +3243,6 @@ dependencies = [
 name = "sample_webapp"
 version = "0.1.0"
 dependencies = [
- "bon",
  "derive_more",
  "divan",
  "eframe",
@@ -3258,13 +3252,11 @@ dependencies = [
  "quickcheck",
  "quickcheck_macros",
  "serde",
- "serde_json",
  "test-log",
  "tracing",
  "tracing-appender",
  "tracing-error",
  "tracing-subscriber",
- "url",
  "utilities",
  "wasm-bindgen-futures",
  "web-sys",

@@ -18,7 +18,7 @@ utilities = { path = "../utilities" }
 # sqlx = { workspace = true }
 ### - Accessory -
 # governor = { workspace = true }
-url = { workspace = true }
+# url = { workspace = true }
 
 ## --Diagnostics--
 tracing = { workspace = true }  # features = ["release_max_level_warn"] | ["release_max_level_off"]
@@ -32,7 +32,7 @@ tracing-subscriber = { workspace = true }
 # include_dir = { workspace = true }
 
 ## --Ergonomics--
-bon = { workspace = true }
+# bon = { workspace = true }
 derive_more = { workspace = true }
 # indoc = { workspace = true }
 # itertools = { workspace = true }
@@ -58,7 +58,7 @@ egui = { workspace = true }
 
 ## --Parsing--
 serde = { workspace = true }
-serde_json = { workspace = true }
+# serde_json = { workspace = true }
 
 ## --Time--
 # jiff = { workspace = true }

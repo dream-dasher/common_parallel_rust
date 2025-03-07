@@ -22,7 +22,7 @@ url = { workspace = true }
 
 ## --Diagnostics--
 tracing = { workspace = true }  # features = ["release_max_level_warn"] | ["release_max_level_off"]
-tracing-appender = { workspace = true }
+# tracing-appender = { workspace = true }
 tracing-error = { workspace = true }
 tracing-subscriber = { workspace = true }
 # tracing-timing = { workspace = true }
@@ -32,7 +32,7 @@ arboard = { workspace = true }
 # include_dir = { workspace = true }
 
 ## --Ergonomics--
-bon = { workspace = true }
+# bon = { workspace = true }
 derive_more = { workspace = true }
 # indoc = { workspace = true }
 # itertools = { workspace = true }
