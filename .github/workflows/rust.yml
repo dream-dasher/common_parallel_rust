@@ -3,6 +3,7 @@ on: [push, pull_request, workflow_dispatch]
 name: CI
 
 env:
+  WASM_TRUNK_DEPLOY_CRATE: sample_webapp
   RUSTFLAGS: -D warnings
   RUSTDOCFLAGS: -D warnings
 
@@ -16,6 +17,7 @@ jobs:
         with:
           profile: minimal
           toolchain: nightly
+          # toolchain: stable
           override: true
       - uses: actions-rs/cargo@v1
         with:
@@ -70,6 +72,7 @@ jobs:
           command: clippy
           args: -- -D warnings
 
+  # TODO: generalize this to check multiple crates or all crates with root `index.html`
   trunk:
     name: trunk
     runs-on: ubuntu-latest
@@ -84,4 +87,5 @@ jobs:
       - name: Download and install Trunk binary
         run: wget -qO- https://github.com/thedodd/trunk/releases/latest/download/trunk-x86_64-unknown-linux-gnu.tar.gz | tar -xzf-
       - name: Build
+        working-directory: crates/${{ env.WASM_TRUNK_DEPLOY_CRATE }}
         run: ./trunk build
