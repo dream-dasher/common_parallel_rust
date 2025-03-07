@@ -17,11 +17,10 @@ on:
 #       - published
 
 env:
-  # this crate should have the `index.html` that Trunk looks for
   WASM_TRUNK_DEPLOY_CRATE: sample_webapp
-  # RUST_LOG: info
-  # RUSTFLAGS: --cfg=web_sys_unstable_apis
-  PUBLIC_URL: "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}"
+  # RUSTFLAGS: -D warnings
+  # RUSTDOCFLAGS: -D warnings
+  # NIGHTLY_VERSION: nightly-20xx-yy-zz
 
 permissions:
   contents: write # for committing to gh-pages branch.
@@ -67,6 +66,8 @@ jobs:
         # will obviously return error 404 not found.
         working-directory: crates/${{ env.WASM_TRUNK_DEPLOY_CRATE }}
         run: ./trunk build --release --public-url $PUBLIC_URL
+        env:
+          PUBLIC_URL: "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}"
 
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@v4

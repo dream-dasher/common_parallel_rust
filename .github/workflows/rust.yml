@@ -1,11 +1,13 @@
-on: [push, pull_request, workflow_dispatch]
-
 name: CI
+
+on: [push, pull_request, workflow_dispatch]
 
 env:
   WASM_TRUNK_DEPLOY_CRATE: sample_webapp
   RUSTFLAGS: -D warnings
   RUSTDOCFLAGS: -D warnings
+  # NIGHTLY_VERSION: nightly-20xx-yy-zz
+
 
 jobs:
   check:
@@ -73,7 +75,7 @@ jobs:
       - uses: actions-rs/cargo@v1
         with:
           command: clippy
-          args: -- -D warnings
+          # args: -- -D warnings
 
   # TODO: generalize this to check multiple crates or all crates with root `index.html`
   trunk:
