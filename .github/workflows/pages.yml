@@ -75,7 +75,7 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           # branch: gh-pages # gh-pages is the default branch to push to and deploy from
-          working-directory: ${{ github.workspace }}/dist
+          working-directory: crates/${{ env.WASM_TRUNK_DEPLOY_CRATE }}
           folder: dist
           # this option will not maintain any history of your previous pages deployment
           # set to false if you want all page build to be committed to your gh-pages branch history
