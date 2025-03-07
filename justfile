@@ -55,6 +55,7 @@ check: && _date
     cargo fmt
     typos
     committed
+    cargo machete
 
 # Show docs.
 docs: && _date
