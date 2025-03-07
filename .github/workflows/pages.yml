@@ -5,11 +5,11 @@ on:
   push:
     branches:
       - main
-    paths:
-      - "crates/${{ env.WASM_TRUNK_DEPLOY_CRATE }}/**"
-      - "Cargo.toml"
-      - "Cargo.lock"
-      - ".github/workflows/pages.yml"
+    # paths:
+    #   - "crates/${{ env.WASM_TRUNK_DEPLOY_CRATE }}/**"
+    #   - "Cargo.toml"
+    #   - "Cargo.lock"
+    #   - ".github/workflows/pages.yml"
 # to only run when you do a new github release, comment out above part and uncomment the below trigger.
 # on:
 #   release:
