@@ -3245,6 +3245,32 @@ dependencies = [
 ]
 
 [[package]]
+name = "sample_webapp"
+version = "0.1.0"
+dependencies = [
+ "bon",
+ "derive_more",
+ "divan",
+ "eframe",
+ "egui",
+ "insta",
+ "pretty_assertions",
+ "quickcheck",
+ "quickcheck_macros",
+ "serde",
+ "serde_json",
+ "test-log",
+ "tracing",
+ "tracing-appender",
+ "tracing-error",
+ "tracing-subscriber",
+ "url",
+ "utilities",
+ "wasm-bindgen-futures",
+ "web-sys",
+]
+
+[[package]]
 name = "schannel"
 version = "0.1.27"
 source = "registry+https://github.com/rust-lang/crates.io-index"

@@ -1,0 +1,94 @@
+[package]
+name = "sample_webapp"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+keywords.workspace = true
+
+
+
+# ---------------------------------------------------
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+# |---_ TARGET: web _---|
+## --Diagnostics--
+# log = "0.4"
+# tracing = { version = "0.1.41", features = ["release_max_level_off"] }
+## --Other--
+wasm-bindgen-futures = "0.4"
+web-sys = "0.3.70"           # to access the DOM (to hide the loading text)
+# ---------------------------------------------------
+
+[dependencies]
+# --- local ---
+utilities = { path = "../utilities" }
+
+## --Async--
+# futures = { workspace = true }
+# tokio = { workspace = true }
+### - Remote -
+# reqwest = { workspace = true }
+# sqlx = { workspace = true }
+### - Accessory -
+# governor = { workspace = true }
+url = { workspace = true }
+
+## --Diagnostics--
+tracing = { workspace = true }  # features = ["release_max_level_warn"] | ["release_max_level_off"]
+tracing-appender = { workspace = true }
+tracing-error = { workspace = true }
+tracing-subscriber = { workspace = true }
+# tracing-timing = { workspace = true }
+
+## --Env & Files--
+# arboard = { workspace = true }
+# include_dir = { workspace = true }
+
+## --Ergonomics--
+bon = { workspace = true }
+derive_more = { workspace = true }
+# indoc = { workspace = true }
+# itertools = { workspace = true }
+# nestify = { workspace = true }
+# strum = { workspace = true }
+
+## --Interface--
+### - CLI -
+# owo-colors = { workspace = true }
+### - egui -
+eframe = { workspace = true }
+egui = { workspace = true }
+# egui_extras = { workspace = true }
+# egui_table = { workspace = true }
+# egui_inbox = { workspace = true }
+
+# ## --Math & Science--
+# ### - Data -
+# polars = { workspace = true, features = [] }
+# ### - Math -
+# faer = { workspace = true }
+# rand = { workspace = true }
+
+## --Parsing--
+serde = { workspace = true }
+serde_json = { workspace = true }
+
+## --Time--
+# jiff = { workspace = true }
+
+
+[dev-dependencies]
+# Dev-Dependencies
+##__Benchmarking__
+divan = { workspace = true }
+## __Test_Ergonomics__
+pretty_assertions = { workspace = true }
+test-log = { workspace = true }
+## __Property Sample Testing__
+quickcheck = { workspace = true }
+quickcheck_macros = { workspace = true }
+## __Snapshot Testing__
+insta = { workspace = true }
+
+
+[lints]
+workspace = true
