@@ -1,12 +1,5 @@
 name: Github Pages
 
-env:
-  # this crate should have the `index.html` that Trunk looks for
-  WASM_TRUNK_DEPLOY_CRATE: sample_webapp
-  # RUST_LOG: info
-  # RUSTFLAGS: --cfg=web_sys_unstable_apis
-  PUBLIC_URL: "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}"
-
 # only trigger when relevant files change on main branch
 on:
   push:
@@ -22,6 +15,13 @@ on:
 #   release:
 #     types:
 #       - published
+
+env:
+  # this crate should have the `index.html` that Trunk looks for
+  WASM_TRUNK_DEPLOY_CRATE: sample_webapp
+  # RUST_LOG: info
+  # RUSTFLAGS: --cfg=web_sys_unstable_apis
+  PUBLIC_URL: "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}"
 
 permissions:
   contents: write # for committing to gh-pages branch.
