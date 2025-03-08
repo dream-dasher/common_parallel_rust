@@ -66,8 +66,19 @@ impl eframe::App for SimpleEguiApp {
                                 self.crab = !self.crab; // toggle
                         }
                         if self.crab {
-                                ui.image(egui::include_image!("../../assets/exampleimage-ferris.gif"));
+                                ui.image(egui::include_image!("../../assets/exampleimage-ferris.gif"))
+                                        .on_hover_text_at_pointer("tippity-taps! - gif");
                         }
+                        // if ui.button("load image from web").clicked() {
+                        //         self.uri_image = !self.uri_image; // toggle
+                        // }
+                        // if self.uri_image {
+                        //         // would require the following crate: https://github.com/image-rs/image
+                        //         let url = "https://picsum.photos/1024";
+                        //         // let url = "https://picsum.photos/seed/1.759706314/1024";
+                        //         ui.add(egui::Image::from_uri(url).corner_radius(10))
+                        //                 .on_hover_text_at_pointer(url);
+                        // }
                 });
 
                 // if self.crab {
@@ -79,7 +90,8 @@ impl eframe::App for SimpleEguiApp {
                         ui.heading("Right Panel");
                         ui.label("Example Image");
                         egui::ScrollArea::both().show(ui, |ui| {
-                                ui.image(egui::include_image!("../../assets/exampleimage-cat.webp"));
+                                ui.image(egui::include_image!("../../assets/exampleimage-cat.webp"))
+                                        .on_hover_text_at_pointer("webp");
                         });
                         // egui::ScrollArea::both().show(ui, |ui| {
                         //         ui.image(egui::include_image!("../../assets/exampleimage-ferris.svg"));
