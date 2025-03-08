@@ -1,5 +1,12 @@
 //! Primary body of egui code
 //!
+
+// ///////////////////////////////// -use- ///////////////////////////////// //
+use egui::{Key, ScrollArea};
+
+// ///////////////////////////////// -App Memory- ///////////////////////////////// //
+//                                     and init
+
 /// We derive Deserialize/Serialize so we can persist app state on shutdown.
 #[derive(serde::Deserialize, serde::Serialize)]
 #[serde(default)] // if we add new fields, give them default values when deserializing old state
@@ -37,6 +44,7 @@ impl WebCompatibleApp {
         }
 }
 
+// ///////////////////////////////// -Core Loop- ///////////////////////////////// //
 impl eframe::App for WebCompatibleApp {
         /// Called by the frame work to save state before shutdown.
         fn save(&mut self, storage: &mut dyn eframe::Storage) {
@@ -91,6 +99,29 @@ impl eframe::App for WebCompatibleApp {
                                 powered_by_egui_and_eframe(ui);
                                 egui::warn_if_debug_build(ui);
                         });
+                });
+
+                egui::SidePanel::right("input panel").show(ctx, |ui| {
+                        ui.heading("Pres/Hold/Release example. Press A to test.");
+                        if ui.button("Clear").clicked() {
+                                self.label.clear();
+                        }
+                        ScrollArea::vertical()
+                                .auto_shrink(false)
+                                .stick_to_bottom(true)
+                                .show(ui, |ui| {
+                                        ui.monospace(format!("{:?}", self.label));
+                                });
+                        if ctx.input(|i| i.key_pressed(Key::A)) {
+                                self.label.push_str("\nPressed");
+                        }
+                        if ctx.input(|i| i.key_down(Key::A)) {
+                                self.label.push_str("\nHeld");
+                                ui.ctx().request_repaint(); // make sure we note the holding.
+                        }
+                        if ctx.input(|i| i.key_released(Key::A)) {
+                                self.label.push_str("\nReleased");
+                        }
                 });
         }
 }
