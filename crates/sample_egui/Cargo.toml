@@ -45,7 +45,7 @@ derive_more = { workspace = true }
 ### - egui -
 eframe = { workspace = true }
 egui = { workspace = true }
-# egui_extras = { workspace = true }
+egui_extras = { workspace = true }
 # egui_table = { workspace = true }
 # egui_inbox = { workspace = true }
 
