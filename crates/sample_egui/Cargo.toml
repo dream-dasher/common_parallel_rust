@@ -7,6 +7,7 @@ keywords.workspace = true
 
 
 [dependencies]
+
 # --- local ---
 utilities = { path = "../utilities" }
 
@@ -30,6 +31,7 @@ tracing-subscriber = { workspace = true }
 ## --Env & Files--
 # arboard = { workspace = true }
 # include_dir = { workspace = true }
+rfd = { workspace = true }
 
 ## --Ergonomics--
 # bon = { workspace = true }
