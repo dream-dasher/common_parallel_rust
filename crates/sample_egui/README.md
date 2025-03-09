@@ -1,3 +1,13 @@
+<!--toc:start-->
+- [egui w/ eframe - local ~~and wasm~~ builds](#egui-w-eframe-local-and-wasm-builds)
+- [live examples](#live-examples)
+- [core ideas](#core-ideas)
+- [egui](#egui)
+- [eframe](#eframe)
+  - [Core Trait](#core-trait)
+  - [Fancy-Fancy (standard) Style of Use](#fancy-fancy-standard-style-of-use)
+<!--toc:end-->
+
 # egui w/ eframe - local ~~and wasm~~ builds
 
 # live examples
@@ -102,3 +112,9 @@ impl eframe::App for AppStruct {
    }
 }
 ```
+
+# egui demo to eframe app
+
+- ignore: `crate::Demo::name()`
+- change: `impl crate::Demo for xxxx`~~> `impl eframe::App`
+- ignore: `fn name()`
