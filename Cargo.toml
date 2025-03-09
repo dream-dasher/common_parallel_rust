@@ -55,6 +55,7 @@ arboard = "3"
 csv = "1"
 dotenvy = "0.15"
 include_dir = "0.7"
+rfd = "0.15"
 toml = "0.8"
 walkdir = "2"
 ### Config
