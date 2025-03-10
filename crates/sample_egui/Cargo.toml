@@ -15,12 +15,13 @@ opt-level = 2 # fast and small wasm, basically same as `opt-level = 's'`
 [dependencies]
 # ---- local ----
 utilities = { path = "../utilities" }
+egui_suspense = {version = "0.8"}
 
 ## --Async--
-# futures = { workspace = true }
-# tokio = { workspace = true }
+futures = { workspace = true }
+tokio = { workspace = true }
 ### - Remote -
-# reqwest = { workspace = true }
+reqwest = { workspace = true }
 # sqlx = { workspace = true }
 ### - Accessory -
 # governor = { workspace = true }
@@ -48,7 +49,7 @@ indoc = { workspace = true }
 
 ## --Interface--
 ### - CLI -
-# owo-colors = { workspace = true }
+owo-colors = { workspace = true }
 ### - egui -
 eframe = { workspace = true }
 egui = { workspace = true }
@@ -61,11 +62,11 @@ egui_extras = { workspace = true }
 # polars = { workspace = true, features = [] }
 # ### - Math -
 # faer = { workspace = true }
-# rand = { workspace = true }
+rand = { workspace = true }
 
 ## --Parsing--
 serde = { workspace = true }
-# serde_json = { workspace = true }
+serde_json = { workspace = true }
 
 ## --Time--
 # jiff = { workspace = true }
