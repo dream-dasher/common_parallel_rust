@@ -22,57 +22,60 @@ impl Default for CodeVarsExample {
 }
 
 impl CodeVarsExample {
-        fn samples_in_grid(&mut self, ui: &mut egui::Ui) {
+        /// egui-component: code samples in a grid
+        fn samples_in_grid(&mut self, grid_name: &str, ui: &mut egui::Ui) -> egui::InnerResponse<()> {
                 // Note: we keep the code narrow so that the example fits on a mobile screen.
 
-                let Self { name, age } = self; // for brevity later on
+                egui::Grid::new(grid_name).striped(true).num_columns(2).show(ui, |ui| {
+                        let Self { name, age } = self; // for brevity later on
 
-                rust_view_ui(ui, r#"ui.heading("Example");"#);
-                ui.heading("Example");
-                ui.end_row();
+                        rust_view_ui(ui, r#"ui.heading("Example");"#);
+                        ui.heading("Example");
+                        ui.end_row();
 
-                rust_view_ui(
-                        ui,
-                        indoc! { r#"
+                        rust_view_ui(
+                                ui,
+                                indoc! { r#"
                         ui.horizontal(|ui| {
                                 ui.label("Name");
                                 ui.text_edit_singleline(name);
                         });"#},
-                );
-                // Putting things on the same line using ui.horizontal:
-                ui.horizontal(|ui| {
-                        ui.label("Name");
-                        ui.text_edit_singleline(name);
-                });
-                ui.end_row();
+                        );
+                        // Putting things on the same line using ui.horizontal:
+                        ui.horizontal(|ui| {
+                                ui.label("Name");
+                                ui.text_edit_singleline(name);
+                        });
+                        ui.end_row();
 
-                rust_view_ui(
-                        ui,
-                        indoc! { r#"
+                        rust_view_ui(
+                                ui,
+                                indoc! { r#"
                         ui.add(
                                 egui::DragValue::new(age)
                                 .range(0..=120)
                                 .suffix(" years"),
                         );"#},
-                );
-                ui.add(egui::DragValue::new(age).range(0..=120).suffix(" years"));
-                ui.end_row();
+                        );
+                        ui.add(egui::DragValue::new(age).range(0..=120).suffix(" years"));
+                        ui.end_row();
 
-                rust_view_ui(
-                        ui,
-                        indoc! {r#"
+                        rust_view_ui(
+                                ui,
+                                indoc! {r#"
                         if ui.button("Increment").clicked() {
                                 *age += 1;
                         }"#},
-                );
-                if ui.button("Increment").clicked() {
-                        *age += 1;
-                }
-                ui.end_row();
+                        );
+                        if ui.button("Increment").clicked() {
+                                *age += 1;
+                        }
+                        ui.end_row();
 
-                rust_view_ui(ui, r#"ui.label(format!("{name} is {age}"));"#);
-                ui.label(format!("{name} is {age}"));
-                ui.end_row();
+                        rust_view_ui(ui, r#"ui.label(format!("{name} is {age}"));"#);
+                        ui.label(format!("{name} is {age}"));
+                        ui.end_row();
+                })
         }
 
         fn code(&mut self, ui: &mut egui::Ui) {
@@ -85,25 +88,20 @@ impl CodeVarsExample {
                         }
 
                         impl CodeExample {
-                        fn ui(&mut self, ui: &mut egui::Ui) {
+                            fn ui(&mut self, ui: &mut egui::Ui) {
                                 // Saves us from writing `&mut self.name` etc
                                 let Self { name, age } = self;"},
                 );
+                {
+                        ui.horizontal(|ui| {
+                                let font_id = egui::TextStyle::Monospace.resolve(ui.style());
+                                let indentation = 2.0 * 4.0 * ui.fonts(|f| f.glyph_width(&font_id, ' '));
+                                ui.add_space(indentation);
 
-                ui.horizontal(|ui| {
-                        let font_id = egui::TextStyle::Monospace.resolve(ui.style());
-                        let indentation = 2.0 * 4.0 * ui.fonts(|f| f.glyph_width(&font_id, ' '));
-                        ui.add_space(indentation);
-
-                        egui::Grid::new("code_samples")
-                                .striped(true)
-                                .num_columns(2)
-                                .show(ui, |ui| {
-                                        self.samples_in_grid(ui);
-                                });
-                });
-
-                crate::rust_view_ui(ui, "    }\n}");
+                                self.samples_in_grid("code", ui);
+                        });
+                }
+                rust_view_ui(ui, "    }\n}");
         }
 }
 
@@ -121,9 +119,12 @@ impl eframe::App for CodeVarsExample {
                                 });
 
                                 ui.separator();
+                                ui.separator();
+                                ui.separator();
 
-                                crate::rust_view_ui(ui, &format!("{self:#?}"));
+                                rust_view_ui(ui, &format!("{self:#?}"));
 
+                                ui.separator();
                                 ui.separator();
 
                                 let mut theme =
