@@ -1,7 +1,7 @@
 //! Code Editing Example
 
 // ///////////////////////////////// -use- ///////////////////////////////// //
-use eframe::egui;
+use indoc::indoc;
 
 // ///////////////////////////////// -main- ///////////////////////////////// //
 fn main() {
@@ -16,8 +16,8 @@ pub struct CodeEditorExample {
         language: String,
         code: String,
 }
-//
 impl Default for CodeEditorExample {
+        /// Default to `.rs` (rust) syntax with starting code sample
         fn default() -> Self {
                 Self { language: "rs".into(), code: CODE_SAMPLE.into() }
         }
@@ -81,7 +81,7 @@ impl eframe::App for CodeEditorExample {
 }
 
 // ///////////////////////////////// -Reference Value- ///////////////////////////////// //
-const CODE_SAMPLE: &str = indoc::indoc! {r#"
+const CODE_SAMPLE: &str = indoc! {r#"
 impl eframe::App for CodeEditorExample {
         fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
                 egui::CentralPanel::default().show(ctx, |ui| {
