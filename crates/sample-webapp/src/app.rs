@@ -118,15 +118,22 @@ impl eframe::App for WebCompatibleApp {
                         ui.separator();
 
                         ui.add(egui::github_link_file!(
-                                "https://github.com/dream-dasher/common_parallel_rust/tree/workspace_init/",
+                                "https://github.com/dream-dasher/common_parallel_rust/",
                                 "Source code."
                         ));
 
-                        // info lines at bottom of panel
-                        ui.with_layout(egui::Layout::bottom_up(egui::Align::LEFT), |ui| {
-                                powered_by_egui_and_eframe(ui);
-                                egui::warn_if_debug_build(ui);
-                        });
+                        ui.separator();
+                        const BOOKOFSHADERS_LINK: &str = "https://thebookofshaders.com";
+                        const ATOMNLOCKS_LINK: &str = "https://marabos.nl/atomics/";
+                        ui.label("links");
+                        if ui.button("open up web link: new tab").clicked() {
+                                ui.label("Button clicked!");
+                                ctx.open_url(egui::OpenUrl::new_tab(BOOKOFSHADERS_LINK));
+                        }
+                        if ui.button("open up web link: same tab").clicked() {
+                                ui.label("Button clicked!");
+                                ctx.open_url(egui::OpenUrl::same_tab(ATOMNLOCKS_LINK));
+                        }
                 });
 
                 egui::SidePanel::right("input panel").show(ctx, |ui| {
@@ -154,7 +161,7 @@ impl eframe::App for WebCompatibleApp {
                         }
                 });
 
-                egui::TopBottomPanel::bottom("thread_panel").show(ctx, |ui| {
+                egui::TopBottomPanel::bottom("thread_panel").min_height(200.0).show(ctx, |ui| {
                         // Warning for WebAssembly environments
                         #[cfg(target_arch = "wasm32")]
                         {

@@ -1,4 +1,6 @@
 //! Code with Vars Example
+use std::borrow::BorrowMut;
+
 use egui::ProgressBar;
 // ///////////////////////////////// -use- ///////////////////////////////// //
 use indoc::indoc;
@@ -125,15 +127,11 @@ impl eframe::App for CodeVarsExample {
                         ui.add_sized([self.l_val, self.r_val], egui::Label::new("Hello World!"));
                         ui.add_sized(
                                 [self.l_val, self.r_val],
-                                egui::DragValue::new(&mut self.l_val)
-                                        .range(5.0..=f32::MAX)
-                                        .prefix("x length"),
+                                egui::DragValue::new(&mut self.l_val).range(5.0..=f32::MAX).prefix("x"),
                         );
                         ui.add_sized(
                                 [self.l_val, self.r_val],
-                                egui::DragValue::new(&mut self.r_val)
-                                        .range(5.0..=f32::MAX)
-                                        .prefix("y length"),
+                                egui::DragValue::new(&mut self.r_val).range(5.0..=f32::MAX).prefix("y"),
                         );
                         // // Add a button to toggle progress bar visibility
                         // if ui.button(if self.show_bar { "Hide Progress Bar" } else { "Show Progress Bar" })
@@ -170,6 +168,21 @@ impl eframe::App for CodeVarsExample {
 
                         ui.separator();
                 });
+                egui::TopBottomPanel::bottom("bottom_panel")
+                        .min_height(200.0)
+                        .show(ctx, |ui| {
+                                const BOOKOFSHADERS_LINK: &str = "https://thebookofshaders.com";
+                                const ATOMNLOCKS_LINK: &str = "https://marabos.nl/atomics/";
+                                ui.label("Bottom Panel");
+                                if ui.button("open up web link: new tab").clicked() {
+                                        ui.label("Button clicked!");
+                                        ctx.open_url(egui::OpenUrl::new_tab(BOOKOFSHADERS_LINK));
+                                }
+                                if ui.button("open up web link: same tab").clicked() {
+                                        ui.label("Button clicked!");
+                                        ctx.open_url(egui::OpenUrl::same_tab(ATOMNLOCKS_LINK));
+                                }
+                        });
         }
 }
 
