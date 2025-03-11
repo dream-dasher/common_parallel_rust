@@ -1,4 +1,5 @@
 //! Code with Vars Example
+use egui::ProgressBar;
 // ///////////////////////////////// -use- ///////////////////////////////// //
 use indoc::indoc;
 
@@ -14,24 +15,27 @@ fn main() {
 pub struct CodeVarsExample {
         name: String,
         age: u32,
+        l_val: f32,
+        r_val: f32,
+        show_bar: bool,
 }
 impl Default for CodeVarsExample {
         fn default() -> Self {
-                Self { name: "Arthur".to_owned(), age: 42 }
+                Self { name: "Arthur".to_owned(), age: 42, l_val: 40.0, r_val: 20.0, show_bar: true }
         }
 }
-
 impl CodeVarsExample {
         /// egui-component: code samples in a grid
         fn samples_in_grid(&mut self, grid_name: &str, ui: &mut egui::Ui) -> egui::InnerResponse<()> {
                 // Note: we keep the code narrow so that the example fits on a mobile screen.
 
                 egui::Grid::new(grid_name).striped(true).num_columns(2).show(ui, |ui| {
-                        let Self { name, age } = self; // for brevity later on
+                        // let Self { name, age,  } = self; // for brevity later on
 
                         rust_view_ui(ui, r#"ui.heading("Example");"#);
                         ui.heading("Example");
                         ui.end_row();
+                        // ----------------
 
                         rust_view_ui(
                                 ui,
@@ -44,37 +48,41 @@ impl CodeVarsExample {
                         // Putting things on the same line using ui.horizontal:
                         ui.horizontal(|ui| {
                                 ui.label("Name");
-                                ui.text_edit_singleline(name);
+                                ui.text_edit_singleline(&mut self.name);
                         });
                         ui.end_row();
+                        // ----------------
 
                         rust_view_ui(
                                 ui,
                                 indoc! { r#"
                         ui.add(
-                                egui::DragValue::new(age)
+                                egui::DragValue::new(&mut self.age)
                                 .range(0..=120)
                                 .suffix(" years"),
                         );"#},
                         );
-                        ui.add(egui::DragValue::new(age).range(0..=120).suffix(" years"));
+                        ui.add(egui::DragValue::new(&mut self.age).range(0..=120).suffix(" years"));
                         ui.end_row();
+                        // ----------------
 
                         rust_view_ui(
                                 ui,
                                 indoc! {r#"
                         if ui.button("Increment").clicked() {
-                                *age += 1;
+                                self.age += 1;
                         }"#},
                         );
                         if ui.button("Increment").clicked() {
-                                *age += 1;
+                                self.age += 1;
                         }
                         ui.end_row();
+                        // ----------------
 
-                        rust_view_ui(ui, r#"ui.label(format!("{name} is {age}"));"#);
-                        ui.label(format!("{name} is {age}"));
+                        rust_view_ui(ui, r#"ui.label(format!("{} is {}", self.name, self.age));"#);
+                        ui.label(format!("{} is {}", self.name, self.age));
                         ui.end_row();
+                        // ----------------
                 })
         }
 
@@ -107,35 +115,61 @@ impl CodeVarsExample {
 
 impl eframe::App for CodeVarsExample {
         fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
-                egui::Window::new("My Window")
-                        .min_width(375.0)
-                        .default_size([390.0, 500.0])
-                        .scroll(false)
-                        .resizable([true, false]) // resizable so we can shrink if the text edit grows
-                        .show(ctx, |ui| {
-                                ui.scope(|ui| {
-                                        ui.spacing_mut().item_spacing = egui::vec2(8.0, 6.0);
-                                        self.code(ui);
-                                });
+                egui::SidePanel::right("my_panel").show(ctx, |ui| {
+                        // // Warning about odd behavior
+                        // ui.scope(|ui| {
+                        //         ui.style_mut().visuals.override_text_color = Some(egui::Color32::from_rgb(255, 100, 0));
+                        //         ui.label("⚠ Warning: Progress bar shows odd behavior when adjusting");
+                        //         ui.label("left scroll position or changing l_size values.");
+                        // });
+                        ui.add_sized([self.l_val, self.r_val], egui::Label::new("Hello World!"));
+                        ui.add_sized(
+                                [self.l_val, self.r_val],
+                                egui::DragValue::new(&mut self.l_val)
+                                        .range(5.0..=f32::MAX)
+                                        .prefix("x length"),
+                        );
+                        ui.add_sized(
+                                [self.l_val, self.r_val],
+                                egui::DragValue::new(&mut self.r_val)
+                                        .range(5.0..=f32::MAX)
+                                        .prefix("y length"),
+                        );
+                        // // Add a button to toggle progress bar visibility
+                        // if ui.button(if self.show_bar { "Hide Progress Bar" } else { "Show Progress Bar" })
+                        //         .clicked()
+                        // {
+                        //         self.show_bar = !self.show_bar;
+                        // }
 
-                                ui.separator();
-                                ui.separator();
-                                ui.separator();
-
-                                rust_view_ui(ui, &format!("{self:#?}"));
-
-                                ui.separator();
-                                ui.separator();
-
-                                let mut theme =
-                                        egui_extras::syntax_highlighting::CodeTheme::from_memory(ui.ctx(), ui.style());
-                                ui.collapsing("Theme", |ui| {
-                                        theme.ui(ui);
-                                        theme.store_in_memory(ui.ctx());
-                                });
-
-                                ui.separator();
+                        // // Only show the progress bar if show_bar is true
+                        // if self.show_bar {
+                        //         ui.add(ProgressBar::new(0.43));
+                        // }
+                });
+                egui::CentralPanel::default().show(ctx, |ui| {
+                        ui.scope(|ui| {
+                                ui.spacing_mut().item_spacing = egui::vec2(8.0, 6.0);
+                                self.code(ui);
                         });
+
+                        ui.separator();
+                        ui.separator();
+                        ui.separator();
+
+                        rust_view_ui(ui, &format!("{self:#?}"));
+
+                        ui.separator();
+                        ui.separator();
+
+                        let mut theme = egui_extras::syntax_highlighting::CodeTheme::from_memory(ui.ctx(), ui.style());
+                        ui.collapsing("Theme", |ui| {
+                                theme.ui(ui);
+                                theme.store_in_memory(ui.ctx());
+                        });
+
+                        ui.separator();
+                });
         }
 }
 
