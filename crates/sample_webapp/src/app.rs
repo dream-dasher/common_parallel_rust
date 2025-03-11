@@ -116,13 +116,15 @@ impl eframe::App for WebCompatibleApp {
                                 });
                         if ctx.input(|i| i.key_pressed(Key::A)) {
                                 self.press_history.push_str("\nPressed");
+                                ui.ctx().request_repaint();
                         }
                         if ctx.input(|i| i.key_down(Key::A)) {
                                 self.press_history.push_str("\nHeld");
-                                ui.ctx().request_repaint(); // make sure we note the holding.
+                                ui.ctx().request_repaint();
                         }
                         if ctx.input(|i| i.key_released(Key::A)) {
                                 self.press_history.push_str("\nReleased");
+                                ui.ctx().request_repaint();
                         }
                 });
         }
