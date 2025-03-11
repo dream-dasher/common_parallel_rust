@@ -46,7 +46,7 @@ tracing-subscriber = { workspace = true }
 ## --Ergonomics--
 # bon = { workspace = true }
 derive_more = { workspace = true }
-# indoc = { workspace = true }
+indoc = { workspace = true }
 # itertools = { workspace = true }
 # nestify = { workspace = true }
 # strum = { workspace = true }

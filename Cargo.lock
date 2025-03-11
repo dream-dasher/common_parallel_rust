@@ -4075,6 +4075,7 @@ dependencies = [
  "divan",
  "eframe",
  "egui",
+ "indoc",
  "insta",
  "pretty_assertions",
  "quickcheck",

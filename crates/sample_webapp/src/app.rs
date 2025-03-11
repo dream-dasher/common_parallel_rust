@@ -155,6 +155,29 @@ impl eframe::App for WebCompatibleApp {
                 });
 
                 egui::TopBottomPanel::bottom("thread_panel").show(ctx, |ui| {
+                        // Warning for WebAssembly environments
+                        #[cfg(target_arch = "wasm32")]
+                        {
+                                ui.colored_label(
+                                        egui::Color32::from_rgb(255, 80, 0),
+                                        indoc::indoc!("⚠️  WARNING: You appear to be running in WebAssembly.
+                                        The thread-spawning commands below are *EXPECTED* to fail in this environment.  (Likely freezing the app and requiring a restart/reload.)
+                                        They are here principally for demonstrating and exploring these differences.")
+                                );
+                                ui.separator();
+                        }
+                        // Note for non-WebAssembly environments
+                        #[cfg(not(target_arch = "wasm32"))]
+                        {
+                                ui.colored_label(
+                                        egui::Color32::from_rgb(0,80,255),
+                                        indoc::indoc!("ATTENTION: The following, thread-spawning commands, are target-sensitive.
+                                        They *should* work in your environment, but are expected to fail in a web environment.
+                                        They are here principally for demonstrating and exploring these differences.")
+                                );
+                                ui.separator();
+                        }
+
                         // check channel
                         if let Some(rx) = &self.rx {
                                 ui.colored_label(egui::Color32::GOLD, "⚡ Thread running");
