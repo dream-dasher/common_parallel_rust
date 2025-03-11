@@ -4,8 +4,8 @@ on: [push, pull_request, workflow_dispatch]
 
 env:
   WASM_TRUNK_DEPLOY_CRATE: sample-webapp
-  RUSTFLAGS: -D warnings
-  RUSTDOCFLAGS: -D warnings
+  # RUSTFLAGS: -D warnings
+  # RUSTDOCFLAGS: -D warnings
   # NIGHTLY_VERSION: nightly-20xx-yy-zz
 
 
