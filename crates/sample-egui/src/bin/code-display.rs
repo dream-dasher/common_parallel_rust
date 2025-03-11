@@ -1,5 +1,4 @@
 //! Code with Vars Example
-use std::borrow::BorrowMut;
 
 use egui::ProgressBar;
 // ///////////////////////////////// -use- ///////////////////////////////// //
