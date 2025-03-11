@@ -1,6 +1,5 @@
 // ///////////////////////////////// -use- ///////////////////////////////// //
 use eframe::egui;
-use owo_colors::OwoColorize;
 use reqwest::{
         Client, Method, Url,
         header::{self, HeaderMap},
