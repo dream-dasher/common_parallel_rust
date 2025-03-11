@@ -10,8 +10,8 @@ const NUM_MANUAL_ROWS: usize = 20;
 
 fn main() {
         let _writer_guard: tracing_appender::non_blocking::WorkerGuard = activate_global_default_tracing_subscriber()
-                .maybe_env_default_level(None)
-                .maybe_trace_error_level(None)
+                .maybe_default_logging_level(None)
+                .maybe_error_logging_level(None)
                 .call()
                 .unwrap();
 

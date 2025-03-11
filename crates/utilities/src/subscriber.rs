@@ -34,25 +34,31 @@ const DEFAULT_ERROR_LOGGING_LEVEL: LevelFilter = LevelFilter::WARN;
 
 /// (Convenience function.) Generates a tracing_subcsriber and sets it as global default, while returning a writer guard.
 ///
-/// # Caveat
+/// ## Caveat
 ///   - Side effect. (sets global default tracing subscriber)
 ///
-/// # Use:
-/// ```text
-/// fn main() -> SampleResult<()> {
-///     let _tracing_writer_worker_guard = generate_tracing_subscriber()?;
-///    // ...
-///    Ok(())
+/// ## Use:
+/// ```no_run
+/// use std::error::Error;
+/// use tracing_subscriber::filter::LevelFilter;
+///
+/// fn main() -> Result<(), Box<dyn Error>> {
+///     let _writer_guard = utilities::activate_global_default_tracing_subscriber()
+///         .default_logging_level(LevelFilter::WARN)
+///         .maybe_error_logging_level(None)
+///         .call()?;
+///     // ...
+///     Ok(())
 /// }
 /// ```
 #[builder]
 pub fn activate_global_default_tracing_subscriber(
-        env_default_level: Option<LevelFilter>,
-        trace_error_level: Option<LevelFilter>,
+        default_logging_level: Option<LevelFilter>,
+        error_logging_level: Option<LevelFilter>,
         file_to_write_to: Option<PathBuf>,
 ) -> Result<WorkerGuard, SetGlobalDefaultError> {
-        let env_default_level = env_default_level.unwrap_or(DEFAULT_LOGGING_LEVEL);
-        let trace_error_level = trace_error_level.unwrap_or(DEFAULT_ERROR_LOGGING_LEVEL);
+        let env_default_level = default_logging_level.unwrap_or(DEFAULT_LOGGING_LEVEL);
+        let trace_error_level = error_logging_level.unwrap_or(DEFAULT_ERROR_LOGGING_LEVEL);
         let ((non_blocking_writer, trace_writer_guard), use_ansi) = match file_to_write_to {
                 None => (tracing_appender::non_blocking(std::io::stderr()), true),
                 Some(file_path) => {
