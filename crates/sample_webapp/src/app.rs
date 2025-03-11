@@ -13,6 +13,7 @@ use egui::{Key, ScrollArea};
 pub struct WebCompatibleApp {
         // Example stuff:
         label: String,
+        press_history: String,
 
         #[serde(skip)] // This how you opt-out of serialization of a field
         value: f32,
@@ -23,6 +24,7 @@ impl Default for WebCompatibleApp {
                 Self {
                         // Example stuff:
                         label: "Hello World!".to_owned(),
+                        press_history: String::new(),
                         value: 2.7,
                 }
         }
@@ -104,23 +106,23 @@ impl eframe::App for WebCompatibleApp {
                 egui::SidePanel::right("input panel").show(ctx, |ui| {
                         ui.heading("Pres/Hold/Release example. Press A to test.");
                         if ui.button("Clear").clicked() {
-                                self.label.clear();
+                                self.press_history.clear();
                         }
                         ScrollArea::vertical()
                                 .auto_shrink(false)
                                 .stick_to_bottom(true)
                                 .show(ui, |ui| {
-                                        ui.monospace(format!("{:?}", self.label));
+                                        ui.monospace(self.press_history.to_string());
                                 });
                         if ctx.input(|i| i.key_pressed(Key::A)) {
-                                self.label.push_str("\nPressed");
+                                self.press_history.push_str("\nPressed");
                         }
                         if ctx.input(|i| i.key_down(Key::A)) {
-                                self.label.push_str("\nHeld");
+                                self.press_history.push_str("\nHeld");
                                 ui.ctx().request_repaint(); // make sure we note the holding.
                         }
                         if ctx.input(|i| i.key_released(Key::A)) {
-                                self.label.push_str("\nReleased");
+                                self.press_history.push_str("\nReleased");
                         }
                 });
         }
