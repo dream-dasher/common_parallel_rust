@@ -60,9 +60,6 @@ pub enum ErrKind {
         // `custom` errors //
 
         // `packed` errors //
-        #[display("Clipboard error: {}", source)]
-        Arboard { source: arboard::Error },
-
         #[display("CLI parsing library error: {}", source)]
         Clap { source: clap::Error },
 

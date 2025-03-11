@@ -3816,7 +3816,6 @@ dependencies = [
 name = "sample-async"
 version = "0.1.0"
 dependencies = [
- "arboard",
  "clap",
  "derive_more",
  "divan",
