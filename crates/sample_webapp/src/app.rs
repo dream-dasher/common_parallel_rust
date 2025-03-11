@@ -3,6 +3,9 @@
 
 // ///////////////////////////////// -use- ///////////////////////////////// //
 use egui::{Key, ScrollArea};
+use std::sync::mpsc::{self, Receiver};
+use std::thread;
+use std::time::Duration;
 
 // ///////////////////////////////// -App Memory- ///////////////////////////////// //
 //                                     and init
@@ -13,10 +16,14 @@ use egui::{Key, ScrollArea};
 pub struct WebCompatibleApp {
         // Example stuff:
         label: String,
-        press_history: String,
-
-        #[serde(skip)] // This how you opt-out of serialization of a field
+        #[serde(skip)] // Don't serialize; note default used when serializing
         value: f32,
+        #[serde(skip)]
+        press_history: String,
+        #[serde(skip)]
+        thread_results: String,
+        #[serde(skip)]
+        rx: Option<Receiver<String>>,
 }
 
 impl Default for WebCompatibleApp {
@@ -24,8 +31,10 @@ impl Default for WebCompatibleApp {
                 Self {
                         // Example stuff:
                         label: "Hello World!".to_owned(),
-                        press_history: String::new(),
                         value: 2.7,
+                        press_history: String::new(),
+                        thread_results: String::new(),
+                        rx: None,
                 }
         }
 }
@@ -44,6 +53,26 @@ impl WebCompatibleApp {
 
                 Default::default()
         }
+
+        /// Receiver added to App
+        /// WARN: ctx repaint request may be needed to ensure UI starts regular updating while waiting for data
+        fn spawn_sleep_thread(&mut self, ms: u64) -> Result<(), String> {
+                if self.rx.is_none() {
+                        let (tx, rx) = mpsc::channel();
+                        self.rx = Some(rx);
+                        // ctx.request_repaint(); // ensure app knows to repaint (and initiate minimum repaint times as a result)
+                        // ^ nope, we'd need to pass ctx -- will keep track of this in loop
+
+                        thread::spawn(move || {
+                                thread::sleep(Duration::from_millis(ms));
+                                tx.send(format!("Thread sleep completed after {} ms", ms))
+                                        .expect("receiver should always be present in main thread");
+                        });
+                        Ok(())
+                } else {
+                        Err("A thread is already running - please wait for it to complete".to_string())
+                }
+        }
 }
 
 // ///////////////////////////////// -Core Loop- ///////////////////////////////// //
@@ -55,9 +84,6 @@ impl eframe::App for WebCompatibleApp {
 
         /// Called each time the UI needs repainting, which may be many times per second.
         fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
-                // Put your widgets into a `SidePanel`, `TopBottomPanel`, `CentralPanel`, `Window` or `Area`.
-                // For inspiration and more examples, go to https://emilk.github.io/egui
-
                 egui::TopBottomPanel::top("top_panel").show(ctx, |ui| {
                         // The top panel is often a good place for a menu bar:
 
@@ -126,6 +152,50 @@ impl eframe::App for WebCompatibleApp {
                                 self.press_history.push_str("\nReleased");
                                 ui.ctx().request_repaint();
                         }
+                });
+
+                egui::TopBottomPanel::bottom("thread_panel").show(ctx, |ui| {
+                        // check channel
+                        if let Some(rx) = &self.rx {
+                                ui.colored_label(egui::Color32::GOLD, "⚡ Thread running");
+                                if let Ok(message) = rx.try_recv() {
+                                        self.thread_results.push_str(&format!("\n✔ {}", message));
+                                        self.rx = None;
+                                        ctx.request_repaint();
+                                }
+                                ctx.request_repaint_after(Duration::from_millis(100)); // ensure regular repaints if receiver present
+                        } else {
+                                ui.colored_label(egui::Color32::GRAY, "(no background thread running)");
+                        }
+                        ui.heading("Thread Example");
+                        ui.horizontal(|ui| {
+                                for i in [10, 100, 1_000, 10_000] {
+                                        if ui.button(format!("Sleep {i}ms")).clicked() {
+                                                match self.spawn_sleep_thread(i) {
+                                                        Ok(_) => {
+                                                                self.thread_results
+                                                                        .push_str(&format!("\n-> Thread started.  Waiting {i}ms..."));
+                                                        }
+                                                        Err(_) => {
+                                                                self.thread_results
+                                                                        .push_str("\n xxx Failed start. We are awaiting the termination of the previous thread.");
+                                                        }
+                                                }
+                                        }
+                                }
+                                if ui.button("Clear Results").clicked() {
+                                        self.thread_results.clear();
+                                        ctx.request_repaint();
+                                }
+                        });
+                        // Thread result display
+                        ScrollArea::vertical()
+                                .auto_shrink(false)
+                                .stick_to_bottom(true)
+                                .max_height(100.0)
+                                .show(ui, |ui| {
+                                        ui.monospace(&self.thread_results);
+                                });
                 });
         }
 }
