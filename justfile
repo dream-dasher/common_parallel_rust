@@ -43,7 +43,7 @@ Commands can be inspected in the currently invoked `justfile`.
 [group('init')]
 init: && list-external-deps _gen-env _gen-git-hooks _date
     cargo clean
-    cargo build
+    cargo build --workspace
     cargo doc --all-features --document-private-items
 
 # Linting, formatting, typo checking, etc.
