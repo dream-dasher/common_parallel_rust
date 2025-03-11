@@ -160,7 +160,7 @@ impl eframe::App for WebCompatibleApp {
                         {
                                 ui.colored_label(
                                         egui::Color32::from_rgb(255, 80, 0),
-                                        indoc::indoc!("⚠️  WARNING: You appear to be running in WebAssembly.
+                                        indoc::indoc!("⚠ WARNING: You appear to be running in WebAssembly.
                                         The thread-spawning commands below are *EXPECTED* to fail in this environment.  (Likely freezing the app and requiring a restart/reload.)
                                         They are here principally for demonstrating and exploring these differences.")
                                 );
