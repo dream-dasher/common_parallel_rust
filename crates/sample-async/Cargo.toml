@@ -1,21 +1,14 @@
 [package]
-name = "sample_egui"
+name = "sample-async"
 version.workspace = true
 edition.workspace = true
 authors.workspace = true
 keywords.workspace = true
 
-[profile.release]
-# lto = true # VERY slightly smaller wasm
-# opt-level = 's' # 10-20% smaller wasm compared to `opt-level = 3`
-# opt-level = 1 # very slow and big wasm. Don't do this.
-opt-level = 2 # fast and small wasm, basically same as `opt-level = 's'`
-# opt-level = 3 # unnecessarily large wasm for no performance gain
 
 [dependencies]
-# ---- local ----
+# --- local ---
 utilities = { path = "../utilities" }
-egui_suspense = {version = "0.8"}
 
 ## --Async--
 futures = { workspace = true }
@@ -24,53 +17,39 @@ tokio = { workspace = true }
 reqwest = { workspace = true }
 # sqlx = { workspace = true }
 ### - Accessory -
-# governor = { workspace = true }
-# url = { workspace = true }
+governor = { workspace = true }
+url = { workspace = true }
 
 ## --Diagnostics--
 tracing = { workspace = true }  # features = ["release_max_level_warn"] | ["release_max_level_off"]
-tracing-appender = { workspace = true }
+# tracing-appender = { workspace = true }
 tracing-error = { workspace = true }
 tracing-subscriber = { workspace = true }
 # tracing-timing = { workspace = true }
 
 ## --Env & Files--
-# arboard = { workspace = true }
+arboard = { workspace = true }
 # include_dir = { workspace = true }
-rfd = { workspace = true }
 
 ## --Ergonomics--
 # bon = { workspace = true }
 derive_more = { workspace = true }
-indoc = { workspace = true }
+# indoc = { workspace = true }
 # itertools = { workspace = true }
 # nestify = { workspace = true }
 # strum = { workspace = true }
 
 ## --Interface--
 ### - CLI -
-owo-colors = { workspace = true }
-### - egui -
-eframe = { workspace = true }
-egui = { workspace = true }
-egui_extras = { workspace = true }
-# egui_table = { workspace = true }
-# egui_inbox = { workspace = true }
-
-# ## --Math & Science--
-# ### - Data -
-# polars = { workspace = true, features = [] }
-# ### - Math -
-# faer = { workspace = true }
-rand = { workspace = true }
+clap = { workspace = true }
+# clap-verbosity-flag = { workspace = true }
+# dialoguer = { workspace = true }
+# owo-colors = { workspace = true }
 
 ## --Parsing--
+# monostate = { workspace = true }                     # serde: constraining, zero-sized type
 serde = { workspace = true }
 serde_json = { workspace = true }
-
-## --Time--
-# jiff = { workspace = true }
-
 
 [dev-dependencies]
 # Dev-Dependencies

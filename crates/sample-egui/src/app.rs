@@ -1,5 +1,13 @@
 //! Primary body of egui code
 //!
+
+// ///////////////////////////////// -use- ///////////////////////////////// //
+
+// ///////////////////////////////// -App Memory- ///////////////////////////////// //
+//                                     and init
+
+use egui::TextWrapMode;
+
 /// We derive Deserialize/Serialize so we can persist app state on shutdown.
 #[derive(serde::Deserialize, serde::Serialize)]
 #[serde(default)] // if we add new fields, give them default values when deserializing old state
@@ -9,18 +17,19 @@ pub struct SampleApp {
 
         #[serde(skip)] // This how you opt-out of serialization of a field
         value: f32,
-}
 
+        some_bool: bool,
+}
 impl Default for SampleApp {
         fn default() -> Self {
                 Self {
                         // Example stuff:
                         label: "Hello World!".to_owned(),
                         value: 2.7,
+                        some_bool: false,
                 }
         }
 }
-
 impl SampleApp {
         /// Called once before the first frame.
         pub fn new(cc: &eframe::CreationContext<'_>) -> Self {
@@ -37,6 +46,7 @@ impl SampleApp {
         }
 }
 
+// ///////////////////////////////// -Core Loop- ///////////////////////////////// //
 impl eframe::App for SampleApp {
         /// Called by the frame work to save state before shutdown.
         fn save(&mut self, storage: &mut dyn eframe::Storage) {
@@ -62,6 +72,47 @@ impl eframe::App for SampleApp {
 
                                 egui::widgets::global_theme_preference_buttons(ui);
                         });
+
+                        // Miscellaneous tips and tricks
+
+                        ui.horizontal_wrapped(|ui| {
+                                ui.spacing_mut().item_spacing.x = 0.0; // remove spacing between widgets
+                                // `radio_value` also works for enums, integers, and more.
+                                ui.radio_value(&mut self.some_bool, false, "Off");
+                                ui.radio_value(&mut self.some_bool, true, "On");
+                        });
+
+                        ui.group(|ui| {
+                                ui.label("Within a frame");
+                                ui.set_min_height(200.0);
+                                ui.push_id(1, |ui| {
+                                        ui.collapsing("Same header", |_ui| {}); // this is fine!
+                                });
+                                ui.push_id(2, |ui| {
+                                        ui.collapsing("Same header", |_ui| {}); // this is fine!
+                                });
+                                ui.push_id(3, |ui| {
+                                        ui.collapsing("Same header", |_ui| {}); // this is fine!
+                                });
+                        });
+
+                        ui.indent(1111, |ui| {
+                                ui.label("intendented section");
+                        });
+                        // A `scope` creates a temporary [`Ui`] in which you can change settings:
+                        ui.scope(|ui| {
+                                ui.visuals_mut().override_text_color = Some(egui::Color32::RED);
+                                ui.style_mut().override_text_style = Some(egui::TextStyle::Monospace);
+                                ui.style_mut().wrap_mode = Some(TextWrapMode::Truncate);
+                                ui.group(|ui| {
+                                        ui.label("Within a frame2");
+                                        ui.set_min_height(200.0);
+                                });
+                                ui.indent(1121, |ui| {
+                                        ui.label("intendented section");
+                                });
+                                ui.label("This text will be red, monospace, and won't wrap to a new line");
+                        }); // the temporary settings are reverted here
                 });
 
                 egui::CentralPanel::default().show(ctx, |ui| {
@@ -87,21 +138,10 @@ impl eframe::App for SampleApp {
 
                         // info lines at bottom of panel
                         ui.with_layout(egui::Layout::bottom_up(egui::Align::LEFT), |ui| {
-                                powered_by_egui_and_eframe(ui);
                                 egui::warn_if_debug_build(ui);
                         });
                 });
         }
 }
 
-/// Short, uncentered, horozontal line noting `egui` and `eframe` are both used and ofering hyperlinks to each.
-fn powered_by_egui_and_eframe(ui: &mut egui::Ui) {
-        ui.horizontal(|ui| {
-                ui.spacing_mut().item_spacing.x = 0.0;
-                ui.label("Powered by ");
-                ui.hyperlink_to("egui", "https://github.com/emilk/egui");
-                ui.label(" and ");
-                ui.hyperlink_to("eframe", "https://github.com/emilk/egui/tree/master/crates/eframe");
-                ui.label(".");
-        });
-}
+// ///////////////////////////////// -Elements- ///////////////////////////////// //

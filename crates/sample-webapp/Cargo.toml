@@ -1,5 +1,5 @@
 [package]
-name = "sample_webapp"
+name = "sample-webapp"
 version.workspace = true
 edition.workspace = true
 authors.workspace = true
