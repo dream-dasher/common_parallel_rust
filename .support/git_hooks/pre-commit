@@ -51,20 +51,20 @@ echo -e "${GREEN} Format successful. ${NC}"
 echo -e "${DARK_GRAY}================================================================${NC}"
 
 echo -e "${DARK_GRAY}================================================================${NC}"
-echo -e "${YELLOW} checking for errors... ${NC}"
-cargo check
-echo -e "${GREEN} Error check successful. ${NC}"
-echo -e "${DARK_GRAY}================================================================${NC}"
-
-echo -e "${DARK_GRAY}================================================================${NC}"
-echo -e "${YELLOW} checking cargo manifest errors... ${NC}"
+echo -e "${YELLOW} checking cargo manifest... ${NC}"
 cargo verify-project
 echo -e "${GREEN} Manifest check successful. ${NC}"
 echo -e "${DARK_GRAY}================================================================${NC}"
 
 echo -e "${DARK_GRAY}================================================================${NC}"
+echo -e "${YELLOW} checking for errors... ${NC}"
+cargo check --workspace --all-features
+echo -e "${GREEN} Error check successful. ${NC}"
+echo -e "${DARK_GRAY}================================================================${NC}"
+
+echo -e "${DARK_GRAY}================================================================${NC}"
 echo -e "${YELLOW} linting... ${NC}"
-cargo clippy
+cargo clippy --workspace --all-targets --all-features
 echo -e "${GREEN} Lint check successful. ${NC}"
 echo -e "${DARK_GRAY}================================================================${NC}"
 
@@ -80,17 +80,23 @@ committed
 echo -e "${GREEN} Last commit's lint check successful. ${NC}"
 echo -e "${DARK_GRAY}================================================================${NC}"
 
-# echo -e "${DARK_GRAY}================================================================${NC}"
-# echo -e "${YELLOW} doc testing... ${NC}"
-# cargo test --doc
-# echo -e "${GREEN} Doc tests check successful. ${NC}"
-# echo -e "${DARK_GRAY}================================================================${NC}"
+echo -e "${DARK_GRAY}================================================================${NC}"
+echo -e "${YELLOW} doc testing... ${NC}"
+cargo test --workspace --all-features --doc
+echo -e "${GREEN} Doc tests check successful. ${NC}"
+echo -e "${DARK_GRAY}================================================================${NC}"
 
-# echo -e "${DARK_GRAY}================================================================${NC}"
-# echo -e "${YELLOW} general testing linting... ${NC}"
-# cargo nextest run --status-level=leak
-# echo -e "${GREEN} General tests check successful. ${NC}"
-# echo -e "${DARK_GRAY}================================================================${NC}"
+echo -e "${DARK_GRAY}================================================================${NC}"
+echo -e "${YELLOW} general testing linting... ${NC}"
+cargo nextest run --workspace --all-features
+echo -e "${GREEN} General tests check successful. ${NC}"
+echo -e "${DARK_GRAY}================================================================${NC}"
+
+echo -e "${DARK_GRAY}================================================================${NC}"
+echo -e "${YELLOW} checking for unused dependencies... ${NC}"
+cargo machete
+echo -e "${GREEN} No unused dependency check successful. ${NC}"
+echo -e "${DARK_GRAY}================================================================${NC}"
 
 # echo -e "${DARK_GRAY}================================================================${NC}"
 # echo -e "${YELLOW} documenting code... ${NC}"
