@@ -49,6 +49,7 @@
 //!         Ok(())
 //! }
 //! ```
+// ///////////////////////////////// -use- ///////////////////////////////// //
 use core::fmt;
 use std::{env, ffi::OsStr, num::NonZeroUsize};
 
@@ -56,7 +57,7 @@ use bon::bon;
 use derive_more::{Display, Error, From};
 use dotenvy::dotenv;
 use tracing::{self, debug, error, info, instrument, trace};
-
+// ///////////////////////////////// -error- ///////////////////////////////// //
 #[derive(Debug, Display, From, Error)]
 pub enum HiddenValueError {
         #[display("Reveal length ({requested}) exceeds value's UTF-8 char length ({actual})")]
@@ -66,10 +67,11 @@ pub enum HiddenValueError {
         #[display("Dotenv error: {}", source)]
         Dotenv { source: dotenvy::Error },
 }
-
+// ///////////////////////////////// -core export- ///////////////////////////////// //
 /// Authorization credentials required for remote access
 ///
-/// Note `rest_key` is "REST" in the sense of particular-CRUD flavored RPC
+/// `obf_string`: used for debug (`{:?}`)
+/// `value`: actual value - one should avoid logging
 #[derive(Clone)]
 pub struct HiddenValue<T> {
         value: T,
@@ -77,12 +79,14 @@ pub struct HiddenValue<T> {
 }
 impl<T> fmt::Debug for HiddenValue<T> {
         fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+                // add obf_string to debug rep if present
                 match self.obf_string {
                         None => write!(f, "HiddenValue {{ REDACTED }}"),
                         Some(ref masked) => write!(f, r#"HiddenValue {{ REDACTED.."{}" }}"#, masked),
                 }
         }
 }
+// ///////////////////////////////// -string: get from env method- ///////////////////////////////// //
 #[bon]
 impl HiddenValue<std::string::String> {
         /// Attempt to find key in environment, optionally loading local or parent `.env` file first.
@@ -149,6 +153,7 @@ impl HiddenValue<std::string::String> {
                         .build()
         }
 }
+// ///////////////////////////////// -any: manual build- ///////////////////////////////// //
 #[bon]
 impl<T> HiddenValue<T> {
         /// Create a new HiddenValue instance.
@@ -212,6 +217,7 @@ impl<T> HiddenValue<T> {
         }
 }
 
+// ///////////////////////////////// -tests- ///////////////////////////////// //
 // Manual ('spot') testing.
 #[cfg(test)]
 mod tests {
