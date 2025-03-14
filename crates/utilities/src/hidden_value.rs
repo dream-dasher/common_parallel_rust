@@ -72,7 +72,7 @@ pub enum HiddenValueError {
 ///
 /// `obf_string`: used for debug (`{:?}`)
 /// `value`: actual value - one should avoid logging
-#[derive(Clone)]
+#[derive(Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct HiddenValue<T> {
         value: T,
         obf_string: Option<String>,
