@@ -73,6 +73,47 @@ fn main() {
 }
 // ///////////////////////////////////////////////////////
 
+fn extract_type_from_vec<T, S>(value: &Vec<T>, serializer: S) -> Result<S::Ok, S::Error>
+where
+        T: Serialize,
+        S: Serializer,
+{
+        // Get the type name of the Vec<T>
+        let vec_type_name = std::any::type_name::<Vec<T>>();
+
+        // Find the pattern "Vec<" and extract what's inside the angle brackets
+        if let Some(start_idx) = vec_type_name.find("Vec<") {
+                let content_start = start_idx + 4; // Skip "Vec<"
+
+                // Find the closing angle bracket
+                if let Some(end_idx) = vec_type_name.rfind('>') {
+                        if content_start < end_idx {
+                                let inner_type = &vec_type_name[content_start..end_idx];
+
+                                // Get the last part of the type name (after the last ::)
+                                let simple_type_name = match inner_type.rfind("::") {
+                                        Some(idx) => &inner_type[idx + 2..],
+                                        None => inner_type,
+                                };
+
+                                // Pluralize by adding 's'
+                                let pluralized = format!("{}s", simple_type_name.to_lowercase());
+
+                                // Serialize with the pluralized name
+                                let mut map = serializer.serialize_map(Some(1))?;
+                                map.serialize_entry(&pluralized, value)?;
+                                return map.end();
+                        }
+                }
+        }
+
+        // Fallback if pattern not found
+        Err(serde::ser::Error::custom(format!(
+                "Could not extract inner type from Vec: {}",
+                std::any::type_name::<Vec<T>>()
+        )))
+}
+
 /// Approahc one (issues with Serde labelling)
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize)]
 struct PaginatedResponse<T>
@@ -82,7 +123,8 @@ where
         #[serde(flatten)]
         page: PageInfo,
         #[serde(flatten)]
-        #[serde(serialize_with = "serialize_with_typename")]
+        #[serde(serialize_with = "extract_type_from_vec")]
+        // #[serde(serialize_with = "serialize_with_typename")]
         data: Vec<T>,
 }
 
