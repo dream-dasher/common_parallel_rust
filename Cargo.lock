@@ -1419,6 +1419,26 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a5d9305ccc6942a704f4335694ecd3de2ea531b114ac2d51f5f843750787a92f"
 
 [[package]]
+name = "eval-macro"
+version = "0.5.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "aff06b934ad6caf230c90e39e1e7292e1ef8b978e5688492299a1f3eb07f7a51"
+dependencies = [
+ "eval-macro-internal",
+]
+
+[[package]]
+name = "eval-macro-internal"
+version = "0.5.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "37a98a63b3ddf635d78695661ff8d7b362d85c68411524ba90d7da1c2cfad2a6"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 2.0.100",
+]
+
+[[package]]
 name = "event-listener"
 version = "5.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4702,6 +4722,33 @@ dependencies = [
  "tracing-core",
  "tracing-log",
  "tracing-serde",
+]
+
+[[package]]
+name = "try-evalmacro"
+version = "0.1.0"
+dependencies = [
+ "clap",
+ "derive_more",
+ "divan",
+ "eval-macro",
+ "futures",
+ "governor",
+ "insta",
+ "owo-colors",
+ "pretty_assertions",
+ "quickcheck",
+ "quickcheck_macros",
+ "reqwest",
+ "serde",
+ "serde_json",
+ "test-log",
+ "tokio",
+ "tracing",
+ "tracing-error",
+ "tracing-subscriber",
+ "url",
+ "utilities",
 ]
 
 [[package]]
