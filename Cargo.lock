@@ -4143,24 +4143,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e421abadd41a4225275504ea4d6566923418b7f05506fbc9c0fe86ba7396114b"
 
 [[package]]
-name = "try-trait"
-version = "0.1.0"
-dependencies = [
- "clap",
- "derive_more",
- "divan",
- "insta",
- "pretty_assertions",
- "quickcheck",
- "quickcheck_macros",
- "test-log",
- "tracing",
- "tracing-error",
- "tracing-subscriber",
- "utilities",
-]
-
-[[package]]
 name = "ttf-parser"
 version = "0.25.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4263,7 +4245,6 @@ name = "utilities"
 version = "0.1.0"
 dependencies = [
  "bon",
- "derive_more",
  "divan",
  "dotenvy",
  "insta",
@@ -4271,6 +4252,7 @@ dependencies = [
  "quickcheck",
  "quickcheck_macros",
  "test-log",
+ "thiserror 2.0.12",
  "tracing",
  "tracing-appender",
  "tracing-error",
