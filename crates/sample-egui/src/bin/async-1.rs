@@ -42,12 +42,12 @@ struct ChannelApp {
         loading: bool,
         error: Option<String>,
 
-        selected_todo: Option<usize>,
+        _selected_todo: Option<usize>,
 }
 impl Default for ChannelApp {
         fn default() -> Self {
                 let (tx, rx) = std::sync::mpsc::channel();
-                Self { tx, rx, todos: Vec::new(), loading: false, error: None, selected_todo: None }
+                Self { tx, rx, todos: Vec::new(), loading: false, error: None, _selected_todo: None }
         }
 }
 

@@ -1,6 +1,5 @@
 //! Code with Vars Example
 
-use egui::ProgressBar;
 // ///////////////////////////////// -use- ///////////////////////////////// //
 use indoc::indoc;
 
@@ -18,11 +17,11 @@ pub struct CodeVarsExample {
         age: u32,
         l_val: f32,
         r_val: f32,
-        show_bar: bool,
+        _show_bar: bool,
 }
 impl Default for CodeVarsExample {
         fn default() -> Self {
-                Self { name: "Arthur".to_owned(), age: 42, l_val: 40.0, r_val: 20.0, show_bar: true }
+                Self { name: "Arthur".to_owned(), age: 42, l_val: 40.0, r_val: 20.0, _show_bar: true }
         }
 }
 impl CodeVarsExample {
