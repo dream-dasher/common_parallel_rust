@@ -1,47 +1,50 @@
+# ################################# -package features- ################################# #
 [package]
 name = "utilities"
 version.workspace = true
 edition.workspace = true
 authors.workspace = true
 keywords.workspace = true
-
-
+# ################################# -lints- ################################# #
+[lints]
+workspace = true
+# ################################# -compile profiles- ################################# #
+# ################################# -user dependencies- ################################# #
 [dependencies]
-## --Diagnostics--
+## ------------ -local- ------------ #
+## ~~~~~~~~~~~~ -async- ~~~~~~~~~~~~ #
+### ......... -remote- ......... #
+### ......... -accessory- ......... #
+## ~~~~~~~~~~~~ -diagnostics- ~~~~~~~~~~~~ #
 tracing = { workspace = true }  # features = ["release_max_level_warn"] | ["release_max_level_off"]
 tracing-appender = { workspace = true }
 tracing-error = { workspace = true }
 tracing-subscriber = { workspace = true, features = ["env-filter"] } # "env-filter","json"
-# tracing-timing = { workspace = true }
-
-## --Env & Files--
-# arboard = { workspace = true }
+## ~~~~~~~~~~~~ -env & files- ~~~~~~~~~~~~ #
 dotenvy = { workspace = true }
-
-## --Ergonomics--
+### ......... -config- ......... #
+### ......... -proceses- ......... #
+## ~~~~~~~~~~~~ -ergonomics- ~~~~~~~~~~~~ #
 bon = { workspace = true }
-derive_more = { workspace = true, features = ["error","from","display"] } # "add","add_assign","as_ref","constructor","debug","deref","deref_mut","display","error","from","from_str","index","index_mut","into","into_iterator","is_variant","mul","mul_assign","not","sum","try_from","try_into","try_unwrap","unwrap",
-# indoc = { workspace = true }
-# itertools = { workspace = true }
-# nestify = { workspace = true }
-# strum = { workspace = true }
+thiserror = { workspace = true }
+## ~~~~~~~~~~~~ -interface- ~~~~~~~~~~~~ #
+### ......... -cli- ......... #
+### ......... -egui- ......... #
+## ~~~~~~~~~~~~ -math & science- ~~~~~~~~~~~~ #
+### ......... -data- ......... #
+### ......... -math- ......... #
+## ~~~~~~~~~~~~ -parsing- ~~~~~~~~~~~~ #
+## ~~~~~~~~~~~~ -time- ~~~~~~~~~~~~ #
 
-## --Time--
-# jiff = { workspace = true, features = [] } # "js","logging","serde"
-
+# ################################# -dev dependencies- ################################# #
 [dev-dependencies]
-# Dev-Dependencies
-##__Benchmarking__
-divan = { workspace = true }
-## __Test_Ergonomics__
-pretty_assertions = { workspace = true }
-test-log = { workspace = true }
-## __Property Sample Testing__
-quickcheck = { workspace = true }
-quickcheck_macros = { workspace = true }
-## __Snapshot Testing__
-insta = { workspace = true, features = [] } # "clap","csv","json","redactions","serde","toml","walkdir",
-
-
-[lints]
-workspace = true
+## ~~~~~~~~~~~~ -benchmarking (workspace)- ~~~~~~~~~~~~ #
+divan = "0.1"
+## ~~~~~~~~~~~~ -test ergonomics (workspace)- ~~~~~~~~~~~~ #
+pretty_assertions = "1"
+test-log = { version = "0.2", features = ["trace"] }
+## ~~~~~~~~~~~~ -property sample testing (workspace)- ~~~~~~~~~~~~ #
+quickcheck = "1"
+quickcheck_macros = "1"
+## ~~~~~~~~~~~~ snapshot testing (workspace)- ~~~~~~~~~~~~ #
+insta = { version = "1", features = [] } # "clap","csv","json","redactions","serde","toml","walkdir",

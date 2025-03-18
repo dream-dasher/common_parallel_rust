@@ -1,26 +1,46 @@
+# ################################# -package features- ################################# #
 [package]
 name = "xtask"
 version = "0.1.0"
 edition.workspace = true
 authors.workspace = true
 publish = false
-
+# ################################# -lints- ################################# #
 [lints]
 workspace = true
+# ################################# -compile profiles- ################################# #
 
+# ################################# -user dependencies- ################################# #
 [dependencies]
+## ------------ -local- ------------ #
+## ~~~~~~~~~~~~ -async- ~~~~~~~~~~~~ #
+### ......... -remote- ......... #
+### ......... -accessory- ......... #
+## ~~~~~~~~~~~~ -diagnostics- ~~~~~~~~~~~~ #
+## ~~~~~~~~~~~~ -env & files- ~~~~~~~~~~~~ #
+### ......... -config- ......... #
+### ......... -proceses- ......... #
+## ~~~~~~~~~~~~ -ergonomics- ~~~~~~~~~~~~ #
+## ~~~~~~~~~~~~ -interface- ~~~~~~~~~~~~ #
+### ......... -cli- ......... #
 clap = { workspace = true, features = [] } # "env", "string", "unicode", "wrap_help",
 owo-colors = { workspace = true }
+### ......... -egui- ......... #
+## ~~~~~~~~~~~~ -math & science- ~~~~~~~~~~~~ #
+### ......... -data- ......... #
+### ......... -math- ......... #
+## ~~~~~~~~~~~~ -parsing- ~~~~~~~~~~~~ #
+## ~~~~~~~~~~~~ -time- ~~~~~~~~~~~~ #
 
+# ################################# -dev dependencies- ################################# #
 [dev-dependencies]
-# Dev-Dependencies
-##__Benchmarking__
-divan = { workspace = true }
-## __Test_Ergonomics__
-pretty_assertions = { workspace = true }
-test-log = { workspace = true }
-## __Property Sample Testing__
-quickcheck = { workspace = true }
-quickcheck_macros = { workspace = true }
-## __Snapshot Testing__
-insta = { workspace = true, features = [] } # "clap","csv","json","redactions","serde","toml","walkdir",
+## ~~~~~~~~~~~~ -benchmarking (workspace)- ~~~~~~~~~~~~ #
+divan = "0.1"
+## ~~~~~~~~~~~~ -test ergonomics (workspace)- ~~~~~~~~~~~~ #
+pretty_assertions = "1"
+test-log = { version = "0.2", features = ["trace"] }
+## ~~~~~~~~~~~~ -property sample testing (workspace)- ~~~~~~~~~~~~ #
+quickcheck = "1"
+quickcheck_macros = "1"
+## ~~~~~~~~~~~~ snapshot testing (workspace)- ~~~~~~~~~~~~ #
+insta = { version = "1", features = [] } # "clap","csv","json","redactions","serde","toml","walkdir",

@@ -1,11 +1,14 @@
+# ################################# -package features- ################################# #
 [package]
 name = "sample-webapp"
 version.workspace = true
 edition.workspace = true
 authors.workspace = true
 keywords.workspace = true
-
-
+# ################################# -lints- ################################# #
+[lints]
+workspace = true
+# ################################# -compile profiles- ################################# #
 [profile.release]
 # lto = true # VERY slightly smaller wasm
 # opt-level = 's' # 10-20% smaller wasm compared to `opt-level = 3`
@@ -13,7 +16,7 @@ keywords.workspace = true
 opt-level = 2 # fast and small wasm, basically same as `opt-level = 's'`
 # opt-level = 3 # unnecessarily large wasm for no performance gain
 
-# ---------------------------------------------------
+# ################################# -wasm32 user dependencies- ################################# #
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 # |---_ TARGET: web _---|
 ## --Diagnostics--
@@ -22,79 +25,46 @@ opt-level = 2 # fast and small wasm, basically same as `opt-level = 's'`
 ## --Other--
 wasm-bindgen-futures = "0.4"
 web-sys = "0.3.70"           # to access the DOM (to hide the loading text)
-# ---------------------------------------------------
 
+# ################################# -general user dependencies- ################################# #
 [dependencies]
-# --- local ---
+## ------------ -local- ------------ #
 utilities = { path = "../utilities" }
-
-## --Async--
-# futures = { workspace = true }
-# tokio = { workspace = true }
-### - Remote -
-# reqwest = { workspace = true }
-# sqlx = { workspace = true }
-### - Accessory -
-# governor = { workspace = true }
-# url = { workspace = true }
-
-## --Diagnostics--
+## ~~~~~~~~~~~~ -async- ~~~~~~~~~~~~ #
+### ......... -remote- ......... #
+### ......... -accessory- ......... #
+## ~~~~~~~~~~~~ -diagnostics- ~~~~~~~~~~~~ #
 tracing = { workspace = true }  # features = ["release_max_level_warn"] | ["release_max_level_off"]
 tracing-appender = { workspace = true }
 tracing-error = { workspace = true }
 tracing-subscriber = { workspace = true }
-# tracing-timing = { workspace = true }
-
-## --Env & Files--
-# arboard = { workspace = true }
-# include_dir = { workspace = true }
-
-## --Ergonomics--
-# bon = { workspace = true }
-derive_more = { workspace = true }
+## ~~~~~~~~~~~~ -env & files- ~~~~~~~~~~~~ #
+### ......... -config- ......... #
+### ......... -proceses- ......... #
+## ~~~~~~~~~~~~ -ergonomics- ~~~~~~~~~~~~ #
+derive_more = { workspace = true , features = ["error", "from", "display"] }
 indoc = { workspace = true }
-# itertools = { workspace = true }
-# nestify = { workspace = true }
-# strum = { workspace = true }
-
-## --Interface--
-### - CLI -
-# owo-colors = { workspace = true }
-### - egui -
+## ~~~~~~~~~~~~ -interface- ~~~~~~~~~~~~ #
+### ......... -cli- ......... #
+### ......... -egui- ......... #
 eframe = { workspace = true }
 egui = { workspace = true }
-# egui_extras = { workspace = true }
-# egui_table = { workspace = true }
-# egui_inbox = { workspace = true }
-
-# ## --Math & Science--
-# ### - Data -
-# polars = { workspace = true, features = [] }
-# ### - Math -
-# faer = { workspace = true }
-# rand = { workspace = true }
-
-## --Parsing--
+## ~~~~~~~~~~~~ -math & science- ~~~~~~~~~~~~ #
+### ......... -data- ......... #
+### ......... -math- ......... #
+## ~~~~~~~~~~~~ -parsing- ~~~~~~~~~~~~ #
 serde = { workspace = true }
-# serde_json = { workspace = true }
+## ~~~~~~~~~~~~ -time- ~~~~~~~~~~~~ #
 
-## --Time--
-# jiff = { workspace = true }
-
-
+# ################################# -dev dependencies- ################################# #
 [dev-dependencies]
-# Dev-Dependencies
-##__Benchmarking__
-divan = { workspace = true }
-## __Test_Ergonomics__
-pretty_assertions = { workspace = true }
-test-log = { workspace = true }
-## __Property Sample Testing__
-quickcheck = { workspace = true }
-quickcheck_macros = { workspace = true }
-## __Snapshot Testing__
-insta = { workspace = true }
-
-
-[lints]
-workspace = true
+## ~~~~~~~~~~~~ -benchmarking (workspace)- ~~~~~~~~~~~~ #
+divan = "0.1"
+## ~~~~~~~~~~~~ -test ergonomics (workspace)- ~~~~~~~~~~~~ #
+pretty_assertions = "1"
+test-log = { version = "0.2", features = ["trace"] }
+## ~~~~~~~~~~~~ -property sample testing (workspace)- ~~~~~~~~~~~~ #
+quickcheck = "1"
+quickcheck_macros = "1"
+## ~~~~~~~~~~~~ snapshot testing (workspace)- ~~~~~~~~~~~~ #
+insta = { version = "1", features = [] } # "clap","csv","json","redactions","serde","toml","walkdir",
