@@ -1,0 +1,46 @@
+[package]
+name = "try-trait"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+keywords.workspace = true
+
+
+[dependencies]
+# --- local ---
+utilities = { path = "../utilities" }
+
+## --Diagnostics--
+tracing = { workspace = true }  # features = ["release_max_level_warn"] | ["release_max_level_off"]
+# tracing-appender = { workspace = true }
+tracing-error = { workspace = true }
+tracing-subscriber = { workspace = true , features = [] } # "env-filter","json"
+# tracing-timing = { workspace = true }
+
+## --Ergonomics--
+# bon = { workspace = true }
+# derive_more = { workspace = true, features = ["from_str", "from", "into", "display"] }
+derive_more = { workspace = true, features = ["from_str", "into"] }
+# indoc = { workspace = true }
+# itertools = { workspace = true }
+# nestify = { workspace = true }
+
+## --Interface--
+clap = { workspace = true, features = [] } # "env", "string", "unicode", "wrap_help",
+
+[dev-dependencies]
+# Dev-Dependencies
+##__Benchmarking__
+divan = { workspace = true }
+## __Test_Ergonomics__
+pretty_assertions = { workspace = true }
+test-log = { workspace = true }
+## __Property Sample Testing__
+quickcheck = { workspace = true }
+quickcheck_macros = { workspace = true }
+## __Snapshot Testing__
+insta = { workspace = true, features = [] } # "clap","csv","json","redactions","serde","toml","walkdir",
+
+
+[lints]
+workspace = true
