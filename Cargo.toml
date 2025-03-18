@@ -30,14 +30,11 @@ debug = true
 [workspace.dependencies]
 ## --Async--
 futures = "0.3"
-tokio = { version = "1", features = ["full"] }
+tokio = { version = "1", features = ["macros"]  }# "fs","io-std","io-util","net","parking_lot","process","rt","rt-multi-thread","signal","sync","time",
+# tokio wasm-compatible: "sync","macros","io-util","rt","time"
 ### - Remote -
-reqwest = { version = "0.12", features = ["cookies", "json", "rustls-tls"] }
-sqlx = { version = "0.8", features = [
-    "sqlite",
-    "runtime-tokio",
-    "tls-rustls",
-] }
+reqwest = { version = "0.12", features = ["rustls-tls"] } # "cookies","json",
+sqlx = { version = "0.8", features = ["tls-rustls"] } # "sqlite","runtime-tokio",
 ### - Accessory -
 governor = { version = "0.8" }
 url = { version = "2" }
@@ -47,7 +44,7 @@ tracing = { version = "0.1", features = [] }
 #                  "release_max_level_warn"^"release_max_level_off"
 tracing-appender = "0.2"
 tracing-error = "0.2"
-tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
+tracing-subscriber = { version = "0.3", features = [] } # "env-filter","json"
 tracing-timing = "0.6"
 
 ## --Env & Files--
@@ -62,41 +59,26 @@ walkdir = "2"
 config = "0.15"
 directories = "6"
 ### System & Processes
-rexpect = { version = "0.6", features = ["which"] }
+rexpect = { version = "0.6", features = [] } # "which"
 
 ## --Ergonomics--
 bon = "3"
-derive_more = { version = "2", features = ["full"] }
+derive_more = { version = "2", features = [] } # "add","add_assign","as_ref","constructor","debug","deref","deref_mut","display","error","from","from_str","index","index_mut","into","into_iterator","is_variant","mul","mul_assign","not","sum","try_from","try_into","try_unwrap","unwrap",
 indoc = "2"
 itertools = "0.14"
 nestify = "0.3"
-strum = { version = "0.26", features = ["derive", "phf"] }
 
 ## --Interface--
 ### - CLI -
-clap = { version = "4", features = [
-    "env",
-    "cargo",
-    "derive",
-    "string",
-    "unicode",
-    "wrap_help",
-] }
-clap-verbosity-flag = "3"
+clap = { version = "4", features = ["derive"] } # "env", "string", "unicode", "wrap_help",
 dialoguer = "0.11"
 owo-colors = "4"
 tabled = "0.17"
 json_to_table = "0.9"
 # ### - egui -
-eframe = { version = "0.31", default-features = false, features = ["default_fonts", "glow", "persistence", "wayland"] }
-egui = { version = "0.31", features = ["callstack", "document-features"] }
-egui_extras = { version = "0.31", features = [
-    "all_loaders",
-    "datepicker",
-    "document-features",
-    "serde",
-    "syntect",
-] }
+eframe = { version = "0.31", default-features = false, features = [] } # "default_fonts","glow","persistence","wayland","wgpu"
+egui = { version = "0.31", features = [] } # "callstack","document-features"
+egui_extras = { version = "0.31", features = [] } # "all_loaders","datepicker","document-features","serde","syntect",
 egui_table = "0.3"
 egui_inbox = "0.7"
 
@@ -108,13 +90,13 @@ faer = "0.21"
 rand = "0.9"
 
 ## --Parsing--
-regex = { version = "1", features = ["logging"] }
+regex = { version = "1", features = [] } # "logging"
 monostate = "0.1"                                   # serde: constraining, zero-sized type
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 
 ## --Time--
-jiff = { version = "0.1", features = ["js", "logging", "serde"] }
+jiff = { version = "0.1", features = [] } # "js","logging","serde"
 
 
 # Dev-Dependencies
@@ -127,12 +109,4 @@ test-log = { version = "0.2", features = ["trace"] }
 quickcheck = "1"
 quickcheck_macros = "1"
 ## __Snapshot Testing__
-insta = { version = "1", features = [
-    "clap",
-    "csv",
-    "json",
-    "redactions",
-    "serde",
-    "toml",
-    "walkdir",
-] }
+insta = { version = "1", features = [] } # "clap","csv","json","redactions","serde","toml","walkdir",

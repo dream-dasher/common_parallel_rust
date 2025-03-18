@@ -19,9 +19,9 @@ utilities = { path = "../utilities" }
 
 ## --Async--
 # futures = { workspace = true }
-tokio = { workspace = true }
+tokio = { workspace = true, features = ["rt-multi-thread"]  }# "fs","io-std","io-util","net","parking_lot","process","rt","rt-multi-thread","signal","sync","time",
 ### - Remote -
-reqwest = { workspace = true }
+reqwest = { workspace = true, features = ["rustls-tls"] } # "cookies","json",
 # sqlx = { workspace = true }
 ### - Accessory -
 # governor = { workspace = true }
@@ -31,7 +31,7 @@ reqwest = { workspace = true }
 tracing = { workspace = true }  # features = ["release_max_level_warn"] | ["release_max_level_off"]
 tracing-appender = { workspace = true }
 tracing-error = { workspace = true }
-tracing-subscriber = { workspace = true }
+tracing-subscriber = { workspace = true , features = [] } # "env-filter","json"
 # tracing-timing = { workspace = true }
 
 ## --Env & Files--
@@ -41,7 +41,7 @@ rfd = { workspace = true }
 
 ## --Ergonomics--
 # bon = { workspace = true }
-derive_more = { workspace = true }
+derive_more = { workspace = true , features = ["error", "from", "display"] }
 indoc = { workspace = true }
 # itertools = { workspace = true }
 # nestify = { workspace = true }
@@ -51,9 +51,9 @@ indoc = { workspace = true }
 ### - CLI -
 # owo-colors = { workspace = true }
 ### - egui -
-eframe = { workspace = true }
-egui = { workspace = true }
-egui_extras = { workspace = true }
+eframe = { workspace = true, features = ["persistence","wgpu"] } # "default_fonts","glow","persistence","wayland","wgpu"
+egui = { workspace = true, features = [] } # "callstack", "document-features"
+egui_extras = { workspace = true, features = [] } # "all_loaders","datepicker","document-features","serde","syntect",
 # egui_table = { workspace = true }
 # egui_inbox = { workspace = true }
 
@@ -83,7 +83,7 @@ test-log = { workspace = true }
 quickcheck = { workspace = true }
 quickcheck_macros = { workspace = true }
 ## __Snapshot Testing__
-insta = { workspace = true }
+insta = { workspace = true, features = [] } # "clap","csv","json","redactions","serde","toml","walkdir",
 
 
 [lints]

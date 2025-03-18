@@ -11,7 +11,7 @@ keywords.workspace = true
 tracing = { workspace = true }  # features = ["release_max_level_warn"] | ["release_max_level_off"]
 tracing-appender = { workspace = true }
 tracing-error = { workspace = true }
-tracing-subscriber = { workspace = true }
+tracing-subscriber = { workspace = true, features = ["env-filter"] } # "env-filter","json"
 # tracing-timing = { workspace = true }
 
 ## --Env & Files--
@@ -20,14 +20,14 @@ dotenvy = { workspace = true }
 
 ## --Ergonomics--
 bon = { workspace = true }
-derive_more = { workspace = true }
+derive_more = { workspace = true, features = ["error","from","display"] } # "add","add_assign","as_ref","constructor","debug","deref","deref_mut","display","error","from","from_str","index","index_mut","into","into_iterator","is_variant","mul","mul_assign","not","sum","try_from","try_into","try_unwrap","unwrap",
 # indoc = { workspace = true }
 # itertools = { workspace = true }
 # nestify = { workspace = true }
 # strum = { workspace = true }
 
 ## --Time--
-# jiff = { workspace = true }
+# jiff = { workspace = true, features = [] } # "js","logging","serde"
 
 [dev-dependencies]
 # Dev-Dependencies
@@ -40,7 +40,7 @@ test-log = { workspace = true }
 quickcheck = { workspace = true }
 quickcheck_macros = { workspace = true }
 ## __Snapshot Testing__
-insta = { workspace = true }
+insta = { workspace = true, features = [] } # "clap","csv","json","redactions","serde","toml","walkdir",
 
 
 [lints]
