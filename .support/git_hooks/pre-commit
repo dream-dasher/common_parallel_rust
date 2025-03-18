@@ -58,7 +58,7 @@ echo -e "${DARK_GRAY}===========================================================
 
 echo -e "${DARK_GRAY}================================================================${NC}"
 echo -e "${YELLOW} checking for errors... ${NC}"
-cargo check --workspace --all-features
+cargo check --workspace --all-targets --all-features
 echo -e "${GREEN} Error check successful. ${NC}"
 echo -e "${DARK_GRAY}================================================================${NC}"
 
