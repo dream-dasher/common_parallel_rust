@@ -1,16 +1,11 @@
 /*!
 # Playing with Traits
 */
-
-mod error;
-use crate::error::ErrWrapper;
-pub type SampleResult<T> = std::result::Result<T, ErrWrapper>;
-
 use derive_more as dm;
 use tracing::{self as tea};
 use utilities::activate_global_default_tracing_subscriber;
 
-fn main() -> SampleResult<()> {
+fn main() -> Result<(), Box<dyn std::error::Error>> {
         let _writer_guard = activate_global_default_tracing_subscriber()
                 .maybe_default_logging_level(None)
                 .maybe_error_logging_level(None)

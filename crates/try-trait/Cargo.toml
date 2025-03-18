@@ -19,8 +19,6 @@ utilities = { path = "../utilities" }
 ### ......... -accessory- ......... #
 ## ~~~~~~~~~~~~ -diagnostics- ~~~~~~~~~~~~ #
 tracing = { workspace = true }  # features = ["release_max_level_warn"] | ["release_max_level_off"]
-tracing-error = { workspace = true }
-tracing-subscriber = { workspace = true , features = [] } # "env-filter","json"
 ## ~~~~~~~~~~~~ -env & files- ~~~~~~~~~~~~ #
 ### ......... -config- ......... #
 ### ......... -proceses- ......... #
@@ -28,7 +26,7 @@ tracing-subscriber = { workspace = true , features = [] } # "env-filter","json"
 derive_more = { workspace = true, features = ["from_str", "into"] }
 ## ~~~~~~~~~~~~ -interface- ~~~~~~~~~~~~ #
 ### ......... -cli- ......... #
-clap = { workspace = true, features = [] } # "env", "string", "unicode", "wrap_help",
+# clap = { workspace = true, features = [] } # "env", "string", "unicode", "wrap_help",
 ### ......... -egui- ......... #
 ## ~~~~~~~~~~~~ -math & science- ~~~~~~~~~~~~ #
 ### ......... -data- ......... #
