@@ -45,48 +45,48 @@ tracing-subscriber = { version = "0.3", features = [] } # "env-filter","json"
 tracing-timing = "0.6"
 ## ~~~~~~~~~~~~ -env & files (workspace)- ~~~~~~~~~~~~ #
 arboard = "3"
-csv = "1"
+# csv = "1"
 dotenvy = "0.15"
 include_dir = "0.7"
 rfd = "0.15"
-toml = "0.8"
-walkdir = "2"
+# toml = "0.8"
+# walkdir = "2"
 ### ......... -config (workspace)- ......... #
-config = "0.15"
-directories = "6"
+# config = "0.15"
+# directories = "6"
 ### ......... -proceses (workspace)- ......... #
-rexpect = { version = "0.6", features = [] } # "which"
+# rexpect = { version = "0.6", features = [] } # "which"
 ## ~~~~~~~~~~~~ -ergonomics (workspace)- ~~~~~~~~~~~~ #
 bon = "3"
 derive_more = { version = "2", features = [] } # "add","add_assign","as_ref","constructor","debug","deref","deref_mut","display","error","from","from_str","index","index_mut","into","into_iterator","is_variant","mul","mul_assign","not","sum","try_from","try_into","try_unwrap","unwrap",
 indoc = "2"
-itertools = "0.14"
-nestify = "0.3"
+# itertools = "0.14"
+# nestify = "0.3"
 thiserror = "2"
 ## ~~~~~~~~~~~~ -interface (workspace)- ~~~~~~~~~~~~ #
 ### ......... -cli (workspace)- ......... #
 clap = { version = "4", features = ["derive"] } # "env", "string", "unicode", "wrap_help",
-dialoguer = "0.11"
+# dialoguer = "0.11"
 owo-colors = "4"
 ### ......... -egui (workspace)- ......... #
 eframe = { version = "0.31", default-features = false, features = [] } # "default_fonts","glow","persistence","wayland","wgpu"
 egui = { version = "0.31", features = [] } # "callstack","document-features"
 egui_extras = { version = "0.31", features = [] } # "all_loaders","datepicker","document-features","serde","syntect",
-egui_table = "0.3"
-egui_inbox = "0.7"
+# egui_table = "0.3"
+# egui_inbox = "0.7"
 ## ~~~~~~~~~~~~ -math & science (workspace)- ~~~~~~~~~~~~ #
 ### ......... -data (workspace)- ......... #
 # polars = { version = "0.45", features = [] }
 ### ......... -math (workspace)- ......... #
-faer = "0.21"
-rand = "0.9"
+# faer = "0.21"
+# rand = "0.9"
 ## ~~~~~~~~~~~~ -parsing (workspace)- ~~~~~~~~~~~~ #
-regex = { version = "1", features = [] } # "logging"
-monostate = "0.1"                                   # serde: constraining, zero-sized type
+# regex = { version = "1", features = [] } # "logging"
+# monostate = "0.1"                                   # serde: constraining, zero-sized type
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 ## ~~~~~~~~~~~~ -time (workspace)- ~~~~~~~~~~~~ #
-jiff = { version = "0.1", features = [] } # "js","logging","serde"
+# jiff = { version = "0.1", features = [] } # "js","logging","serde"
 
 # ################################# -dev dependencies (workspace)- ################################# #
 # [dev-dependencies] <-- only goes in package Cargo.toml

@@ -56,7 +56,7 @@ use std::{env, ffi::OsStr, num::NonZeroUsize};
 use bon::bon;
 use dotenvy::dotenv;
 use thiserror::Error;
-use tracing::{self, debug, error, info, instrument, trace};
+use tracing::{self, debug, error, info, instrument as instrument_nobonconflict, trace}; // TODO: instrument_nobonconflict temporary to prevent unavoidable compiler warnings from bon
 // ///////////////////////////////// -error- ///////////////////////////////// //
 #[derive(Debug, Error)]
 pub enum HiddenValueError {
@@ -95,7 +95,7 @@ impl HiddenValue<std::string::String> {
         /// ## Internal Note
         /// I don't love the flow of this function.  I don't like loading an entire `.env` file for one key file for one key.
         /// And the error clarity on file vs environment precedence is lacking and similarly not nicely match by code flow.
-        #[instrument(skip(key))]
+        #[instrument_nobonconflict(skip(key))]
         #[builder(start_fn = from_env_builder, finish_fn = build)]
         pub fn new_from_env<K>(
                 /// Environment key to use to grab value to hide.
@@ -181,7 +181,7 @@ impl<T> HiddenValue<T> {
         ///     let masked_string = masked_string.into();
         ///     ...
         /// ```
-        #[instrument(skip_all)]
+        #[instrument_nobonconflict(skip_all)]
         #[builder]
         pub fn new(
                 /// Value to hide. (From accidental logging, printing, etc.)
@@ -210,7 +210,7 @@ impl<T> HiddenValue<T> {
         /// , nor even zeroizing on destruction (which doesn't ensure clean up in all locations it may have
         /// existed), keeping exposure intentional still appears to be best practice.
         #[must_use]
-        #[instrument(skip_all)]
+        #[instrument_nobonconflict(skip_all)]
         pub fn expose_value(&self) -> &T {
                 trace!("exposing hidden value");
                 &self.value
