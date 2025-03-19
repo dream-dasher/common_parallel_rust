@@ -34,9 +34,19 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         let nsin = nstring.get_innie();
         let nnin = nnum.get_innie();
         tea::debug!(nsin, nnin);
+
+        // Using the to_num method
+        let intou32: u32 = nnum.0.to_num();
+        let intou64: u64 = nnum.0.to_num();
+        let intoi64: i64 = nnum.0.to_num();
+        let intof64: f64 = nnum.0.to_num();
+        tea::debug!(intou32, intou64, intoi64, intof64, ?nnum);
+
         Ok(())
 }
+// //////////////////////////////////// -function- //////////////////////////////////// //
 // //////////////////////////////////// -traits- //////////////////////////////////// //
+/// trait with default implementation
 trait Infoable {
         fn talkabout(&self) -> String
         where
@@ -46,12 +56,21 @@ trait Infoable {
                 format!("{:?}", self)
         }
 }
-
+/// trait with type parameter
 trait GotsAnInnie {
         type Innie;
         fn get_innie(&self) -> Self::Innie;
 }
-
+trait ToNumOfType<T>
+where
+        Self: Copy + Into<T>,
+{
+        fn to_num(&self) -> T {
+                (*self).into()
+        }
+}
+// //////////////////////////////////// -trait generic impl- //////////////////////////////////// //
+impl<T, U> ToNumOfType<T> for U where U: Copy + Into<T> {}
 // //////////////////////////////////// -example structs to use- //////////////////////////////////// //
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, dm::FromStr, dm::From, dm::Into, dm::Display)]
 struct NewString(String);
