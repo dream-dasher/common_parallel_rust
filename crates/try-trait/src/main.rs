@@ -11,6 +11,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 .maybe_error_logging_level(None)
                 .call()?;
 
+        // no traits; just using impls for a multi-field type with internal logic (Bad & Good values match num such values in Vec)
         let mut descriptions = Descriptions::new();
         descriptions.add_description(("Good description".to_string(), DescriptionKind::Good));
         descriptions.add_description(("Bad description".to_string(), DescriptionKind::Bad));
@@ -23,19 +24,22 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         tea::debug!(?removed);
         tea::debug!(?descriptions);
 
+        // Using Infoable with pre-implemented trait
         let out = descriptions.talkabout();
         tea::info!(?out);
 
+        // no traits; just raw newtype constructions
         let nstring = NewString("Hello, world!".to_string());
         let nnum = Newu32(42);
         tea::debug!(?nstring);
         tea::debug!(?nnum);
 
+        // Using GotsAnInnie - simple use of ass-type
         let nsin = nstring.get_innie();
         let nnin = nnum.get_innie();
         tea::debug!(nsin, nnin);
 
-        // Using the to_num method
+        // Using the ToNumOfType method -- blanket impl with trait & impl bounded
         let intou32: u32 = nnum.0.to_num();
         let intou64: u64 = nnum.0.to_num();
         let intoi64: i64 = nnum.0.to_num();
