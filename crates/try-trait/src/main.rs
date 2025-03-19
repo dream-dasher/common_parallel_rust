@@ -1,11 +1,11 @@
 /*!
 # Playing with Traits
 */
-
+// //////////////////////////////////// -use- //////////////////////////////////// //
 use derive_more as dm;
 use tracing::{self as tea, level_filters::LevelFilter};
 use utilities::activate_global_default_tracing_subscriber;
-
+// //////////////////////////////////// -main- //////////////////////////////////// //
 fn main() -> Result<(), Box<dyn std::error::Error>> {
         let _writer_guard = activate_global_default_tracing_subscriber()
                 .default_logging_level(LevelFilter::DEBUG)
