@@ -24,6 +24,7 @@ tracing = { workspace = true }  # features = ["release_max_level_warn"] | ["rele
 ### ......... -proceses- ......... #
 ## ~~~~~~~~~~~~ -ergonomics- ~~~~~~~~~~~~ #
 derive_more = { workspace = true, features = ["from_str", "into"] }
+trait-variant = "0.1.2"
 ## ~~~~~~~~~~~~ -interface- ~~~~~~~~~~~~ #
 ### ......... -cli- ......... #
 # clap = { workspace = true, features = [] } # "env", "string", "unicode", "wrap_help",

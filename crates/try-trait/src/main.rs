@@ -66,20 +66,20 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 /// let r_del_confirm = Record::delete("record_id").await?;
 /// let p_del_confirm = Page::delete("page_id").await?;
 /// ```
-trait _Deletable {
+#[trait_variant::make(LocalDeletable: Send)]
+trait _LocalDeletable {
         type DeleteId: std::fmt::Debug;
         type DeleteReturn: std::fmt::Debug;
         /// Instances should often have a retrievable Id
-        fn delete_id(&self) -> Option<Self::DeleteId>;
+        fn _delete_id(&self) -> Option<Self::DeleteId>;
         /// endpoint to be added to base url for delete call
-        fn endpoint() -> &'static str {
+        fn _endpoint() -> &'static str {
                 "api.path.getme--unimplemented"
         }
         /// delete call
-        /// async fn delete(id: Self::DeleteId) -> Result<Option<Self::DeleteReturn>, Box<dyn std::error::Error>> | Future ∈ Send {
-        fn delete(
-                id: Self::DeleteId,
-        ) -> impl Future<Output = Result<Option<Self::DeleteReturn>, Box<dyn std::error::Error>>> + Send;
+        /// the use of `#[trait_variant::make(LocalDeletable: Send)]`
+        /// generates `LocalDeletable` & `Deletable, the former has no `Send` bound, the latter does.
+        fn _delete(id: Self::DeleteId) -> Result<Option<Self::DeleteReturn>, Box<dyn std::error::Error>>;
         // {
         //         let endpoint = Self::endpoint();
         //         tea::info!(?endpoint, ?id);
