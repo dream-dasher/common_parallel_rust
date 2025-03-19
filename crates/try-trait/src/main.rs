@@ -100,19 +100,13 @@ trait _Gettable<T> {
                 "api.path.getme--unimplemented"
         }
         /// get call
-        async fn get(id: Self::GetId) -> Result<T, Box<dyn std::error::Error>>
-        where
-                Self: Sized,
-        {
+        async fn get(id: Self::GetId) -> Result<T, Box<dyn std::error::Error>> {
                 let endpoint = Self::endpoint();
                 tea::info!(?endpoint, ?id);
                 Err("Not implemented".into())
         }
 }
-trait Makeable
-where
-        Self: Sized,
-{
+trait Makeable {
         type MakeId: std::fmt::Debug;
         type WhatsMade: std::fmt::Debug; // we're not using it here, but could!
         /// Default make is silly - takes 'thing' as id and
