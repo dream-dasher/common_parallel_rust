@@ -1,13 +1,14 @@
 /*!
 # Playing with Traits
 */
+
 use derive_more as dm;
-use tracing::{self as tea};
+use tracing::{self as tea, level_filters::LevelFilter};
 use utilities::activate_global_default_tracing_subscriber;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
         let _writer_guard = activate_global_default_tracing_subscriber()
-                .maybe_default_logging_level(None)
+                .default_logging_level(LevelFilter::DEBUG)
                 .maybe_error_logging_level(None)
                 .call()?;
 
@@ -46,9 +47,96 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         let intof64: f64 = nnum.0.to_num();
         tea::debug!(intou32, intou64, intoi64, intof64, ?nnum);
 
+        // rest-like
+        let mut def_descriptions = Descriptions::make(None)?;
+        def_descriptions.add_description((
+                "Look, we made something via blanket trait.".to_string(),
+                DescriptionKind::default(),
+        ));
+        def_descriptions.talkabout();
         Ok(())
 }
 // //////////////////////////////////// -function- //////////////////////////////////// //
+// //////////////////////////////////// -traits rest-like- //////////////////////////////////// //
+/// Deletable of class X returning Y
+///
+/// e.g.
+/// ```ignore
+/// let u_del_confirm = User::delete("user_id").await?;
+/// let r_del_confirm = Record::delete("record_id").await?;
+/// let p_del_confirm = Page::delete("page_id").await?;
+/// ```
+trait _Deletable {
+        type DeleteId: std::fmt::Debug;
+        type DeleteReturn: std::fmt::Debug;
+        /// Instances should often have a retrievable Id
+        fn delete_id(&self) -> Option<Self::DeleteId>;
+        /// endpoint to be added to base url for delete call
+        fn endpoint() -> &'static str {
+                "api.path.getme--unimplemented"
+        }
+        /// delete call
+        async fn delete(id: Self::DeleteId) -> Result<Option<Self::DeleteReturn>, Box<dyn std::error::Error>> {
+                let endpoint = Self::endpoint();
+                tea::info!(?endpoint, ?id);
+                Err("Not implemented".into())
+        }
+}
+/// Gettable of class X returning Y
+///
+/// e.g.
+/// ```ignore
+/// let users  = User::get::<Vec<User>>(None).await?;     // List Users
+/// let user   = User::get::<User>("user_id").await?;     // Get User
+/// let u_role = User::get::<UserRole>("user_id").await?; // Get User Role
+/// ```
+trait _Gettable<T> {
+        type GetId: std::fmt::Debug;
+        type WhatsGot: std::fmt::Debug;
+        /// Instances should often have a retrievable Id
+        fn get_id(&self) -> Option<Self::GetId>;
+        /// endpoint to be added to base url for get call
+        fn endpoint() -> &'static str {
+                "api.path.getme--unimplemented"
+        }
+        /// get call
+        async fn get(id: Self::GetId) -> Result<T, Box<dyn std::error::Error>>
+        where
+                Self: Sized,
+        {
+                let endpoint = Self::endpoint();
+                tea::info!(?endpoint, ?id);
+                Err("Not implemented".into())
+        }
+}
+trait Makeable
+where
+        Self: Sized,
+{
+        type MakeId: std::fmt::Debug;
+        type WhatsMade: std::fmt::Debug; // we're not using it here, but could!
+        /// Default make is silly - takes 'thing' as id and
+        fn make(id: Option<Self::MakeId>) -> Result<Self::WhatsMade, Box<dyn std::error::Error>>
+        where
+                Self::WhatsMade: Default,
+        {
+                if id.is_none() {
+                        tea::info!(?id);
+                        Ok(Self::WhatsMade::default())
+                } else {
+                        tea::info!(?id);
+                        Err("Not implemented".into())
+                }
+        }
+}
+impl<T> Makeable for T
+where
+        T: Sized + Default + std::fmt::Debug,
+{
+        type MakeId = T;
+        type WhatsMade = T;
+}
+
 // //////////////////////////////////// -traits- //////////////////////////////////// //
 /// trait with default implementation
 trait Infoable {
@@ -65,6 +153,7 @@ trait GotsAnInnie {
         type Innie;
         fn get_innie(&self) -> Self::Innie;
 }
+/// Convert a value to a type 'T'.
 trait ToNumOfType<T>
 where
         Self: Copy + Into<T>,
@@ -76,7 +165,7 @@ where
 // //////////////////////////////////// -trait generic impl- //////////////////////////////////// //
 impl<T, U> ToNumOfType<T> for U where U: Copy + Into<T> {}
 // //////////////////////////////////// -example structs to use- //////////////////////////////////// //
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, dm::FromStr, dm::From, dm::Into, dm::Display)]
+#[derive(Default, Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, dm::FromStr, dm::From, dm::Into, dm::Display)]
 struct NewString(String);
 impl GotsAnInnie for NewString {
         type Innie = String;
@@ -91,7 +180,7 @@ impl Infoable for NewString {
         }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, dm::From, dm::Into, dm::Display)]
+#[derive(Default, Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, dm::From, dm::Into, dm::Display)]
 struct Newu32(u32);
 impl GotsAnInnie for Newu32 {
         type Innie = u32;
@@ -107,7 +196,7 @@ impl Infoable for Newu32 {
         }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Default, Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 struct Descriptions {
         num_good: u32,
         num_bad: u32,
@@ -137,8 +226,9 @@ impl Descriptions {
         }
 }
 impl Infoable for Descriptions {}
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, dm::Display)]
+#[derive(Default, Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, dm::Display)]
 enum DescriptionKind {
+        #[default]
         Good,
         Bad,
 }
