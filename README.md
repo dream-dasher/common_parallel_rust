@@ -71,3 +71,15 @@ c common_par...
 gfa
 <for each: git checkout <x>>
 ```
+
+
+## RustC
+[rustflags](https://rust-lang.github.io/packed_simd/perf-guide/target-feature/rustflags.html)
+
+```zsh
+rustc --print target-list
+rustc --print cfg
+TRIPLE=''
+rustc --target=${TRIPLE} --print target-features
+rustc --target=${TRIPLE} --print target-cpus
+```
