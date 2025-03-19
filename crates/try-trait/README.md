@@ -1,36 +1,28 @@
-# Sample Async Package
+# Exploring Traits and Trait Syntax pm
 
-## Core Elements
-- [Tokio](https://tokio.rs): runtime and general utility
-- [Futures](https://github.com/rust-lang/futures-rs)
-- [Reqwest](https://github.com/seanmonstar/reqwest): HTTP requests 
-  - [governor](https://docs.rs/governor/latest/governor/_guide/index.html): leaky bucket rate limiter
-  - [url](https://docs.rs/url/latest/url/): url string parsing (re-exported by reqwest, but we need it for its `ParseError`)
-    - warn: easy to misuse and questionably helpful
-- [Sqlx](https://github.com/launchbadge/sqlx): raw SQL interface (with compile-time checks)
+## `async`: desugaring required for robust traits
 
-### Reqwest Elements
+See: [async in public traits](https://blog.rust-lang.org/2023/12/21/async-fn-rpit-in-traits.html#async-fn-in-public-traits)  
+TLDR:
+- **BAD**: impl+async (sugar): `async fn xxx -> impl Future<Output = y> + Send` (**BAD**)
+  - === `fn xxx -> impl Future< Output = impl Future<Output = y>> + Send` (?)
+- *GOOD*: drop sugar, just impl: `fn xxx -> impl Future<Output = y> + Send` (*GOOD*)
+  - === `async fn xxx -> y  | Future<Output = y> ∈ Send`
 
-- **Client** (builder)
-  - timeout
-  - default headers
-  - https req
-  - rustls tls
-  - cookie store
-  - ...
-- **Request** (builder)
-  - request w/ Method::(GET|POST|etc)
-  - header
-  - auth
-  - query
-  - body
-    - json
-  - try_clone
-  - ...
-- **Response**
-  - status
-    - error_for_status (ref)
-  - cookies
-  - text
-    - json
-  - bytes stream
+It's natural to write
+```rust
+trait SomeTrait {
+     ///   fn xxx -> impl Future<Output = y>
+     async fn xxx -> y
+}
+```
+, *but* in *many* cases we want to bound the *output* to be `Send`.
+
+The twist is that `async` desugars to an output `impl ...` statement.
+So we need to strip the async (de-sugar) and just write the impl.
+
+```rust
+trait SomeTrait {
+     ///   async fn xxx -> y | Future<Output = y> ∈ Send
+     fn xxx -> impl Future<Output = y> + Send
+}

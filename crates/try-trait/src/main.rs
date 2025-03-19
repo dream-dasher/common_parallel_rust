@@ -76,11 +76,15 @@ trait _Deletable {
                 "api.path.getme--unimplemented"
         }
         /// delete call
-        async fn delete(id: Self::DeleteId) -> Result<Option<Self::DeleteReturn>, Box<dyn std::error::Error>> {
-                let endpoint = Self::endpoint();
-                tea::info!(?endpoint, ?id);
-                Err("Not implemented".into())
-        }
+        /// async fn delete(id: Self::DeleteId) -> Result<Option<Self::DeleteReturn>, Box<dyn std::error::Error>> | Future ∈ Send {
+        fn delete(
+                id: Self::DeleteId,
+        ) -> impl Future<Output = Result<Option<Self::DeleteReturn>, Box<dyn std::error::Error>>> + Send;
+        // {
+        //         let endpoint = Self::endpoint();
+        //         tea::info!(?endpoint, ?id);
+        //         Err("Not implemented".into())
+        // }
 }
 /// Gettable of class X returning Y
 ///
@@ -90,21 +94,24 @@ trait _Deletable {
 /// let user   = User::get::<User>("user_id").await?;     // Get User
 /// let u_role = User::get::<UserRole>("user_id").await?; // Get User Role
 /// ```
-trait _Gettable<T> {
-        type GetId: std::fmt::Debug;
-        type WhatsGot: std::fmt::Debug;
-        /// Instances should often have a retrievable Id
-        fn get_id(&self) -> Option<Self::GetId>;
+pub trait Gettable<T>
+where
+        T: Send,
+{
+        type GetId: std::fmt::Debug + Send;
+        type Error: std::fmt::Debug + Send;
+        type Client: Send;
+        /// Default get_id is `None` and is unused by implementation
+        fn get_id(&self) -> Option<Self::GetId> {
+                None
+        }
         /// endpoint to be added to base url for get call
         fn endpoint() -> &'static str {
                 "api.path.getme--unimplemented"
         }
         /// get call
-        async fn get(id: Self::GetId) -> Result<T, Box<dyn std::error::Error>> {
-                let endpoint = Self::endpoint();
-                tea::info!(?endpoint, ?id);
-                Err("Not implemented".into())
-        }
+        ///fn get(id: Self::GetId, client: &Self::Client) -> Result<T, Self::Error>| Future ∈ Send
+        fn get(id: Self::GetId, client: &Self::Client) -> impl Future<Output = Result<T, Self::Error>> + Send;
 }
 trait Makeable {
         type MakeId: std::fmt::Debug;
