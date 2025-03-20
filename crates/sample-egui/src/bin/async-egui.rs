@@ -7,23 +7,34 @@ use reqwest::{
 use serde::{Deserialize, Serialize};
 use std::time::Duration;
 // ///////////////////////////////// -main- ///////////////////////////////// //
-fn main() -> Result<(), Box<dyn std::error::Error>> {
-        let async_runtime = tokio::runtime::Runtime::new().expect("Tokio runtime should be creatable.");
-        let _enter = async_runtime.enter();
-        // loop to keep thread up (?)
-        std::thread::spawn(move || {
-                async_runtime.block_on(async {
-                        loop {
-                                tokio::time::sleep(Duration::from_secs(3600)).await;
-                        }
-                })
-        });
+// fn main() -> Result<(), Box<dyn std::error::Error>> {
+//         // tokio::runtime::Builder::new_current_thread()
+//         // ^-- stalls app; tasks never run due to thread block by event loop
+
+//         // same as #[tokio::main(flavor = "multi_thread")], which is dfault for #[tokio::main]
+//         tokio::runtime::Builder::new_multi_thread()
+//                 .enable_time()
+//                 .enable_io()
+//                 .build()
+//                 .expect("Tokio runtime should be creatable.")
+//                 .block_on(async {
+//                         eframe::run_native(
+//                                 "Hello egui + tokio",
+//                                 eframe::NativeOptions::default(),
+//                                 Box::new(|_cc| Ok(Box::new(ChannelApp::default()))),
+//                         )
+//                         .unwrap();
+//                 });
+
+//         Ok(())
+// }
+#[tokio::main(flavor = "multi_thread")]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
         eframe::run_native(
                 "Hello egui + tokio",
                 eframe::NativeOptions::default(),
                 Box::new(|_cc| Ok(Box::new(ChannelApp::default()))),
         )?;
-
         Ok(())
 }
 // ///////////////////////////////// -App Memory- ///////////////////////////////// //
@@ -32,14 +43,11 @@ struct ChannelApp {
         // Sender/Receiver for async notifications.
         tx: std::sync::mpsc::Sender<Vec<Todo>>,
         rx: std::sync::mpsc::Receiver<Vec<Todo>>,
-
         // jsons: Vec<serde_json::Value>,
         todos: Vec<Todo>,
-
         loading: bool,
         error: Option<String>,
         client: reqwest::Client,
-
         _selected_todo: Option<usize>,
 }
 impl Default for ChannelApp {
@@ -49,7 +57,7 @@ impl Default for ChannelApp {
                 Self { tx, rx, todos: Vec::new(), loading: false, error: None, _selected_todo: None, client }
         }
 }
-// ///////////////////////////////// -accessory struct- ///////////////////////////////// //
+// ///////////////////////////////// -app accessory- ///////////////////////////////// //
 /// Struct to pull typicode responses into
 /// Example of using 'typed' JSON with Serde
 #[derive(Debug, Serialize, Deserialize)]
@@ -59,6 +67,22 @@ struct Todo {
         id: i32,
         title: String,
         completed: bool,
+}
+fn generate_client() -> Result<reqwest::Client, Box<dyn std::error::Error>> {
+        let default_headers = {
+                let mut headers = HeaderMap::new();
+                headers.insert(header::ACCEPT, "application/json".parse().unwrap());
+                headers.insert(header::CONTENT_TYPE, "application/json".parse().unwrap());
+                headers.insert(header::USER_AGENT, "rust-reqwest-client".parse().unwrap());
+                headers
+        };
+        let client = reqwest::Client::builder()
+                .https_only(true) // this will error for `http` (WARN: not compile-time checked)
+                .use_rustls_tls()
+                .default_headers(default_headers)
+                .timeout(Duration::from_secs(30)) // default is *no* timeout
+                .build()?;
+        Ok(client)
 }
 // ///////////////////////////////// -loop- ///////////////////////////////// //
 impl eframe::App for ChannelApp {
@@ -85,7 +109,6 @@ impl eframe::App for ChannelApp {
                         for i in 1..=4 {
                                 if ui.button(format!("Request id: {}", i)).clicked() && !self.loading {
                                         self.loading = true;
-                                        // let client = generate_client().unwrap();
                                         send_request(self.client.clone(), i, self.tx.clone(), ctx.clone());
                                 }
                         }
@@ -113,13 +136,24 @@ impl eframe::App for ChannelApp {
                                 });
                         }
                 });
+                // // valiant, but doomed attempt to get sync code to yield to single-threaded runtime
+                // // would never block the code though ... we actually wan
+                // let join_handle = tokio::task::spawn(async move {
+                //         tokio::time::sleep(Duration::from_millis(10)).await;
+                // });
+                // // join_handle.await; // <-- can't await the handle for the same reason we couldn't await sleep
+
+                // // outright crashes app: "`spawn_local` called from outside of a `task::LocalSet` or LocalRuntime"
+                // tokio::task::spawn_local(async move {
+                //         tokio::time::sleep(Duration::from_millis(10)).await;
+                // });
         }
 }
-// ///////////////////////////////// -accessory methods- ///////////////////////////////// //
+// ///////////////////////////////// -loop methods- ///////////////////////////////// //
 fn send_request(client: Client, req_id: u8, tx: std::sync::mpsc::Sender<Vec<Todo>>, ctx: egui::Context) {
         const URL_TYPICODE: &str = "https://jsonplaceholder.typicode.com";
         let todos_typicode = Url::parse(URL_TYPICODE).unwrap().join("/todos").unwrap();
-        tokio::spawn(async move {
+        tokio::task::spawn(async move {
                 let response = client
                         .request(Method::GET, todos_typicode)
                         .query(&[("userId", req_id)])
@@ -131,22 +165,6 @@ fn send_request(client: Client, req_id: u8, tx: std::sync::mpsc::Sender<Vec<Todo
                 let _ = tx.send(todos);
                 ctx.request_repaint();
         });
-}
-fn generate_client() -> Result<reqwest::Client, Box<dyn std::error::Error>> {
-        let default_headers = {
-                let mut headers = HeaderMap::new();
-                headers.insert(header::ACCEPT, "application/json".parse().unwrap());
-                headers.insert(header::CONTENT_TYPE, "application/json".parse().unwrap());
-                headers.insert(header::USER_AGENT, "rust-reqwest-client".parse().unwrap());
-                headers
-        };
-        let client = reqwest::Client::builder()
-                .https_only(true) // this will error for `http` (WARN: not compile-time checked)
-                .use_rustls_tls()
-                .default_headers(default_headers)
-                .timeout(Duration::from_secs(30)) // default is *no* timeout
-                .build()?;
-        Ok(client)
 }
 
 // let mut suspense = EguiSuspense::reloadable(|cb| {
