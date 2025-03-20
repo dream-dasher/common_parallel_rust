@@ -6,12 +6,10 @@ use reqwest::{
 };
 use serde::{Deserialize, Serialize};
 use std::time::Duration;
-
 // ///////////////////////////////// -main- ///////////////////////////////// //
 fn main() -> Result<(), Box<dyn std::error::Error>> {
         let async_runtime = tokio::runtime::Runtime::new().expect("Tokio runtime should be creatable.");
         let _enter = async_runtime.enter();
-
         // loop to keep thread up (?)
         std::thread::spawn(move || {
                 async_runtime.block_on(async {
@@ -20,7 +18,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         }
                 })
         });
-
         eframe::run_native(
                 "Hello egui + tokio",
                 eframe::NativeOptions::default(),
@@ -41,16 +38,18 @@ struct ChannelApp {
 
         loading: bool,
         error: Option<String>,
+        client: reqwest::Client,
 
         _selected_todo: Option<usize>,
 }
 impl Default for ChannelApp {
         fn default() -> Self {
                 let (tx, rx) = std::sync::mpsc::channel();
-                Self { tx, rx, todos: Vec::new(), loading: false, error: None, _selected_todo: None }
+                let client = generate_client().unwrap();
+                Self { tx, rx, todos: Vec::new(), loading: false, error: None, _selected_todo: None, client }
         }
 }
-
+// ///////////////////////////////// -accessory struct- ///////////////////////////////// //
 /// Struct to pull typicode responses into
 /// Example of using 'typed' JSON with Serde
 #[derive(Debug, Serialize, Deserialize)]
@@ -61,7 +60,6 @@ struct Todo {
         title: String,
         completed: bool,
 }
-
 // ///////////////////////////////// -loop- ///////////////////////////////// //
 impl eframe::App for ChannelApp {
         fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
@@ -70,11 +68,9 @@ impl eframe::App for ChannelApp {
                         self.loading = false;
                         ctx.request_repaint();
                 }
-
                 egui::CentralPanel::default().show(ctx, |ui| {
                         ui.heading("Async Fetch Example - grabs TODOs from Typicode");
                         ui.label("Press the button to initiate an HTTP request.");
-
                         if self.loading {
                                 ui.spinner();
                                 ui.label("Loading...");
@@ -85,17 +81,14 @@ impl eframe::App for ChannelApp {
                         } else {
                                 ui.label(format!("Loaded {} todos", self.todos.len()));
                         }
-
                         ui.add_space(10.0);
-
                         for i in 1..=4 {
                                 if ui.button(format!("Request id: {}", i)).clicked() && !self.loading {
                                         self.loading = true;
-                                        let client = generate_client().unwrap();
-                                        send_request(client, i, self.tx.clone(), ctx.clone());
+                                        // let client = generate_client().unwrap();
+                                        send_request(self.client.clone(), i, self.tx.clone(), ctx.clone());
                                 }
                         }
-
                         // ui.horizontal(|ui| {
                         //         for user_id in 1..=5 {
                         //                 if ui.button(format!("User {}", user_id)).clicked() && !self.loading {
@@ -106,7 +99,6 @@ impl eframe::App for ChannelApp {
                 });
                 egui::SidePanel::right("panel").show(ctx, |ui| {
                         ui.heading("Todos");
-
                         if self.todos.is_empty() {
                                 ui.label("No todos to display");
                         } else {
@@ -123,6 +115,7 @@ impl eframe::App for ChannelApp {
                 });
         }
 }
+// ///////////////////////////////// -accessory methods- ///////////////////////////////// //
 fn send_request(client: Client, req_id: u8, tx: std::sync::mpsc::Sender<Vec<Todo>>, ctx: egui::Context) {
         const URL_TYPICODE: &str = "https://jsonplaceholder.typicode.com";
         let todos_typicode = Url::parse(URL_TYPICODE).unwrap().join("/todos").unwrap();
