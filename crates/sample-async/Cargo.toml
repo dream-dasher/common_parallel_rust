@@ -15,7 +15,7 @@ workspace = true
 utilities = { path = "../utilities" }
 ## ~~~~~~~~~~~~ -async- ~~~~~~~~~~~~ #
 futures = { workspace = true }
-tokio = { workspace = true, features = ["rt"]  }# "fs","io-std","io-util","net","parking_lot","process","rt","rt-multi-thread","signal","sync","time",
+tokio = { workspace = true, features = ["rt", "process"]  }# "fs","io-std","io-util","net","parking_lot","process","rt","rt-multi-thread","signal","sync","time",
 ### ......... -remote- ......... #
 reqwest = { workspace = true, features = ["json"] } # "cookies","json",
 ### ......... -accessory- ......... #
