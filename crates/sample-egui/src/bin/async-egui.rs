@@ -147,6 +147,9 @@ impl eframe::App for ChannelApp {
                 // tokio::task::spawn_local(async move {
                 //         tokio::time::sleep(Duration::from_millis(10)).await;
                 // });
+
+                // // same deal
+                // tokio::task::yield_now().await;
         }
 }
 // ///////////////////////////////// -loop methods- ///////////////////////////////// //
