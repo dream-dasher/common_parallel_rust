@@ -24,6 +24,14 @@ lto = true        # true:= "fat"
 [profile.profiling] # for perf-analysis, e.g. `samply`
 inherits = "release"
 debug = true
+[profile.release.package.sample-egui] # for wasm deploy
+opt-level = 2
+[profile.release.package.sample-webapp] # for wasm deploy
+# lto = true # VERY slightly smaller wasm
+# opt-level = 's' # 10-20% smaller wasm compared to `opt-level = 3`
+# opt-level = 1 # very slow and big wasm. Don't do this.
+opt-level = 2 # fast and small wasm, basically same as `opt-level = 's'`
+# opt-level = 3 # unnecessarily large wasm for no performance gain
 
 # ################################# -user dependencies (workspace)- ################################# #
 [workspace.dependencies]
