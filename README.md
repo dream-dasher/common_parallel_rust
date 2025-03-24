@@ -71,3 +71,20 @@ c common_par...
 gfa
 <for each: git checkout <x>>
 ```
+
+
+## RustC
+[rustflags](https://rust-lang.github.io/packed_simd/perf-guide/target-feature/rustflags.html)
+[rust-lang discussion](https://users.rust-lang.org/t/find-out-what-features-are-supported-by-what-cpu/55293/6)
+
+```zsh
+rustc --print target-list
+rustc --print cfg
+rustc --print cfg -C target-cpu=native
+echo "--------------"
+TRIPLE=''
+rustc --target=${TRIPLE} --print target-features
+rustc --target=${TRIPLE} --print target-cpus
+echo "--------------"
+sysctl -a
+```
