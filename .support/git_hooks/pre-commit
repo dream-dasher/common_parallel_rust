@@ -58,13 +58,13 @@ echo -e "${DARK_GRAY}===========================================================
 
 echo -e "${DARK_GRAY}================================================================${NC}"
 echo -e "${YELLOW} checking for errors... ${NC}"
-cargo check --workspace --all-targets --all-features
+cargo check --workspace --all-features --all-targets
 echo -e "${GREEN} Error check successful. ${NC}"
 echo -e "${DARK_GRAY}================================================================${NC}"
 
 echo -e "${DARK_GRAY}================================================================${NC}"
 echo -e "${YELLOW} linting... ${NC}"
-cargo clippy --workspace --all-targets --all-features
+cargo clippy --workspace --all-features --all-targets
 echo -e "${GREEN} Lint check successful. ${NC}"
 echo -e "${DARK_GRAY}================================================================${NC}"
 
