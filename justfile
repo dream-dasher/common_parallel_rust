@@ -73,6 +73,7 @@ packadd name: && _date
 # All tests, little feedback unless issues are detected.
 [group('test')]
 test: && _date
+    cargo test --workspace --all-features --doc
     cargo nextest run --workspace --all-features --all-targets --no-fail-fast
 
 # Runtests for a specific package.
