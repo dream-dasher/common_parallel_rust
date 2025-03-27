@@ -1,14 +1,46 @@
+# ################################# -package features- ################################# #
 [package]
 name = "xtask"
 version = "0.1.0"
 edition.workspace = true
 authors.workspace = true
 publish = false
-
+# ################################# -lints- ################################# #
 [lints]
 workspace = true
+# ################################# -compile profiles- ################################# #
 
+# ################################# -user dependencies- ################################# #
 [dependencies]
-clap = { workspace = true, features = ["derive"] }
-# derive_more = { workspace = true, features = ["display"] }
+## ------------ -local- ------------ #
+## ~~~~~~~~~~~~ -async- ~~~~~~~~~~~~ #
+### ......... -remote- ......... #
+### ......... -accessory- ......... #
+## ~~~~~~~~~~~~ -diagnostics- ~~~~~~~~~~~~ #
+## ~~~~~~~~~~~~ -env & files- ~~~~~~~~~~~~ #
+### ......... -config- ......... #
+### ......... -proceses- ......... #
+## ~~~~~~~~~~~~ -ergonomics- ~~~~~~~~~~~~ #
+## ~~~~~~~~~~~~ -interface- ~~~~~~~~~~~~ #
+### ......... -cli- ......... #
+clap = { workspace = true, features = [] } # "env", "string", "unicode", "wrap_help",
 owo-colors = { workspace = true }
+### ......... -egui- ......... #
+## ~~~~~~~~~~~~ -math & science- ~~~~~~~~~~~~ #
+### ......... -data- ......... #
+### ......... -math- ......... #
+## ~~~~~~~~~~~~ -parsing- ~~~~~~~~~~~~ #
+## ~~~~~~~~~~~~ -time- ~~~~~~~~~~~~ #
+
+# ################################# -dev dependencies- ################################# #
+[dev-dependencies]
+## ~~~~~~~~~~~~ -benchmarking (workspace)- ~~~~~~~~~~~~ #
+divan = "0.1"
+## ~~~~~~~~~~~~ -test ergonomics (workspace)- ~~~~~~~~~~~~ #
+pretty_assertions = "1"
+test-log = { version = "0.2", features = ["trace"] }
+## ~~~~~~~~~~~~ -property sample testing (workspace)- ~~~~~~~~~~~~ #
+quickcheck = "1"
+quickcheck_macros = "1"
+## ~~~~~~~~~~~~ snapshot testing (workspace)- ~~~~~~~~~~~~ #
+insta = { version = "1", features = [] } # "clap","csv","json","redactions","serde","toml","walkdir",

@@ -54,18 +54,18 @@ use core::fmt;
 use std::{env, ffi::OsStr, num::NonZeroUsize};
 
 use bon::bon;
-use derive_more::{Display, Error, From};
 use dotenvy::dotenv;
-use tracing::{self, debug, error, info, instrument, trace};
+use thiserror::Error;
+use tracing::{self, debug, error, info, instrument as instrument_nobonconflict, trace}; // TODO: instrument_nobonconflict temporary to prevent unavoidable compiler warnings from bon
 // ///////////////////////////////// -error- ///////////////////////////////// //
-#[derive(Debug, Display, From, Error)]
+#[derive(Debug, Error)]
 pub enum HiddenValueError {
-        #[display("Reveal length ({requested}) exceeds value's UTF-8 char length ({actual})")]
+        #[error("Reveal length ({requested}) exceeds value's UTF-8 char length ({actual})")]
         RevealLengthTooLong { requested: usize, actual: usize },
-        #[display("Env var not found: {}", source)]
-        EnvVar { source: std::env::VarError },
-        #[display("Dotenv error: {}", source)]
-        Dotenv { source: dotenvy::Error },
+        #[error(transparent)]
+        EnvVar(#[from] std::env::VarError),
+        #[error(transparent)]
+        Dotenv(#[from] dotenvy::Error),
 }
 // ///////////////////////////////// -core export- ///////////////////////////////// //
 /// Authorization credentials required for remote access
@@ -95,7 +95,7 @@ impl HiddenValue<std::string::String> {
         /// ## Internal Note
         /// I don't love the flow of this function.  I don't like loading an entire `.env` file for one key file for one key.
         /// And the error clarity on file vs environment precedence is lacking and similarly not nicely match by code flow.
-        #[instrument(skip(key))]
+        #[instrument_nobonconflict(skip(key))]
         #[builder(start_fn = from_env_builder, finish_fn = build)]
         pub fn new_from_env<K>(
                 /// Environment key to use to grab value to hide.
@@ -181,8 +181,8 @@ impl<T> HiddenValue<T> {
         ///     let masked_string = masked_string.into();
         ///     ...
         /// ```
+        #[instrument_nobonconflict(skip_all)]
         #[builder]
-        #[instrument(skip_all)]
         pub fn new(
                 /// Value to hide. (From accidental logging, printing, etc.)
                 value: T,
@@ -210,7 +210,7 @@ impl<T> HiddenValue<T> {
         /// , nor even zeroizing on destruction (which doesn't ensure clean up in all locations it may have
         /// existed), keeping exposure intentional still appears to be best practice.
         #[must_use]
-        #[instrument(skip_all)]
+        #[instrument_nobonconflict(skip_all)]
         pub fn expose_value(&self) -> &T {
                 trace!("exposing hidden value");
                 &self.value
@@ -221,11 +221,10 @@ impl<T> HiddenValue<T> {
 // Manual ('spot') testing.
 #[cfg(test)]
 mod tests {
+        // ///////////////////////////////// -regular tests- ///////////////////////////////// //
+        use super::*;
         use pretty_assertions::assert_eq;
         use test_log::test;
-
-        use super::*;
-
         #[test]
         fn test_basic_hidden_value() {
                 let secret = "my_secret_value".to_string();
@@ -234,7 +233,6 @@ mod tests {
                 assert_eq!(hidden.expose_value(), &secret);
                 assert_eq!(format!("{:?}", hidden), "HiddenValue { REDACTED }");
         }
-
         #[test]
         fn test_partial_reveal() {
                 const TEST_SECRET: &str = "1234567890";
@@ -247,7 +245,6 @@ mod tests {
                         .unwrap();
                 assert_eq!(format!("{:?}", hidden), format!("HiddenValue {{ REDACTED..\"{}\" }}", TEST_OBF_STRING));
         }
-
         #[test]
         fn test_env_value() {
                 const TEST_KEY: &str = "TEST_KEY";
@@ -269,7 +266,6 @@ mod tests {
                 assert_eq!(hidden.expose_value(), TEST_VALUE);
                 assert_eq!(format!("{:?}", hidden), format!("HiddenValue {{ REDACTED..\"{}\" }}", test_value_last_4));
         }
-
         #[test]
         fn test_reveal_length_too_long() {
                 const TEST_KEY_2: &str = "TEST_KEY_2";
@@ -290,20 +286,16 @@ mod tests {
                 assert!(matches!(result, Err(HiddenValueError::RevealLengthTooLong { .. })));
         }
 }
-
-// QuickCheck tests
 #[cfg(test)]
 mod quickcheck_tests {
-        use quickcheck_macros::quickcheck;
-
+        // ///////////////////////////////// -randomized tests- ///////////////////////////////// //
         use super::*;
-
+        use quickcheck_macros::quickcheck;
         #[quickcheck]
         fn qc_test_hidden_value_preserves_content(value: String) -> bool {
                 let hidden = HiddenValue::builder().value(value.clone()).build().unwrap();
                 hidden.expose_value() == &value
         }
-
         #[quickcheck]
         fn qc_test_reveal_length_validation(value_len: u16, reveal_len: Option<NonZeroUsize>) -> bool {
                 const TEST_KEY_QC: &str = "TEST_KEY_QC";
@@ -333,12 +325,10 @@ mod quickcheck_tests {
                 }
         }
 }
-
 #[cfg(test)]
 mod insta_tests {
-
+        // ///////////////////////////////// -saved value tests- ///////////////////////////////// //
         use super::*;
-
         #[test]
         fn insta_test_string_hidden_value_debug() {
                 const TEST_VALUE_STR: &str = "alphabetagaga";
@@ -353,7 +343,6 @@ mod insta_tests {
                 let hidden_num = HiddenValue::builder().value(TEST_VALUE_NUM).build().unwrap();
                 insta::assert_debug_snapshot!(hidden_num, @"HiddenValue { REDACTED }");
         }
-
         #[test]
         fn insta_test_string_hidden_value_with_obfuscation_debug() {
                 const TEST_VALUE_STR: &str = "alphabetagaga";
@@ -383,7 +372,6 @@ mod insta_tests {
                         .unwrap();
                 insta::assert_debug_snapshot!(hidden_num, @r#"HiddenValue { REDACTED.."0_019" }"#);
         }
-
         #[test]
         fn insta_test_hidden_value_result() {
                 let hidden_result = HiddenValue::builder().value(12345).build();
