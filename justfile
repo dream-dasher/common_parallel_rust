@@ -75,7 +75,12 @@ packadd name: && _date
 test: && _date
     cargo test --workspace --all-features --doc
     cargo nextest run --cargo-quiet --cargo-quiet --no-fail-fast
-
+    
+# Run doc tests only.
+[group('test')]
+test-docs: && _date
+    cargo test --workspace --all-features --doc
+    
 # Runtests for a specific package.
 [group('test')]
 testp package="": && _date
