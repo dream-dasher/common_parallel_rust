@@ -1,0 +1,48 @@
+# ################################# -package features- ################################# #
+[package]
+name = "try-axum"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+keywords.workspace = true
+# ################################# -lints- ################################# #
+[lints]
+workspace = true
+# ################################# -compile profiles- ################################# #
+# ################################# -user dependencies- ################################# #
+[dependencies]
+## ------------ -local- ------------ #
+axum =  "0.8"
+http-body-util = "0.1"
+## ~~~~~~~~~~~~ -async- ~~~~~~~~~~~~ #
+tokio = { workspace = true, features = ["rt", "process"]  }# "fs","io-std","io-util","net","parking_lot","process","rt","rt-multi-thread","signal","sync","time",
+### ......... -remote- ......... #
+### ......... -accessory- ......... #
+## ~~~~~~~~~~~~ -diagnostics- ~~~~~~~~~~~~ #
+tracing = { workspace = true }  # features = ["release_max_level_warn"] | ["release_max_level_off"]
+tracing-subscriber = { workspace = true , features = [] } # "env-filter","json"
+## ~~~~~~~~~~~~ -env & files- ~~~~~~~~~~~~ #
+### ......... -config- ......... #
+### ......... -proceses- ......... #
+## ~~~~~~~~~~~~ -ergonomics- ~~~~~~~~~~~~ #
+## ~~~~~~~~~~~~ -interface- ~~~~~~~~~~~~ #
+### ......... -cli- ......... #
+### ......... -egui- ......... #
+## ~~~~~~~~~~~~ -math & science- ~~~~~~~~~~~~ #
+### ......... -data- ......... #
+### ......... -math- ......... #
+## ~~~~~~~~~~~~ -parsing- ~~~~~~~~~~~~ #
+## ~~~~~~~~~~~~ -time- ~~~~~~~~~~~~ #
+
+# ################################# -dev dependencies- ################################# #
+[dev-dependencies]
+## ~~~~~~~~~~~~ -benchmarking- ~~~~~~~~~~~~ #
+divan = "0.1"
+## ~~~~~~~~~~~~ -test ergonomics- ~~~~~~~~~~~~ #
+pretty_assertions = "1"
+test-log = { version = "0.2", features = ["trace"] }
+## ~~~~~~~~~~~~ -property sample testing- ~~~~~~~~~~~~ #
+quickcheck = "1"
+quickcheck_macros = "1"
+## ~~~~~~~~~~~~ snapshot testing- ~~~~~~~~~~~~ #
+insta = { version = "1", features = [] } # "clap","csv","json","redactions","serde","toml","walkdir",
