@@ -5,17 +5,17 @@
 //! they have a trait `View` for which `self.ui(ui)` is defined.
 //! That core `.ui(ui)` function just needs its code run within something that generates a UI.
 
-// ///////////////////////////////// -use- ///////////////////////////////// //
+// ///////////////////////////////// [ use ] ///////////////////////////////// //
 use eframe::egui;
 
-// ///////////////////////////////// -main- ///////////////////////////////// //
+// ///////////////////////////////// [ main ] ///////////////////////////////// //
 fn main() {
         let native_options = eframe::NativeOptions::default();
         eframe::run_native("Clipboard Test", native_options, Box::new(|cc| Ok(Box::new(ClipboardTest::new(cc)))))
                 .unwrap();
 }
 
-// ///////////////////////////////// -App Memory- ///////////////////////////////// //
+// ///////////////////////////////// [ App Memory ] ///////////////////////////////// //
 //                                     and init
 pub struct ClipboardTest {
         text: String,
@@ -79,7 +79,7 @@ impl ClipboardTest {
 //         }
 // }
 
-// ///////////////////////////////// -Core Loop- ///////////////////////////////// //
+// ///////////////////////////////// [ Core Loop ] ///////////////////////////////// //
 impl eframe::App for ClipboardTest {
         #[expect(unused)]
         fn update(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {

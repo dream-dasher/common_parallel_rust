@@ -1,4 +1,4 @@
-// ///////////////////////////////// -use- ///////////////////////////////// //
+// ///////////////////////////////// [ use ] ///////////////////////////////// //
 use eframe::egui;
 use reqwest::{
         Client, Method, Url,
@@ -6,7 +6,7 @@ use reqwest::{
 };
 use serde::{Deserialize, Serialize};
 use std::time::Duration;
-// ///////////////////////////////// -main- ///////////////////////////////// //
+// ///////////////////////////////// [ main ] ///////////////////////////////// //
 // fn main() -> Result<(), Box<dyn std::error::Error>> {
 //         // tokio::runtime::Builder::new_current_thread()
 //         // ^-- stalls app; tasks never run due to thread block by event loop
@@ -37,7 +37,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         )?;
         Ok(())
 }
-// ///////////////////////////////// -App Memory- ///////////////////////////////// //
+// ///////////////////////////////// [ App Memory ] ///////////////////////////////// //
 //                                     and init
 struct ChannelApp {
         // Sender/Receiver for async notifications.
@@ -57,7 +57,7 @@ impl Default for ChannelApp {
                 Self { tx, rx, todos: Vec::new(), loading: false, error: None, _selected_todo: None, client }
         }
 }
-// ///////////////////////////////// -app accessory- ///////////////////////////////// //
+// ///////////////////////////////// [ app accessory ] ///////////////////////////////// //
 /// Struct to pull typicode responses into
 /// Example of using 'typed' JSON with Serde
 #[derive(Debug, Serialize, Deserialize)]
@@ -84,7 +84,7 @@ fn generate_client() -> Result<reqwest::Client, Box<dyn std::error::Error>> {
                 .build()?;
         Ok(client)
 }
-// ///////////////////////////////// -loop- ///////////////////////////////// //
+// ///////////////////////////////// [ loop ] ///////////////////////////////// //
 impl eframe::App for ChannelApp {
         fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
                 if let Ok(todos) = self.rx.try_recv() {
@@ -152,7 +152,7 @@ impl eframe::App for ChannelApp {
                 // tokio::task::yield_now().await;
         }
 }
-// ///////////////////////////////// -loop methods- ///////////////////////////////// //
+// ///////////////////////////////// [ loop methods ] ///////////////////////////////// //
 fn send_request(client: Client, req_id: u8, tx: std::sync::mpsc::Sender<Vec<Todo>>, ctx: egui::Context) {
         const URL_TYPICODE: &str = "https://jsonplaceholder.typicode.com";
         let todos_typicode = Url::parse(URL_TYPICODE).unwrap().join("/todos").unwrap();

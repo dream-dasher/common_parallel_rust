@@ -49,7 +49,7 @@
 //!         Ok(())
 //! }
 //! ```
-// ///////////////////////////////// -use- ///////////////////////////////// //
+// ///////////////////////////////// [ use ] ///////////////////////////////// //
 use core::fmt;
 use std::{env, ffi::OsStr, num::NonZeroUsize};
 
@@ -57,7 +57,7 @@ use bon::bon;
 use dotenvy::dotenv;
 use thiserror::Error;
 use tracing::{self, debug, error, info, instrument as instrument_nobonconflict, trace}; // TODO: instrument_nobonconflict temporary to prevent unavoidable compiler warnings from bon
-// ///////////////////////////////// -error- ///////////////////////////////// //
+// ///////////////////////////////// [ error ] ///////////////////////////////// //
 #[derive(Debug, Error)]
 pub enum HiddenValueError {
         #[error("Reveal length ({requested}) exceeds value's UTF-8 char length ({actual})")]
@@ -67,7 +67,7 @@ pub enum HiddenValueError {
         #[error(transparent)]
         Dotenv(#[from] dotenvy::Error),
 }
-// ///////////////////////////////// -core export- ///////////////////////////////// //
+// ///////////////////////////////// [ core export ] ///////////////////////////////// //
 /// Authorization credentials required for remote access
 ///
 /// `obf_string`: used for debug (`{:?}`)
@@ -86,7 +86,7 @@ impl<T> fmt::Debug for HiddenValue<T> {
                 }
         }
 }
-// ///////////////////////////////// -string: get from env method- ///////////////////////////////// //
+// ///////////////////////////////// [ string: get from env method ] ///////////////////////////////// //
 #[bon]
 impl HiddenValue<std::string::String> {
         /// Attempt to find key in environment, optionally loading local or parent `.env` file first.
@@ -153,7 +153,7 @@ impl HiddenValue<std::string::String> {
                         .build()
         }
 }
-// ///////////////////////////////// -any: manual build- ///////////////////////////////// //
+// ///////////////////////////////// [ any: manual build ] ///////////////////////////////// //
 #[bon]
 impl<T> HiddenValue<T> {
         /// Create a new HiddenValue instance.
@@ -217,11 +217,11 @@ impl<T> HiddenValue<T> {
         }
 }
 
-// ///////////////////////////////// -tests- ///////////////////////////////// //
+// ///////////////////////////////// [ tests ] ///////////////////////////////// //
 // Manual ('spot') testing.
 #[cfg(test)]
 mod tests {
-        // ///////////////////////////////// -regular tests- ///////////////////////////////// //
+        // ///////////////////////////////// [ regular tests ] ///////////////////////////////// //
         use super::*;
         use pretty_assertions::assert_eq;
         use test_log::test;
@@ -288,7 +288,7 @@ mod tests {
 }
 #[cfg(test)]
 mod quickcheck_tests {
-        // ///////////////////////////////// -randomized tests- ///////////////////////////////// //
+        // ///////////////////////////////// [ randomized tests ] ///////////////////////////////// //
         use super::*;
         use quickcheck_macros::quickcheck;
         #[quickcheck]
@@ -327,7 +327,7 @@ mod quickcheck_tests {
 }
 #[cfg(test)]
 mod insta_tests {
-        // ///////////////////////////////// -saved value tests- ///////////////////////////////// //
+        // ///////////////////////////////// [ saved value tests ] ///////////////////////////////// //
         use super::*;
         #[test]
         fn insta_test_string_hidden_value_debug() {
