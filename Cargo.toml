@@ -77,7 +77,7 @@ clap = { version = "4", features = ["derive"] } # "env", "string", "unicode", "w
 # dialoguer = "0.11"
 owo-colors = "4"
 ### ......... -egui (workspace)- ......... #
-eframe = { version = "0.31", default-features = false, features = [] } # "default_fonts","glow","persistence","wayland","wgpu"
+eframe = { version = "0.31", default-features = false, features = ["wayland"] } # "default_fonts","glow","persistence","wayland","wgpu" # NOTE: 'wayland' required for linux targets
 egui = { version = "0.31", features = [] } # "callstack","document-features"
 egui_extras = { version = "0.31", features = [] } # "all_loaders","datepicker","document-features","serde","syntect",
 # egui_table = "0.3"
