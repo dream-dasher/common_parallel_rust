@@ -7,9 +7,7 @@ use futures::pin_mut;
 use owo_colors::OwoColorize as _;
 use std::error::Error;
 use std::sync::mpsc;
-use std::thread;
 use tokio::time::{self, Duration};
-use tracing::info;
 // ///////////////////////////////////////// [ main ] ///////////////////////////////////////// //
 #[tokio::main(flavor = "multi_thread")]
 async fn main() -> Result<(), Box<dyn Error>> {
@@ -32,10 +30,10 @@ async fn main() -> Result<(), Box<dyn Error>> {
         }
         // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [ timed-call+responses ] ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
         let client = reqwest::Client::builder().build()?;
-        let mut interval = time::interval(Duration::from_millis(100));
+        let mut interval = time::interval(Duration::from_millis(300));
         let mut now_yield = time::Instant::now();
         let delstream = stream! {
-                for i in 0..30 {
+                for i in 0..10 {
                         let now_req = time::Instant::now();
                         let resp = client.get("https://httpbin.org/get").send().await.unwrap();
                         let elapsed_req = now_req.elapsed();
@@ -72,23 +70,23 @@ async fn main() -> Result<(), Box<dyn Error>> {
                         let client = client.clone();
                         interval.tick().await;
                         tokio::task::spawn(async move {
-                                let now_req = time::Instant::now();
+                                let now_resp = time::Instant::now();
                                 let resp = client.get("https://httpbin.org/get").send().await.unwrap();
-                                let elapsed_req = now_req.elapsed();
-                                tx.send((i, resp, elapsed_req)).expect("send should be received");
+                                let elapsed_resp = now_resp.elapsed();
+                                tx.send((i, resp, elapsed_resp)).expect("send should be received");
                         });
                 }
                 Ok::<(), reqwest::Error>(())
         });
 
         let mut now_received = time::Instant::now();
-        while let Ok((i, resp, elapsed_req)) = rx.recv() {
+        while let Ok((i, resp, elapsed_resp)) = rx.recv() {
                 let elapsed_recv = now_received.elapsed();
                 println!(
-                        "{:>4}: received: {:>4}  -  elapsed: {:>4}  -  status: {:>4}",
+                        "{:>4}: received: {:>4}  -  response: {:>4}  -  status: {:>4}",
                         i,
                         elapsed_recv.as_millis(),
-                        elapsed_req.as_millis(),
+                        elapsed_resp.as_millis(),
                         resp.status().green(),
                 );
                 now_received = time::Instant::now();
@@ -101,13 +99,13 @@ async fn main() -> Result<(), Box<dyn Error>> {
         println!("status:  {:>99}", resp.status());
         println!("body:    {}", resp.text().await?);
         // ----------------------------- [ delayed ] ----------------------------- //
-        let mut interval = time::interval(Duration::from_millis(500));
+        let mut interval = time::interval(Duration::from_millis(100));
         interval.reset(); // <-- critical to start // alt: `interval.tick().await`
         let mut now_yield = time::Instant::now();
         let delstream = stream! {
-            for i in 0..30 {
+            for i in 0..20 {
                 let now_sleep = time::Instant::now();
-                time::sleep(Duration::from_millis(rand::random_range(0..500))).await;
+                time::sleep(Duration::from_millis(rand::random_range(0..100))).await;
                 let elapsed_sleep = now_sleep.elapsed();
 
                 let now_tick = time::Instant::now();
