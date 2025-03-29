@@ -35,6 +35,7 @@ derive_more = { workspace = true , features = ["error", "from", "display"] }
 ## ~~~~~~~~~~~~ -interface- ~~~~~~~~~~~~ #
 ### ......... -cli- ......... #
 clap = { workspace = true, features = [] } # "env", "string", "unicode", "wrap_help",
+owo-colors = { workspace = true }
 ### ......... -egui- ......... #
 ## ~~~~~~~~~~~~ -math & science- ~~~~~~~~~~~~ #
 ### ......... -data- ......... #
