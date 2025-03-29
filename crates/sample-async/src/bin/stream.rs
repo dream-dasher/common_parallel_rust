@@ -6,9 +6,12 @@ use futures::StreamExt;
 use futures::pin_mut;
 use owo_colors::OwoColorize as _;
 use std::error::Error;
+use std::sync::mpsc;
+use std::thread;
 use tokio::time::{self, Duration};
+use tracing::info;
 // ///////////////////////////////////////// [ main ] ///////////////////////////////////////// //
-#[tokio::main(flavor = "current_thread")]
+#[tokio::main(flavor = "multi_thread")]
 async fn main() -> Result<(), Box<dyn Error>> {
         // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [ classic ] ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
         let mut stream = tokio_stream::iter(&[0, 1, 2]);
@@ -27,26 +30,23 @@ async fn main() -> Result<(), Box<dyn Error>> {
         while let Some(value) = s.next().await {
                 println!("got {}", value);
         }
-        // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [ timed-calls ] ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
+        // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [ timed-call+responses ] ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
         let client = reqwest::Client::builder().build()?;
-        let mut interval = time::interval(Duration::from_millis(500));
-        // interval.reset(); // <-- critical to start // alt: `interval.tick().await`
+        let mut interval = time::interval(Duration::from_millis(100));
         let mut now_yield = time::Instant::now();
         let delstream = stream! {
-            for i in 0..30 {
+                for i in 0..30 {
+                        let now_req = time::Instant::now();
+                        let resp = client.get("https://httpbin.org/get").send().await.unwrap();
+                        let elapsed_req = now_req.elapsed();
 
-                let now_req = time::Instant::now();
-                let resp = client.get("https://httpbin.org/get").send().await.unwrap();
-                let elapsed_req = now_req.elapsed();
+                        let now_tick = time::Instant::now();
+                        interval.tick().await;
+                        let elapsed_tick = now_tick.elapsed();
 
-                let now_tick = time::Instant::now();
-                interval.tick().await;
-                let elapsed_tick = now_tick.elapsed();
-
-                let elapsed_yield = now_yield.elapsed();
-                yield (i, elapsed_tick.as_millis(), elapsed_req.as_millis(), elapsed_yield.as_millis(), resp);
-                now_yield = time::Instant::now();
-
+                        let elapsed_yield = now_yield.elapsed();
+                        yield (i, elapsed_tick.as_millis(), elapsed_req.as_millis(), elapsed_yield.as_millis(), resp);
+                        now_yield = time::Instant::now();
             }
         };
 
@@ -61,6 +61,38 @@ async fn main() -> Result<(), Box<dyn Error>> {
                         resp.status().green(),
                 );
         }
+        // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [ timed-call-tasks ] ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
+        let (tx, rx) = mpsc::channel();
+        tokio::task::spawn(async move {
+                // tx moved here and therefore dropped at end
+                let client = reqwest::Client::builder().build()?;
+                let mut interval = time::interval(Duration::from_millis(500));
+                for i in 0..30 {
+                        let tx = tx.clone();
+                        let client = client.clone();
+                        interval.tick().await;
+                        tokio::task::spawn(async move {
+                                let now_req = time::Instant::now();
+                                let resp = client.get("https://httpbin.org/get").send().await.unwrap();
+                                let elapsed_req = now_req.elapsed();
+                                tx.send((i, resp, elapsed_req)).expect("send should be received");
+                        });
+                }
+                Ok::<(), reqwest::Error>(())
+        });
+
+        let mut now_received = time::Instant::now();
+        while let Ok((i, resp, elapsed_req)) = rx.recv() {
+                let elapsed_recv = now_received.elapsed();
+                println!(
+                        "{:>4}: received: {:>4}  -  elapsed: {:>4}  -  status: {:>4}",
+                        i,
+                        elapsed_recv.as_millis(),
+                        elapsed_req.as_millis(),
+                        resp.status().green(),
+                );
+                now_received = time::Instant::now();
+        }
         // ----------------------------- [ reqwest ] ----------------------------- //
         let client = reqwest::Client::builder().build()?;
         let resp = client.get("https://httpbin.org/get").send().await?;
@@ -69,13 +101,13 @@ async fn main() -> Result<(), Box<dyn Error>> {
         println!("status:  {:>99}", resp.status());
         println!("body:    {}", resp.text().await?);
         // ----------------------------- [ delayed ] ----------------------------- //
-        let mut interval = time::interval(Duration::from_millis(1000));
+        let mut interval = time::interval(Duration::from_millis(500));
         interval.reset(); // <-- critical to start // alt: `interval.tick().await`
         let mut now_yield = time::Instant::now();
         let delstream = stream! {
             for i in 0..30 {
                 let now_sleep = time::Instant::now();
-                time::sleep(Duration::from_millis(rand::random_range(0..1000))).await;
+                time::sleep(Duration::from_millis(rand::random_range(0..500))).await;
                 let elapsed_sleep = now_sleep.elapsed();
 
                 let now_tick = time::Instant::now();
