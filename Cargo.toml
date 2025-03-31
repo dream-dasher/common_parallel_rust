@@ -45,7 +45,7 @@ tokio-stream = { version = "0.1", features=[] } # "fs","io-util","net","signal",
 reqwest = { version = "0.12", features = ["rustls-tls"] } # "cookies","json",
 sqlx = { version = "0.8", features = ["tls-rustls"] } # "sqlite","runtime-tokio",
 ### ......... -accessory (workspace)- ......... #
-governor = "0.10"
+governor = {version = "0.10", default-features = false, features = ["jitter", "std", "quanta"] } # "dashmap", "no_std"
 url = { version = "2" }
 ## ~~~~~~~~~~~~ -diagnostics (workspace)- ~~~~~~~~~~~~ #
 tracing = { version = "0.1", features = [] } # "release_max_level_warn"^"release_max_level_off"
