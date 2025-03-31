@@ -9,11 +9,13 @@ use reqwest::{
 use serde::{Deserialize, Serialize};
 use serde_json::Value as JsonValue;
 use std::error::Error;
+use std::num::NonZeroU32;
 use std::sync::{Arc, mpsc as blocking_mpsc};
 use std::time::Duration;
+use std::u32;
 use tokio::sync::Semaphore;
 use tokio::task::JoinSet;
-use tracing::{Instrument, debug_span, info, instrument};
+use tracing::{Instrument, debug_span, info, instrument, trace};
 use utilities::activate_global_default_tracing_subscriber;
 // ///////////////////////////////// [ main ] ///////////////////////////////// //
 // fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -58,6 +60,7 @@ struct FuturesApp {
         rx: blocking_mpsc::Receiver<reqwest::StatusCode>,
         _loading: bool,
         semaphore: Arc<Semaphore>,
+        requests_to_queue: NonZeroU32,
         client: ReqClient,
         _reqwests: Vec<Request>,
         join_set: JoinSet<Result<(), Box<dyn Error + Send + Sync>>>,
@@ -79,6 +82,7 @@ impl Default for FuturesApp {
                         rx,
                         _loading: false,
                         delay_sec: 1,
+                        requests_to_queue: NonZeroU32::new(1).unwrap(),
                         semaphore,
                         client,
                         _reqwests,
@@ -146,6 +150,8 @@ fn generate_client() -> Result<reqwest::Client, Box<dyn std::error::Error>> {
         Ok(client)
 }
 // ///////////////////////////////// [ loop ] ///////////////////////////////// //
+const NON_ZERO_MIN: NonZeroU32 = NonZeroU32::new(1).unwrap();
+const NON_ZERO_MAX: NonZeroU32 = NonZeroU32::new(u32::MAX).unwrap();
 impl eframe::App for FuturesApp {
         fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
                 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [ check-'n-count ] ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
@@ -165,6 +171,7 @@ impl eframe::App for FuturesApp {
                         ui.label(format!("Other count: {}", self.count_other));
                         ui.add_space(10.0);
                         ui.label(format!("Semaphore available: {}", self.semaphore.available_permits()));
+                        ui.label(format!("Queued Requests: {}", self.join_set.len()));
                         // for i in 1..=4 {
                         //         if ui.button(format!("Request id: {}", i)).clicked() && !self.loading {
                         //                 self.loading = true;
@@ -183,9 +190,23 @@ impl eframe::App for FuturesApp {
                 egui::SidePanel::right("right_panel").show(ctx, |ui| {
                         ui.heading("Right Panel");
                         ui.label("This is the right panel.");
-                        ui.add(egui::Slider::new(&mut self.delay_sec, 0..=100));
-                        if ui.button("Send Request").clicked() {
-                                self.send_request(self.delay_sec, ctx.clone());
+                        ui.add(egui::Slider::new(&mut self.delay_sec, 0..=10).text("Server Response Delay (sec)"));
+                        ui.add(egui::Slider::new(&mut self.requests_to_queue, NON_ZERO_MIN..=NON_ZERO_MAX)
+                                .text("Number of requests to queue"));
+                        if ui.button(format!("Send {} Request(s)", self.requests_to_queue))
+                                .clicked()
+                        {
+                                info!("Queueing requests");
+                                for _ in 1..=self.requests_to_queue.get() {
+                                        self.send_request(self.delay_sec, ctx.clone());
+                                }
+                        }
+                        if ui.button("Drop Requests").clicked() {
+                                info!("Aborting requests");
+                                self.join_set.abort_all();
+                                while self.join_set.try_join_next().is_some() {
+                                        trace!("Clearing finished/aborted task from JoinSet")
+                                }
                         }
                 });
         }
