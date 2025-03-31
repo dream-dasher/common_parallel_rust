@@ -85,7 +85,7 @@ pub fn activate_global_default_tracing_subscriber(
         // note: `tracing_subscriber::FmtSubscriber::builder()...` but `tracing_subscriber::fmt::Layer::default()...`
         let fmt_layer = tracing_subscriber::fmt::Layer::default()
                 // .compact()
-                // .pretty()
+                .pretty()
                 // .with_timer(<timer>)
                 .with_target(true)
                 .with_thread_ids(true)
