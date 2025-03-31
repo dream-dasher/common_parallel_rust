@@ -13,7 +13,7 @@ use std::sync::{Arc, mpsc as blocking_mpsc};
 use std::time::Duration;
 use tokio::sync::Semaphore;
 use tokio::task::JoinSet;
-use tracing::{info, info_span, instrument};
+use tracing::{Instrument, debug_span, info, instrument};
 use utilities::activate_global_default_tracing_subscriber;
 // ///////////////////////////////// [ main ] ///////////////////////////////// //
 // fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -99,9 +99,8 @@ impl FuturesApp {
                 let client = self.client.clone();
                 let tx = self.tx.clone();
                 let semaphore = self.semaphore.clone();
+                // NOTE: we're not actually using JoinSet -- in fact we're leaking due to lack of poll
                 self.join_set.spawn(async move {
-                        let span = info_span!("reqwest", delay);
-                        let _guard = span.enter();
                         let req = client
                                 .request(Method::GET, endpoint)
                                 .build()
@@ -115,7 +114,8 @@ impl FuturesApp {
                         // REPAINT
                         ctx.request_repaint();
                         Ok::<(), Box<dyn Error + Send + Sync>>(())
-                });
+                }
+                .instrument(debug_span!("reqwest", ?delay)));
         }
 }
 // ///////////////////////////////// [ app accessory ] ///////////////////////////////// //
@@ -145,11 +145,10 @@ fn generate_client() -> Result<reqwest::Client, Box<dyn std::error::Error>> {
                 .build()?;
         Ok(client)
 }
-// ///////////////////////////////// [ loop methods ] ///////////////////////////////// //
 // ///////////////////////////////// [ loop ] ///////////////////////////////// //
 impl eframe::App for FuturesApp {
         fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
-                // check message and update count
+                // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [ check-'n-count ] ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
                 if let Ok(status) = self.rx.try_recv() {
                         match status {
                                 _ if status.is_success() => self.count_200 += 1,
@@ -158,7 +157,7 @@ impl eframe::App for FuturesApp {
                         }
                         ctx.request_repaint();
                 }
-
+                // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [ display-pane ] ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
                 egui::CentralPanel::default().show(ctx, |ui| {
                         ui.heading("Async Fetch Example - grabs TODOs from Typicode");
                         ui.label(format!("200 count: {}", self.count_200));
@@ -180,6 +179,7 @@ impl eframe::App for FuturesApp {
                         //         }
                         // });
                 });
+                // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [ control-pane ] ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
                 egui::SidePanel::right("right_panel").show(ctx, |ui| {
                         ui.heading("Right Panel");
                         ui.label("This is the right panel.");
