@@ -32,6 +32,8 @@ tracing-subscriber = { workspace = true , features = [] } # "env-filter","json"
 ### ......... -proceses- ......... #
 ## ~~~~~~~~~~~~ -ergonomics- ~~~~~~~~~~~~ #
 derive_more = { workspace = true , features = ["error", "from", "display"] }
+indoc = { workspace = true }
+thiserror = { workspace = true }
 ## ~~~~~~~~~~~~ -interface- ~~~~~~~~~~~~ #
 ### ......... -cli- ......... #
 clap = { workspace = true, features = [] } # "env", "string", "unicode", "wrap_help",

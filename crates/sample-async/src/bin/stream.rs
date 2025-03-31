@@ -28,7 +28,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
         while let Some(value) = s.next().await {
                 println!("got {}", value);
         }
-        // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [ timed-call+responses ] ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
+        // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [ stream!-timed-call+responses ] ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
         let client = reqwest::Client::builder().build()?;
         let mut interval = time::interval(Duration::from_millis(300));
         let mut now_yield = time::Instant::now();
@@ -59,6 +59,38 @@ async fn main() -> Result<(), Box<dyn Error>> {
                         resp.status().green(),
                 );
         }
+        // // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [ JoinSet-timed-call+responses ] ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
+        // let client = reqwest::Client::builder().build()?;
+        // let mut interval = time::interval(Duration::from_millis(200));
+        // let mut now_yield = time::Instant::now();
+        // let mut jset = JoinSet::new();
+        // for i in 0..100 {
+        //         let client = client.clone();
+        //         let now_tick = time::Instant::now();
+        //         interval.tick().await;
+        //         let elapsed_tick = now_tick.elapsed();
+        //         jset.spawn(async move {
+        //                 let now_req = time::Instant::now();
+        //                 let resp = client.get("https://httpbin.org/get").send().await.unwrap();
+        //                 let elapsed_req = now_req.elapsed();
+
+        //                 let elapsed_yield = now_yield.elapsed();
+        //                 (i, elapsed_tick.as_millis(), elapsed_req.as_millis(), elapsed_yield.as_millis(), resp)
+        //         });
+        //         now_yield = time::Instant::now();
+        // }
+
+        // println!("-------  JoinSet timed request send -------");
+        // while let Some(Ok((i, tick, req, yielded, resp))) = jset.join_next().await {
+        //         println!(
+        //                 "{:>4}: request: {:>4}  -  tick: {:>4}  -  yield: {:>4}  -  status: {:>4}",
+        //                 i,
+        //                 req.red(),
+        //                 tick.cyan(),
+        //                 yielded.purple(),
+        //                 resp.status().green(),
+        //         );
+        // }
         // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [ timed-call-tasks ] ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
         let (tx, rx) = mpsc::channel();
         tokio::task::spawn(async move {

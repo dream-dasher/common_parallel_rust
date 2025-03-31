@@ -179,7 +179,7 @@ async fn main() -> SampleResult<()> {
                                 debug!(?result);
                         }
                         let time_passed = start_time.elapsed();
-                        debug!("All requests completed in {:?}", time_passed);
+                        info!("All requests completed in {:?}", time_passed);
                         println!(
                                 "`Join_All`: {} results returned, each with a delay of 2 or 3 seconds, in a total of {} seconds.",
                                 results.len(),
@@ -254,10 +254,18 @@ async fn main() -> SampleResult<()> {
                         .buffer_unordered(BURST_LIMIT.get() as usize);
 
                 let mut count = 0;
+
+                let mut call_time = std::time::Instant::now();
                 while let Some(result) = regulated_request_stream.next().await {
-                        println!("{}: {:.2}", count, start_time.elapsed().as_secs_f64());
+                        println!(
+                                "{}: {:.2} {:.2}",
+                                count,
+                                start_time.elapsed().as_secs_f64(),
+                                call_time.elapsed().as_secs() as f64
+                        );
                         count += 1;
                         debug!(?result);
+                        call_time = std::time::Instant::now();
                 }
         }
 
