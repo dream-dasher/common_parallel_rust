@@ -3489,6 +3489,7 @@ dependencies = [
  "reqwest",
  "rfd",
  "serde",
+ "serde_json",
  "test-log",
  "tokio",
  "tracing",

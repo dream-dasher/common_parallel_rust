@@ -52,7 +52,7 @@ egui_extras = { workspace = true, features = [] } # "all_loaders","datepicker","
 ### ......... -math- ......... #
 ## ~~~~~~~~~~~~ -parsing- ~~~~~~~~~~~~ #
 serde = { workspace = true }
-# serde_json = { workspace = true }
+serde_json = { workspace = true }
 ## ~~~~~~~~~~~~ -time- ~~~~~~~~~~~~ #
 
 # ################################# -dev dependencies- ################################# #
