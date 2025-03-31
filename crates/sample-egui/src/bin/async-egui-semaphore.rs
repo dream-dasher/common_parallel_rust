@@ -12,7 +12,6 @@ use std::error::Error;
 use std::num::NonZeroU32;
 use std::sync::{Arc, mpsc as blocking_mpsc};
 use std::time::Duration;
-use std::u32;
 use tokio::sync::Semaphore;
 use tokio::task::JoinSet;
 use tracing::{Instrument, debug_span, info, instrument, trace};
@@ -155,12 +154,15 @@ const NON_ZERO_MAX: NonZeroU32 = NonZeroU32::new(u32::MAX).unwrap();
 impl eframe::App for FuturesApp {
         fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
                 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [ check-'n-count ] ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
+                // NOTE: We would normally loop over the JoinSet, but we're intentionally over-using tools for exploration purposes.
                 if let Ok(status) = self.rx.try_recv() {
                         match status {
                                 _ if status.is_success() => self.count_200 += 1,
                                 _ if status.is_client_error() => self.count_400 += 1,
                                 _ => self.count_other += 1,
                         }
+                        let _log = self.join_set.try_join_next();
+                        trace!(join_set_clear_result=?_log);
                         ctx.request_repaint();
                 }
                 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [ display-pane ] ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
@@ -193,7 +195,7 @@ impl eframe::App for FuturesApp {
                         ui.add(egui::Slider::new(&mut self.delay_sec, 0..=10).text("Server Response Delay (sec)"));
                         ui.add(egui::Slider::new(&mut self.requests_to_queue, NON_ZERO_MIN..=NON_ZERO_MAX)
                                 .text("Number of requests to queue"));
-                        if ui.button(format!("Send {} Request(s)", self.requests_to_queue))
+                        if ui.button(format!("Queue {} Request(s)", self.requests_to_queue))
                                 .clicked()
                         {
                                 info!("Queueing requests");
