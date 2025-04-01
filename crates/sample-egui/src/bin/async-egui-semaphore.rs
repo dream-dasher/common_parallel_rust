@@ -20,7 +20,7 @@ It's intentionally variatals box to play with some options.
 */
 // ///////////////////////////////// [ use ] ///////////////////////////////// //
 use eframe::egui;
-use reqwest::{self, Request};
+use reqwest::{self};
 use reqwest::{Client as ReqClient, StatusCode};
 use reqwest::{
         Method, Url,
@@ -61,19 +61,23 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 type JoinSetArcMutex<T> = Arc<StdMutex<JoinSet<T>>>;
 #[derive(Debug)]
 struct FuturesApp {
+        // channel
         tx: BlockingSender<reqwest::StatusCode>,
         rx: BlockingReceiver<reqwest::StatusCode>,
+        //  general
         _loading: bool,
-        semaphore: Arc<Semaphore>,
-        requests_to_queue: NonZeroU32,
         client: ReqClient,
-        _reqwests: Vec<Request>,
+        semaphore: Arc<Semaphore>,
+        delay_sec: u8,
+        requests_to_queue: NonZeroU32,
+        // raw tasks
         join_set: JoinSet<Result<(), Box<dyn Error + Send + Sync>>>,
         join_set_caged: JoinSetArcMutex<Result<(), Box<dyn Error + Send + Sync>>>,
+        // task generator
         task_gen_tracker: TaskTracker,
         request_period: Duration,
         request_tasks_to_create: Arc<AtomicUsize>,
-        delay_sec: u8,
+        // results
         count_200: usize,
         count_400: usize,
         count_other: usize,
@@ -87,21 +91,24 @@ impl Default for FuturesApp {
                 let join_set = tokio::task::JoinSet::new();
                 let join_set_caged = Arc::new(StdMutex::new(tokio::task::JoinSet::new()));
                 let task_gen_tracker = TaskTracker::new();
-                let _reqwests = Vec::new();
                 Self {
+                        // channel
                         tx,
                         rx,
+                        // general
                         _loading: false,
+                        client,
+                        semaphore,
                         delay_sec: 1,
                         requests_to_queue: NonZeroU32::new(1).unwrap(),
-                        semaphore,
-                        client,
-                        _reqwests,
+                        // raw tasks
                         join_set,
                         join_set_caged,
+                        // task generator
                         task_gen_tracker,
                         request_period: Duration::from_millis(100),
                         request_tasks_to_create: Arc::new(AtomicUsize::new(0)),
+                        // results
                         count_200: 0,
                         count_400: 0,
                         count_other: 0,
@@ -110,6 +117,8 @@ impl Default for FuturesApp {
 }
 impl FuturesApp {
         #[instrument]
+        /// Generate a task that executes a semaphore-gated request.
+        /// This *ought* to take self, but that would make calling it from an independent task (the generator generator) more difficult.
         fn queue_request(
                 delay: u8,
                 client: ReqClient,
@@ -140,24 +149,24 @@ impl FuturesApp {
                 }
                 .instrument(debug_span!("reqwest", ?delay)));
         }
-        #[expect(clippy::too_many_arguments)]
-        fn metered_queue_request(
-                request_period: Duration,
-                requests_to_queue: NonZeroU32,
-                endpoint_delay: u8,
-                client: ReqClient,
-                semaphore: Arc<Semaphore>,
-                tx: BlockingSender<StatusCode>,
-                join_set_caged: JoinSetArcMutex<Result<(), Box<dyn Error + Send + Sync>>>,
-                task_gen_tracker: &TaskTracker,
-                atomic_counter: &mut Arc<AtomicUsize>,
-                ctx: egui::Context,
-        ) {
-                let arc_mutex = join_set_caged.clone();
+        /// Generate a Generator of tasks that execute semaphore-gated requests.
+        #[instrument]
+        fn metered_queue_request(&mut self, ctx: egui::Context) {
+                // ....................... [ cheap-clones-for-task ] ....................... //
+
+                let requests_to_queue = self.requests_to_queue;
+                let endpoint_delay = self.delay_sec;
+                let semaphore = self.semaphore.clone();
+                let tx = self.tx.clone();
+                let mut interval = interval(self.request_period);
+                let client = self.client.clone();
+                let arc_mutex = self.join_set_caged.clone();
+                let atomic_counter = self.request_tasks_to_create.clone();
+                // ....................... [ update-atomic-counter ] ....................... //
                 atomic_counter.fetch_add(requests_to_queue.get() as usize, Ordering::Relaxed);
-                let atomic_counter = atomic_counter.clone();
-                task_gen_tracker.spawn(async move {
-                        let mut interval = interval(request_period);
+                // ----------------------------- [ spawn-semaphore-gated-reqwest-task ] ----------------------------- //
+                self.task_gen_tracker.spawn(async move {
+                        // let mut interval = interval(request_period);
                         for _i in 0..requests_to_queue.get() {
                                 interval.tick().await;
                                 info!(_i, "tick");
@@ -269,18 +278,7 @@ impl eframe::App for FuturesApp {
                         .clicked()
                         {
                                 info!("Queueing metered requests");
-                                FuturesApp::metered_queue_request(
-                                        self.request_period,
-                                        self.requests_to_queue,
-                                        self.delay_sec,
-                                        self.client.clone(),
-                                        self.semaphore.clone(),
-                                        self.tx.clone(),
-                                        self.join_set_caged.clone(),
-                                        &self.task_gen_tracker,
-                                        &mut self.request_tasks_to_create,
-                                        ctx.clone(),
-                                );
+                                self.metered_queue_request(ctx.clone());
                         }
                         if ui.button("Drop Requests").clicked() {
                                 info!("Aborting requests");
