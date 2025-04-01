@@ -1,3 +1,23 @@
+/*!
+# Egui + Async + Rate & Task Control
+
+## Main motivation
+How *much* do request-tasks cost.  A lot of API surface encourages making N tasks and then progressively completing them -- with limitations via buffering or semaphore or (with some more work) rate-limiting.
+However, each Future takes memory.  Holding many Futures that won't be used until others are gone could (and does) eat said memory.
+e.g. - queueing up **100_000 or 1_000_000** tasks in a JoinSet moves this app to using about **1/2 or 1 GB**, respectively.
+
+The main alternatives are some sort of manual stream/iteration structure -- which is supported by tokio's async-stream crate and the `stream!` macro.  ...but requires code inside a macro context, where it's denied analytics support.
+Another available pattern is an "actor" model with some generator task that rate-limits the generation of tasks.
+We've used the later here (and contrasted it with raw generation).
+
+`JoinSet` has conveniences, but requires sharing a `&mut` reference to add tasks.  Which necessitates a mutex or shenanigans.
+`TaskTracker` works with only `&`, but requires additional code for Cancellation and for Result receipt.
+
+## Note (on variety for its own sake)
+This intentionally employs too many and sometimes awkwardly conflicting elements.  e.g. channels to transmit results while also polling a JoinSet, but not using the same results.
+Or utilizing a mix of JoinSet and TaskTracker without leaning on the strengths of either.
+It's intentionally variatals box to play with some options.
+*/
 // ///////////////////////////////// [ use ] ///////////////////////////////// //
 use eframe::egui;
 use reqwest::{self, Request};
@@ -30,7 +50,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 .maybe_error_logging_level(None)
                 .call()?;
         eframe::run_native(
-                "Hello egui + tokio",
+                "Async Future Memory Management",
                 eframe::NativeOptions::default(),
                 Box::new(|_cc| Ok(Box::new(FuturesApp::default()))),
         )?;
@@ -206,7 +226,6 @@ impl eframe::App for FuturesApp {
                 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [ right-control-pane ] ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
                 egui::SidePanel::right("right_panel").show(ctx, |ui| {
                         ui.heading("Immediate Future Generation");
-                        ui.label("This is the right panel.");
                         if ui.button(format!("Queue {} Request(s)", self.requests_to_queue))
                                 .clicked()
                         {
@@ -234,7 +253,6 @@ impl eframe::App for FuturesApp {
                 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [ left-control-pane ] ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
                 egui::SidePanel::left("left_panel").show(ctx, |ui| {
                         ui.heading("Metered Future Generation");
-                        ui.label("This is the left panel.");
                         let mut request_period_ms = self.request_period.as_millis() as u64;
                         if ui.add(egui::Slider::new(&mut request_period_ms, 10..=10000)
                                 .logarithmic(true)
@@ -276,7 +294,7 @@ impl eframe::App for FuturesApp {
                 });
                 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [ display-pane ] ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
                 egui::CentralPanel::default().show(ctx, |ui| {
-                        ui.heading("Async Fetch Example - grabs TODOs from Typicode");
+                        ui.heading("Data Display");
                         ui.label(format!("200 count: {}", self.count_200));
                         ui.label(format!("400 count: {}", self.count_400));
                         ui.label(format!("Other count: {}", self.count_other));
