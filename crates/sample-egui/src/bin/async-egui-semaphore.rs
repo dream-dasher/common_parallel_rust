@@ -39,6 +39,7 @@ use std::time::Duration;
 use tokio::sync::Semaphore;
 use tokio::task::JoinSet;
 use tokio::time::interval;
+use tokio_util::sync::CancellationToken;
 use tokio_util::task::TaskTracker;
 use tracing::{Instrument, debug_span, info, instrument, trace};
 use utilities::activate_global_default_tracing_subscriber;
@@ -77,6 +78,7 @@ struct FuturesApp {
         task_gen_tracker: TaskTracker,
         request_period: Duration,
         request_tasks_to_create: Arc<AtomicUsize>,
+        generator_cancel: CancellationToken,
         // results
         count_200: usize,
         count_400: usize,
@@ -108,6 +110,7 @@ impl Default for FuturesApp {
                         task_gen_tracker,
                         request_period: Duration::from_millis(100),
                         request_tasks_to_create: Arc::new(AtomicUsize::new(0)),
+                        generator_cancel: CancellationToken::new(),
                         // results
                         count_200: 0,
                         count_400: 0,
@@ -162,25 +165,35 @@ impl FuturesApp {
                 let client = self.client.clone();
                 let arc_mutex = self.join_set_caged.clone();
                 let atomic_counter = self.request_tasks_to_create.clone();
+                let cancel_token = self.generator_cancel.clone();
                 // ....................... [ update-atomic-counter ] ....................... //
                 atomic_counter.fetch_add(requests_to_queue.get() as usize, Ordering::Relaxed);
                 // ----------------------------- [ spawn-semaphore-gated-reqwest-task ] ----------------------------- //
                 self.task_gen_tracker.spawn(async move {
                         // let mut interval = interval(request_period);
-                        for _i in 0..requests_to_queue.get() {
-                                interval.tick().await;
-                                info!(_i, "tick");
-                                let mut join_set_caged = arc_mutex.lock().unwrap();
-                                FuturesApp::queue_request(
-                                        endpoint_delay,
-                                        client.clone(),
-                                        semaphore.clone(),
-                                        tx.clone(),
-                                        &mut join_set_caged,
-                                        ctx.clone(),
-                                );
-                                drop(join_set_caged);
-                                atomic_counter.fetch_sub(1, Ordering::Relaxed);
+                        for i in 0..requests_to_queue.get() {
+                                tokio::select! {
+                                        _ = interval.tick() => {
+                                                trace!(i, "tick");
+                                                let mut join_set_caged = arc_mutex.lock().unwrap();
+                                                FuturesApp::queue_request(
+                                                        endpoint_delay,
+                                                        client.clone(),
+                                                        semaphore.clone(),
+                                                        tx.clone(),
+                                                        &mut join_set_caged,
+                                                        ctx.clone(),
+                                                );
+                                                drop(join_set_caged);
+                                                atomic_counter.fetch_sub(1, Ordering::Relaxed);
+                                        }
+                                        _ = cancel_token.cancelled() => {
+                                                let remaining_dropped = (requests_to_queue.get() - i) as usize;
+                                                info!(iteration = i, remaining_dropped, "cancelled");
+                                                atomic_counter.fetch_sub(remaining_dropped, Ordering::Relaxed);
+                                                return;
+                                        }
+                                }
                         }
                 }
                 .instrument(debug_span!("metered request spawner", ?endpoint_delay)));
@@ -288,6 +301,13 @@ impl eframe::App for FuturesApp {
                                                 trace!("Clearing finished/aborted task from JoinSet")
                                         }
                                 }
+                        }
+                        if ui.button("Drop Request Generator(s)").clicked() {
+                                info!("Cancelling request generators");
+                                self.generator_cancel.cancel();
+                                // the cancellation state will persist (and appears irreversible): we provide the app with a new canellation token; (safe?)
+                                self.generator_cancel = CancellationToken::new();
+                                // note: no need to drain the generator queue, because it uses `TaskTracker` not `JoinSet`
                         }
                 });
                 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [ display-pane ] ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
