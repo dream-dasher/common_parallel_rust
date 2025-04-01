@@ -40,6 +40,7 @@ async-stream = "0.3"
 futures = "0.3"
 tokio = { version = "1", features = ["macros"]  }# "fs","io-std","io-util","net","parking_lot","process","rt","rt-multi-thread","signal","sync","time",
 tokio-stream = { version = "0.1", features=[] } # "fs","io-util","net","signal","sync","tokio-util"
+tokio-util = { version = "0.7", features = [] } # "codec","compat","futures-io","futures-util","hashbrown","io-util","rt","slab","time","tracing"
 # tokio wasm-compatible: "sync","macros","io-util","rt","time"
 ### ......... -remote (workspace)- ......... #
 reqwest = { version = "0.12", features = ["rustls-tls"] } # "cookies","json",
