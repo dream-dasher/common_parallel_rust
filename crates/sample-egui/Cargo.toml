@@ -1,90 +1,70 @@
+# ################################# -package features- ################################# #
 [package]
 name = "sample-egui"
 version.workspace = true
 edition.workspace = true
 authors.workspace = true
 keywords.workspace = true
-
-[profile.release]
-# lto = true # VERY slightly smaller wasm
-# opt-level = 's' # 10-20% smaller wasm compared to `opt-level = 3`
-# opt-level = 1 # very slow and big wasm. Don't do this.
-opt-level = 2 # fast and small wasm, basically same as `opt-level = 's'`
-# opt-level = 3 # unnecessarily large wasm for no performance gain
-
+# ################################# -lints- ################################# #
+[lints]
+workspace = true
+# ################################# -compile profiles- ################################# #
+## NOTE: non-root profiles will be ignored. This belongs in the workspace root as [profile.release.package.sample-egui]
+#     [profile.release]
+#     # lto = true # VERY slightly smaller wasm
+#     # opt-level = 's' # 10-20% smaller wasm compared to `opt-level = 3`
+#     # opt-level = 1 # very slow and big wasm. Don't do this.
+#     opt-level = 2 # fast and small wasm, basically same as `opt-level = 's'`
+#     # opt-level = 3 # unnecessarily large wasm for no performance gain
+# ################################# -user dependencies- ################################# #
 [dependencies]
-# ---- local ----
+## ------------ -local- ------------ #
 utilities = { path = "../utilities" }
-# egui_suspense = {version = "0.8"}
-
-## --Async--
+## ~~~~~~~~~~~~ -async- ~~~~~~~~~~~~ #
 # futures = { workspace = true }
-tokio = { workspace = true }
-### - Remote -
-reqwest = { workspace = true }
-# sqlx = { workspace = true }
-### - Accessory -
-# governor = { workspace = true }
-# url = { workspace = true }
-
-## --Diagnostics--
+tokio = { workspace = true, features = ["rt-multi-thread", "time"]  }# "fs","io-std","io-util","net","parking_lot","process","rt","rt-multi-thread","signal","sync","time",
+tokio-util = { workspace =true, features = ["rt"] } # "codec","compat","futures-io","futures-util","hashbrown","io-util","rt","slab","time","tracing"
+### ......... -remote- ......... #
+reqwest = { workspace = true, features = ["rustls-tls"] } # "cookies","json",
+### ......... -accessory- ......... #
+## ~~~~~~~~~~~~ -diagnostics- ~~~~~~~~~~~~ #
 tracing = { workspace = true }  # features = ["release_max_level_warn"] | ["release_max_level_off"]
 tracing-appender = { workspace = true }
 tracing-error = { workspace = true }
-tracing-subscriber = { workspace = true }
-# tracing-timing = { workspace = true }
-
-## --Env & Files--
-# arboard = { workspace = true }
-# include_dir = { workspace = true }
+tracing-subscriber = { workspace = true , features = [] } # "env-filter","json"
+## ~~~~~~~~~~~~ -env & files- ~~~~~~~~~~~~ #
 rfd = { workspace = true }
-
-## --Ergonomics--
-# bon = { workspace = true }
-derive_more = { workspace = true }
+### ......... -config- ......... #
+### ......... -proceses- ......... #
+## ~~~~~~~~~~~~ -ergonomics- ~~~~~~~~~~~~ #
+derive_more = { workspace = true , features = ["error", "from", "display"] }
 indoc = { workspace = true }
-# itertools = { workspace = true }
-# nestify = { workspace = true }
-# strum = { workspace = true }
-
-## --Interface--
-### - CLI -
-# owo-colors = { workspace = true }
-### - egui -
-eframe = { workspace = true }
-egui = { workspace = true }
-egui_extras = { workspace = true }
+## ~~~~~~~~~~~~ -interface- ~~~~~~~~~~~~ #
+### ......... -cli- ......... #
+### ......... -egui- ......... #
+eframe = { workspace = true, features = ["persistence","wgpu"] } # "default_fonts","glow","persistence","wayland","wgpu"
+egui = { workspace = true, features = [] } # "callstack", "document-features"
+egui_extras = { workspace = true, features = [] } # "all_loaders","datepicker","document-features","serde","syntect",
 # egui_table = { workspace = true }
 # egui_inbox = { workspace = true }
-
-# ## --Math & Science--
-# ### - Data -
-# polars = { workspace = true, features = [] }
-# ### - Math -
-# faer = { workspace = true }
-# rand = { workspace = true }
-
-## --Parsing--
+# egui_suspense = {version = "0.8"}
+## ~~~~~~~~~~~~ -math & science- ~~~~~~~~~~~~ #
+### ......... -data- ......... #
+### ......... -math- ......... #
+## ~~~~~~~~~~~~ -parsing- ~~~~~~~~~~~~ #
 serde = { workspace = true }
-# serde_json = { workspace = true }
+serde_json = { workspace = true }
+## ~~~~~~~~~~~~ -time- ~~~~~~~~~~~~ #
 
-## --Time--
-# jiff = { workspace = true }
-
-
+# ################################# -dev dependencies- ################################# #
 [dev-dependencies]
-# Dev-Dependencies
-##__Benchmarking__
-divan = { workspace = true }
-## __Test_Ergonomics__
-pretty_assertions = { workspace = true }
-test-log = { workspace = true }
-## __Property Sample Testing__
-quickcheck = { workspace = true }
-quickcheck_macros = { workspace = true }
-## __Snapshot Testing__
-insta = { workspace = true }
-
-
-[lints]
-workspace = true
+## ~~~~~~~~~~~~ -benchmarking (workspace)- ~~~~~~~~~~~~ #
+divan = "0.1"
+## ~~~~~~~~~~~~ -test ergonomics (workspace)- ~~~~~~~~~~~~ #
+pretty_assertions = "1"
+test-log = { version = "0.2", features = ["trace"] }
+## ~~~~~~~~~~~~ -property sample testing (workspace)- ~~~~~~~~~~~~ #
+quickcheck = "1"
+quickcheck_macros = "1"
+## ~~~~~~~~~~~~ snapshot testing (workspace)- ~~~~~~~~~~~~ #
+insta = { version = "1", features = [] } # "clap","csv","json","redactions","serde","toml","walkdir",

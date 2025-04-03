@@ -1,15 +1,15 @@
 //! Code Editing Example
 
-// ///////////////////////////////// -use- ///////////////////////////////// //
+// ///////////////////////////////// [ use ] ///////////////////////////////// //
 use indoc::indoc;
 
-// ///////////////////////////////// -main- ///////////////////////////////// //
+// ///////////////////////////////// [ main ] ///////////////////////////////// //
 fn main() {
         let native_options = eframe::NativeOptions::default();
         eframe::run_native("CodeEditor", native_options, Box::new(|_cc| Ok(Box::new(CodeEditorExample::default()))))
                 .unwrap();
 }
-// ///////////////////////////////// -App Memory- ///////////////////////////////// //
+// ///////////////////////////////// [ App Memory ] ///////////////////////////////// //
 //                                     and init
 #[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct CodeEditorExample {
@@ -23,7 +23,7 @@ impl Default for CodeEditorExample {
         }
 }
 
-// ///////////////////////////////// -Core Loop- ///////////////////////////////// //
+// ///////////////////////////////// [ Core Loop ] ///////////////////////////////// //
 impl eframe::App for CodeEditorExample {
         fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
                 egui::CentralPanel::default().show(ctx, |ui| {
@@ -80,7 +80,7 @@ impl eframe::App for CodeEditorExample {
         }
 }
 
-// ///////////////////////////////// -Reference Value- ///////////////////////////////// //
+// ///////////////////////////////// [ Reference Value ] ///////////////////////////////// //
 const CODE_SAMPLE: &str = indoc! {r#"
 impl eframe::App for CodeEditorExample {
         fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {

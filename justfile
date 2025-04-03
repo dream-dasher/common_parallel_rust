@@ -74,17 +74,22 @@ packadd name: && _date
 [group('test')]
 test: && _date
     cargo test --workspace --all-features --doc
-    cargo nextest run --cargo-quiet --cargo-quiet --no-fail-fast
+    cargo nextest run --workspace --all-features --all-targets --no-fail-fast
+
+# Run doc tests only.
+[group('test')]
+test-docs: && _date
+    cargo test --workspace --all-features --doc
 
 # Runtests for a specific package.
 [group('test')]
 testp package="": && _date
     cargo test --doc --quiet --package {{package}}
-    cargo nextest run --cargo-quiet --cargo-quiet --package {{package}} --no-fail-fast
+    cargo nextest run --all-features --all-targets --no-fail-fast --package {{package}}
 
 # Run a specific test with output visible. (Use '' for test_name to see all tests and set log_level)
 [group('test')]
-test-view test_name="" log_level="error": && _date
+_test-view test_name="" log_level="error": && _date
     @echo "'Fun' Fact; the '--test' flag only allows integration test selection and will just fail on unit tests."
     RUST_LOG={{log_level}} cargo test {{test_name}} -- --nocapture
 
@@ -92,13 +97,14 @@ test-view test_name="" log_level="error": && _date
 [group('test')]
 testnx-view test_name="" log_level="error": && _date
     @echo "'Fun' Fact; the '--test' flag only allows integration test selection and will just fail on unit tests."
-    RUST_LOG={{log_level}} cargo nextest run {{test_name}} --no-capture --no-fail-fast
+    RUST_LOG={{log_level}} cargo nextest run {{test_name}} --no-capture --no-fail-fast --all-features --all-targets
 
 # All tests, little feedback unless issues are detected.
 [group('test')]
 test-whisper:
     cargo test --doc --quiet
-    cargo nextest run --cargo-quiet --cargo-quiet --status-level=leak
+    cargo nextest run --cargo-quiet --cargo-quiet --workspace --all-features --all-targets --status-level=leak
+
 
 # Run performance analysis on a package.
 [group('perf')]

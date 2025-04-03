@@ -13,7 +13,7 @@
 //! ## Caution
 //! - Tracing is poorly documented and methods poorly named.  One can easily use, e.g., `::fmt()` instead of `::fmt` and be greeted with cryptic or even misdirecting errors.
 //!   - I have no solution for this.  *Just be careful!*  It is very easy to lose a lot of time chain one's tail, on seemingly trivial configuration.
-// ///////////////////////////////// -use- ///////////////////////////////// //
+// ///////////////////////////////// [ use ] ///////////////////////////////// //
 use std::path::PathBuf;
 
 use bon::builder;
@@ -21,7 +21,7 @@ use tracing::{level_filters::LevelFilter, subscriber::SetGlobalDefaultError};
 use tracing_appender::non_blocking::WorkerGuard;
 use tracing_error::ErrorLayer;
 use tracing_subscriber::prelude::*;
-// ///////////////////////////////// -compile context settings- ///////////////////////////////// //
+// ///////////////////////////////// [ compile context settings ] ///////////////////////////////// //
 #[cfg(debug_assertions)]
 const DEFAULT_LOGGING_LEVEL: LevelFilter = LevelFilter::INFO;
 #[cfg(debug_assertions)]
@@ -31,7 +31,7 @@ const DEFAULT_ERROR_LOGGING_LEVEL: LevelFilter = LevelFilter::TRACE;
 const DEFAULT_LOGGING_LEVEL: LevelFilter = LevelFilter::WARN;
 #[cfg(not(debug_assertions))]
 const DEFAULT_ERROR_LOGGING_LEVEL: LevelFilter = LevelFilter::WARN;
-// ///////////////////////////////// -core export- ///////////////////////////////// //
+// ///////////////////////////////// [ core export ] ///////////////////////////////// //
 /// (Convenience function.) Generates a tracing_subcsriber and sets it as global default, while returning a writer guard.
 ///
 /// ## Caveat
@@ -85,7 +85,7 @@ pub fn activate_global_default_tracing_subscriber(
         // note: `tracing_subscriber::FmtSubscriber::builder()...` but `tracing_subscriber::fmt::Layer::default()...`
         let fmt_layer = tracing_subscriber::fmt::Layer::default()
                 // .compact()
-                // .pretty()
+                .pretty()
                 // .with_timer(<timer>)
                 .with_target(true)
                 .with_thread_ids(true)

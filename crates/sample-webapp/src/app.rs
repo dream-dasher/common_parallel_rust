@@ -1,13 +1,13 @@
 //! Primary body of egui code
 //!
 
-// ///////////////////////////////// -use- ///////////////////////////////// //
+// ///////////////////////////////// [ use ] ///////////////////////////////// //
 use egui::{Key, ScrollArea};
 use std::sync::mpsc::{self, Receiver};
 use std::thread;
 use std::time::Duration;
 
-// ///////////////////////////////// -App Memory- ///////////////////////////////// //
+// ///////////////////////////////// [ App Memory ] ///////////////////////////////// //
 //                                     and init
 
 /// We derive Deserialize/Serialize so we can persist app state on shutdown.
@@ -75,7 +75,7 @@ impl WebCompatibleApp {
         }
 }
 
-// ///////////////////////////////// -Core Loop- ///////////////////////////////// //
+// ///////////////////////////////// [ Core Loop ] ///////////////////////////////// //
 impl eframe::App for WebCompatibleApp {
         /// Called by the frame work to save state before shutdown.
         fn save(&mut self, storage: &mut dyn eframe::Storage) {
