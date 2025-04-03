@@ -142,6 +142,7 @@ impl FuturesApp {
                                 .expect("should be valid reqwest");
                         info!(?req);
                         let _permit = semaphore.acquire().await;
+                        ctx.request_repaint();
                         info!(?_permit);
                         let resp = client.execute(req).await?;
                         info!(?resp);
@@ -194,6 +195,7 @@ impl FuturesApp {
                                                 return;
                                         }
                                 }
+                                ctx.request_repaint();
                         }
                 }
                 .instrument(debug_span!("metered request spawner", ?endpoint_delay)));
@@ -262,6 +264,7 @@ impl eframe::App for FuturesApp {
                                                 ctx.clone(),
                                         );
                                 }
+                                ctx.request_repaint();
                         }
                 ui.label("If we used JoinSet instead of TaskTracker we could drop the generators without an explicit cancellation tooken.");
                         if ui.button("Drop Requests").clicked() {
@@ -270,6 +273,7 @@ impl eframe::App for FuturesApp {
                                 while self.join_set.try_join_next().is_some() {
                                         trace!("Clearing finished/aborted task from JoinSet")
                                 }
+                                ctx.request_repaint();
                         }
                 });
                 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [ left-control-pane ] ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
@@ -292,6 +296,7 @@ impl eframe::App for FuturesApp {
                         {
                                 info!("Queueing metered requests");
                                 self.metered_queue_request(ctx.clone());
+                                ctx.request_repaint();
                         }
                         if ui.button("Drop Requests").clicked() {
                                 info!("Aborting requests");
@@ -300,6 +305,7 @@ impl eframe::App for FuturesApp {
                                         while join_set_caged.try_join_next().is_some() {
                                                 trace!("Clearing finished/aborted task from JoinSet")
                                         }
+                                        ctx.request_repaint();
                                 }
                         }
                         if ui.button("Drop Request Generator(s)").clicked() {
@@ -308,6 +314,7 @@ impl eframe::App for FuturesApp {
                                 // the cancellation state will persist (and appears irreversible): we provide the app with a new canellation token; (safe?)
                                 self.generator_cancel = CancellationToken::new();
                                 // note: no need to drain the generator queue, because it uses `TaskTracker` not `JoinSet`
+                                ctx.request_repaint();
                         }
                 });
                 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [ display-pane ] ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
