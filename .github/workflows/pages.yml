@@ -17,12 +17,6 @@ on:
 #     types:
 #       - published
 
-env:
-  WASM_TRUNK_DEPLOY_CRATE: sample-webapp
-  # RUSTFLAGS: -D warnings
-  # RUSTDOCFLAGS: -D warnings
-  # NIGHTLY_VERSION: nightly-20xx-yy-zz
-
 permissions:
   contents: write # for committing to gh-pages branch.
 

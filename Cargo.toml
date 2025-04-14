@@ -25,8 +25,6 @@ lto = true        # true:= "fat"
 inherits = "release"
 debug = true
 [profile.release.package.sample-egui] # for wasm deploy
-opt-level = 2
-[profile.release.package.sample-webapp] # for wasm deploy
 # lto = true # VERY slightly smaller wasm
 # opt-level = 's' # 10-20% smaller wasm compared to `opt-level = 3`
 # opt-level = 1 # very slow and big wasm. Don't do this.
@@ -80,7 +78,8 @@ clap = { version = "4", features = ["derive"] } # "env", "string", "unicode", "w
 # dialoguer = "0.11"
 owo-colors = "4"
 ### ......... -egui (workspace)- ......... #
-eframe = { version = "0.31", default-features = false, features = ["wayland"] } # "default_fonts","glow","persistence","wayland","wgpu" # NOTE: 'wayland' required for linux targets
+eframe = { version = "0.31" } # "default_fonts","glow","persistence","wayland","wgpu" # NOTE: 'wayland' required for linux targets
+# eframe = { version = "0.31", default-features = false, features = ["wayland"] } # "default_fonts","glow","persistence","wayland","wgpu" # NOTE: 'wayland' required for linux targets
 egui = { version = "0.31", features = [] } # "callstack","document-features"
 egui_extras = { version = "0.31", features = [] } # "all_loaders","datepicker","document-features","serde","syntect",
 # egui_table = "0.3"
