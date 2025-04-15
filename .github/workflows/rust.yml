@@ -2,13 +2,6 @@ name: CI
 
 on: [push, pull_request, workflow_dispatch]
 
-env:
-  WASM_TRUNK_DEPLOY_CRATE: sample-webapp
-  # RUSTFLAGS: -D warnings
-  # RUSTDOCFLAGS: -D warnings
-  # NIGHTLY_VERSION: nightly-20xx-yy-zz
-
-
 jobs:
   check:
     name: Check
@@ -25,23 +18,6 @@ jobs:
         with:
           command: check
           args: --all-features
-
-  check_wasm:
-    name: Check wasm32
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          # toolchain: nightly
-          toolchain: stable
-          target: wasm32-unknown-unknown
-          override: true
-      - uses: actions-rs/cargo@v1
-        with:
-          command: check
-          args: --all-features --lib --target wasm32-unknown-unknown
 
   test:
     name: Test Suite
@@ -76,24 +52,3 @@ jobs:
         with:
           command: clippy
           # args: -- -D warnings
-
-  # TODO: generalize this to check multiple crates or all crates with root `index.html`
-  trunk:
-    name: trunk
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          # toolchain: nightly
-          toolchain: stable
-          target: wasm32-unknown-unknown
-          override: true
-      - name: Download and install Trunk binary
-        run: |
-          wget -qO- https://github.com/thedodd/trunk/releases/latest/download/trunk-x86_64-unknown-linux-gnu.tar.gz | tar -xzf-
-          sudo mv trunk /usr/local/bin/
-      - name: Build
-        working-directory: crates/${{ env.WASM_TRUNK_DEPLOY_CRATE }}
-        run: trunk build
