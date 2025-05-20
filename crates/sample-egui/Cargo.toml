@@ -51,6 +51,7 @@ egui_extras = { workspace = true, features = [] } # "all_loaders","datepicker","
 ## ~~~~~~~~~~~~ -math & science- ~~~~~~~~~~~~ #
 ### ......... -data- ......... #
 ### ......... -math- ......... #
+rand = { workspace = true }
 ## ~~~~~~~~~~~~ -parsing- ~~~~~~~~~~~~ #
 serde = { workspace = true }
 serde_json = { workspace = true }
