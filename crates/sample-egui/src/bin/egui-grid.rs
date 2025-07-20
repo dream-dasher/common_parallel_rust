@@ -32,11 +32,12 @@ impl GridApp {
         let mut grid = Vec::with_capacity(grid_size);
 
         for _ in 0..grid_size {
-            let mut row = Vec::with_capacity(grid_size);
-            for _ in 0..grid_size {
-                // Initialize all cells as false (black)
-                row.push(false);
-            }
+            let row = vec![false; grid_size];
+            // let mut row = Vec::with_capacity(grid_size);
+            // for _ in 0..grid_size {
+            //     // Initialize all cells as false (black)
+            //     row.push(false);
+            // }
             grid.push(row);
         }
 

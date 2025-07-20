@@ -62,12 +62,12 @@ impl eframe::App for CodeEditorExample {
                 });
             });
 
-            let mut layouter = |ui: &egui::Ui, string: &str, wrap_width: f32| {
+            let mut layouter = |ui: &egui::Ui, string: &dyn egui::TextBuffer, wrap_width: f32| {
                 let mut layout_job = egui_extras::syntax_highlighting::highlight(
                     ui.ctx(),
                     ui.style(),
                     &code_theme,
-                    string,
+                    string.as_str(),
                     language,
                 );
                 layout_job.wrap.max_width = wrap_width;
@@ -118,12 +118,12 @@ impl eframe::App for CodeEditorExample {
                                         code_theme.clone().store_in_memory(ui.ctx());
                                 });
                         });
-                        let mut layouter = |ui: &egui::Ui, string: &str, wrap_width: f32| {
+                        let mut layouter = |ui: &egui::Ui, string: &dyn egui::TextBuffer, wrap_width: f32| {
                                 let mut layout_job = egui_extras::syntax_highlighting::highlight(
                                         ui.ctx(),
                                         ui.style(),
                                         &code_theme,
-                                        string,
+                                        string.as_str(),
                                         language,
                                 );
                                 layout_job.wrap.max_width = wrap_width;

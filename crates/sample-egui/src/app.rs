@@ -61,7 +61,7 @@ impl eframe::App for SampleApp {
         egui::TopBottomPanel::top("top_panel").show(ctx, |ui| {
             // The top panel is often a good place for a menu bar:
 
-            egui::menu::bar(ui, |ui| {
+            egui::MenuBar::new().ui(ui, |ui| {
                 // NOTE: no File->Quit on web pages!
                 ui.menu_button("File", |ui| {
                     if ui.button("Quit").clicked() {

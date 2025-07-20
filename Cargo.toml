@@ -46,7 +46,10 @@ tokio-util = { version = "0.7", features = [
 ] } # "codec","compat","futures-io","futures-util","hashbrown","io-util","rt","slab","time","tracing"
 # tokio wasm-compatible: "sync","macros","io-util","rt","time"
 ### ......... -remote (workspace)- ......... #
-reqwest = { version = "0.12", features = ["rustls-tls"] } # "cookies","json",
+reqwest = { version = "0.12", features = [
+    "json",
+    "rustls-tls",
+] } # "cookies","json","rustls-tls"
 sqlx = { version = "0.8", features = [
     "tls-rustls",
 ] } # "sqlite","runtime-tokio",
@@ -93,10 +96,10 @@ clap = { version = "4", features = [
 # dialoguer = "0.11"
 owo-colors = "4"
 ### ......... -egui (workspace)- ......... #
-eframe = { version = "0.31" } # "default_fonts","glow","persistence","wayland","wgpu" # NOTE: 'wayland' required for linux targets
-# eframe = { version = "0.31", default-features = false, features = ["wayland"] } # "default_fonts","glow","persistence","wayland","wgpu" # NOTE: 'wayland' required for linux targets
-egui = { version = "0.31", features = [] } # "callstack","document-features"
-egui_extras = { version = "0.31", features = [
+eframe = { version = "0.32" } # "default_fonts","glow","persistence","wayland","wgpu" # NOTE: 'wayland' required for linux targets
+# eframe = { version = "0.32", default-features = false, features = ["wayland"] } # "default_fonts","glow","persistence","wayland","wgpu" # NOTE: 'wayland' required for linux targets
+egui = { version = "0.32", features = [] } # "callstack","document-features"
+egui_extras = { version = "0.32", features = [
 ] } # "all_loaders","datepicker","document-features","serde","syntect",
 # egui_table = "0.3"
 # egui_inbox = "0.7"
