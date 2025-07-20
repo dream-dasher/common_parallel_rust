@@ -151,18 +151,34 @@ where
     }
 }
 
+impl<T> From<T> for Box<ErrWrapper>
+where
+    T: Into<ErrKind>,
+{
+    #[instrument(skip_all)]
+    fn from(error: T) -> Self {
+        Box::new(ErrWrapper {
+            source: error.into(),
+            spantrace: tracing_error::SpanTrace::capture(),
+            // backtrace: backtrace::Backtrace::capture(),
+        })
+    }
+}
+
 pub trait ToOther {
-    fn to_other(self) -> ErrWrapper;
+    fn to_other(self) -> Box<ErrWrapper>;
 }
 impl<E> ToOther for E
 where
     E: Into<Box<dyn std::error::Error + Send + Sync>>,
 {
     #[instrument(skip_all)]
-    fn to_other(self) -> ErrWrapper {
-        ErrKind::OtherDynError {
-            source: self.into(),
-        }
-        .into()
+    fn to_other(self) -> Box<ErrWrapper> {
+        Box::new(
+            ErrKind::OtherDynError {
+                source: self.into(),
+            }
+            .into(),
+        )
     }
 }
