@@ -18,4 +18,9 @@ owo-colors = {workspace=true}
 
 thiserror =  {workspace=true}
 
-# [dev-dependencies]
+[dev-dependencies]
+pretty_assertions = {workspace=true}
+test-log =          {workspace=true}
+quickcheck =        {workspace=true}
+quickcheck_macros = {workspace=true}
+# expect-test =       {workspace=true}

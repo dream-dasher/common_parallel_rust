@@ -16,7 +16,7 @@ categories = []
 keywords =   []
 
 [workspace.lints.rust]
-unsafe_code = "forbid"  # (removable default)
+unsafe_code = "warn"  # (removable default)
 [workspace.lints.clippy]
 uninlined_format_args =      "allow" # allow `"name is {}", name` instead of `"name is {name}"`
 allow_attributes =           "warn"  # use `#[expect(...)]` instead
@@ -47,6 +47,13 @@ tracing = { version = "0.1", features = [] }  # "release_max_level_warn"^"releas
 tracing-appender = "0.2"
 tracing-error = "0.2"
 tracing-subscriber = { version = "0.3", features = [] }  # "env-filter","json"
+
+# # ------------ [dev-dependencies] ------------
+pretty_assertions = "1"
+test-log = { version = "0.2", features = ["trace"] }  # "trace"
+quickcheck = "1"
+quickcheck_macros = "1"
+expect-test = "1"
 
 # [patch.crates-io]
 
