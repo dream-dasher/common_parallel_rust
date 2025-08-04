@@ -43,10 +43,7 @@ enum ActorMessage {
 }
 // ///////////////////////////////////////// [ actor-impls ] ///////////////////////////////////////// //
 impl PrintingActor {
-    pub async fn spawn(
-        )
-        -> (mpsc::Sender<ActorMessage>, task::JoinHandle<Result<(), ActorError>>)
-    {
+    pub async fn spawn() -> (mpsc::Sender<ActorMessage>, task::JoinHandle<Result<(), ActorError>>) {
         let (tx, rx) = mpsc::channel(5);
         let actor = Self { receiver:      rx,
                            print_message: None,
@@ -88,9 +85,7 @@ impl PrintingActor {
             ActorMessage::SetActive => self.active = true,
             ActorMessage::SetInactive => self.active = false,
             ActorMessage::ToggleActive => self.active = !self.active,
-            ActorMessage::GetPrintCount { resp_channel } => {
-                resp_channel.send(self.print_count).unwrap()
-            }
+            ActorMessage::GetPrintCount { resp_channel } => resp_channel.send(self.print_count).unwrap(),
             ActorMessage::GetStatus { resp_channel } => resp_channel.send(self.active).unwrap(),
         }
         Ok(())
@@ -171,9 +166,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
                     if let Some((tx, _)) = controls.get(idx) {
                         tx.send(ActorMessage::SetInactive)
                           .await
-                          .unwrap_or_else(|e| {
-                              eprintln!("Failed to deactivate actor {}: {}", idx, e)
-                          });
+                          .unwrap_or_else(|e| eprintln!("Failed to deactivate actor {}: {}", idx, e));
                     }
                 }
             }
@@ -191,9 +184,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
                     if let Some((tx, _)) = controls.get(idx) {
                         tx.send(ActorMessage::SetPeriod(Duration::from_millis(ms)))
                           .await
-                          .unwrap_or_else(|e| {
-                              eprintln!("Failed to set rate for actor {}: {}", idx, e)
-                          });
+                          .unwrap_or_else(|e| eprintln!("Failed to set rate for actor {}: {}", idx, e));
                     }
                 }
             }
@@ -202,13 +193,9 @@ async fn main() -> Result<(), Box<dyn Error>> {
                     let (otx, orx) = oneshot::channel();
                     tx.send(ActorMessage::GetStatus { resp_channel: otx })
                       .await
-                      .unwrap_or_else(|e| {
-                          eprintln!("Failed to report status for actor {}: {}", idx, e)
-                      });
+                      .unwrap_or_else(|e| eprintln!("Failed to report status for actor {}: {}", idx, e));
                     let active_status = orx.await?;
-                    println!("Actor {}: {}",
-                             idx,
-                             if active_status { "active" } else { "inactive" });
+                    println!("Actor {}: {}", idx, if active_status { "active" } else { "inactive" });
                 }
             }
             ["printcount"] => {
@@ -216,9 +203,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
                     let (otx, orx) = oneshot::channel();
                     tx.send(ActorMessage::GetPrintCount { resp_channel: otx })
                       .await
-                      .unwrap_or_else(|e| {
-                          eprintln!("Failed to get print count for actor {}: {}", idx, e)
-                      });
+                      .unwrap_or_else(|e| eprintln!("Failed to get print count for actor {}: {}", idx, e));
                     let count = orx.await?;
                     println!("Actor {} print count: {}", idx, count);
                 }

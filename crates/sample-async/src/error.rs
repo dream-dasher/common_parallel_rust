@@ -63,8 +63,7 @@ pub enum ErrKind {
     #[display("CLI parsing library error: {}", source)]
     Clap { source: clap::Error },
 
-    #[display("Error with tracing_subscriber::EnvFilter parsing env directive: {}",
-              source)]
+    #[display("Error with tracing_subscriber::EnvFilter parsing env directive: {}", source)]
     EnvError {
         source: tracing_subscriber::filter::FromEnvError,
     },
@@ -108,7 +107,7 @@ impl ErrKind {
     pub fn into_dyn_error<E>(error: E) -> Self
         where E: Into<Box<dyn std::error::Error + Send + Sync>>
     {
-        Self::OtherDynError { source: error.into(), }
+        Self::OtherDynError { source: error.into() }
     }
 }
 

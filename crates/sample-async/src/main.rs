@@ -33,10 +33,9 @@ use utilities::activate_global_default_tracing_subscriber;
 // #[cfg(not(target_arch = "wasm32"))]
 #[tokio::main(flavor = "current_thread")]
 async fn main() -> SampleResult<()> {
-    let _writer_guard =
-        activate_global_default_tracing_subscriber().maybe_default_logging_level(None)
-                                                    .maybe_error_logging_level(None)
-                                                    .call()?;
+    let _writer_guard = activate_global_default_tracing_subscriber().maybe_default_logging_level(None)
+                                                                    .maybe_error_logging_level(None)
+                                                                    .call()?;
 
     // # `Url`
     // - (sealed) trait `IntoUrl`
@@ -234,16 +233,15 @@ async fn main() -> SampleResult<()> {
         let single_url = [base_httpbin.join("/json")?];
 
         let start_time = std::time::Instant::now();
-        let mut regulated_request_stream =
-            stream::iter(single_url.into_iter().cycle().take(27)).map(|url| {
-                let client = client.clone();
-                let arc_rate_limiter = arc_rate_limiter.clone();
-                async move {
-                    arc_rate_limiter.until_ready().await;
-                    client.get(url).send().await
-                }
-            })
-            .buffer_unordered(BURST_LIMIT.get() as usize);
+        let mut regulated_request_stream = stream::iter(single_url.into_iter().cycle().take(27)).map(|url| {
+                                               let client = client.clone();
+                                               let arc_rate_limiter = arc_rate_limiter.clone();
+                                               async move {
+                                                   arc_rate_limiter.until_ready().await;
+                                                   client.get(url).send().await
+                                               }
+                                           })
+                                           .buffer_unordered(BURST_LIMIT.get() as usize);
 
         let mut count = 0;
 
@@ -274,10 +272,7 @@ struct Todo {
 }
 
 /// Example async function with retries
-async fn _fetch_with_retry(client: &reqwest::Client,
-                           url: &str,
-                           max_retries: u32)
-                           -> SampleResult<reqwest::Response> {
+async fn _fetch_with_retry(client: &reqwest::Client, url: &str, max_retries: u32) -> SampleResult<reqwest::Response> {
     let mut retries = 0;
     loop {
         match client.get(url).send().await {

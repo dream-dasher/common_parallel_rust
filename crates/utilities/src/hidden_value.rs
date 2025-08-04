@@ -221,9 +221,7 @@ mod tests {
     #[test]
     fn test_basic_hidden_value() {
         let secret = "my_secret_value".to_string();
-        let hidden = HiddenValue::builder().value(secret.clone())
-                                           .build()
-                                           .unwrap();
+        let hidden = HiddenValue::builder().value(secret.clone()).build().unwrap();
 
         assert_eq!(hidden.expose_value(), &secret);
         assert_eq!(format!("{:?}", hidden), "HiddenValue { REDACTED }");
@@ -244,9 +242,7 @@ mod tests {
     fn test_env_value() {
         const TEST_KEY: &str = "TEST_KEY";
         const TEST_VALUE: &str = "abcdefghi";
-        let test_value_last_4 = &TEST_VALUE.chars()
-                                           .skip(TEST_VALUE.len() - 4)
-                                           .collect::<String>();
+        let test_value_last_4 = &TEST_VALUE.chars().skip(TEST_VALUE.len() - 4).collect::<String>();
         // SAFETY: Test code only. Sets an env variable.
         //         Cost of collision should be low.
         //         (And test should be run in independent process.)
@@ -331,21 +327,15 @@ mod insta_tests {
     #[test]
     fn insta_test_string_hidden_value_debug() {
         const TEST_VALUE_STR: &str = "alphabetagaga";
-        let hidden_str = HiddenValue::builder().value(TEST_VALUE_STR)
-                                               .build()
-                                               .unwrap();
+        let hidden_str = HiddenValue::builder().value(TEST_VALUE_STR).build().unwrap();
         insta::assert_debug_snapshot!(hidden_str, @"HiddenValue { REDACTED }");
 
         const TEST_VALUE_STR_GREEK: &str = "αβγαγα";
-        let hidden_str_greek = HiddenValue::builder().value(TEST_VALUE_STR_GREEK)
-                                                     .build()
-                                                     .unwrap();
+        let hidden_str_greek = HiddenValue::builder().value(TEST_VALUE_STR_GREEK).build().unwrap();
         insta::assert_debug_snapshot!(hidden_str_greek, @"HiddenValue { REDACTED }");
 
         const TEST_VALUE_NUM: i32 = -910_050_019;
-        let hidden_num = HiddenValue::builder().value(TEST_VALUE_NUM)
-                                               .build()
-                                               .unwrap();
+        let hidden_num = HiddenValue::builder().value(TEST_VALUE_NUM).build().unwrap();
         insta::assert_debug_snapshot!(hidden_num, @"HiddenValue { REDACTED }");
     }
     #[test]

@@ -55,8 +55,7 @@ impl eframe::App for AppStruct {
                                              self.interactable = !self.interactable;
                                          };
                                          ui.label(format!("open_var is: {}", self.open_var));
-                                         ui.label(format!("interactable is: {}",
-                                                          self.interactable));
+                                         ui.label(format!("interactable is: {}", self.interactable));
                                          if ui.button("toggle enabledness").clicked() {
                                              self.enabled = !self.enabled;
                                              ui.label(format!("enabled is: {}", self.enabled));

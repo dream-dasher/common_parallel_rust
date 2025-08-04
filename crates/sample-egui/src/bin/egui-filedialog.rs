@@ -3,12 +3,11 @@
 use eframe::egui;
 
 fn main() -> eframe::Result {
-    let options = eframe::NativeOptions {
-              viewport: egui::ViewportBuilder::default()
-                     .with_inner_size([640.0, 240.0]) // wide enough for the drag-drop overlay text
-                     .with_drag_and_drop(true),
-              ..Default::default()
-       };
+    let options =
+        eframe::NativeOptions { viewport:
+                                    egui::ViewportBuilder::default().with_inner_size([640.0, 240.0]) // wide enough for the drag-drop overlay text
+                                                                    .with_drag_and_drop(true),
+                                ..Default::default() };
     eframe::run_native("Native file dialogs and drag-and-drop files",
                        options,
                        Box::new(|_cc| Ok(Box::<MyApp>::default())))
@@ -26,10 +25,8 @@ impl eframe::App for MyApp {
                                          ui.label("Drag-and-drop files onto the window!");
 
                                          if ui.button("Open file…").clicked() {
-                                             if let Some(path) = rfd::FileDialog::new().pick_file()
-                                             {
-                                                 self.picked_path =
-                                                     Some(path.display().to_string());
+                                             if let Some(path) = rfd::FileDialog::new().pick_file() {
+                                                 self.picked_path = Some(path.display().to_string());
                                              }
                                          }
 
@@ -46,8 +43,7 @@ impl eframe::App for MyApp {
                                                    ui.label("Dropped files:");
 
                                                    for file in &self.dropped_files {
-                                                       let mut info = if let Some(path) = &file.path
-                                                       {
+                                                       let mut info = if let Some(path) = &file.path {
                                                            path.display().to_string()
                                                        } else if !file.name.is_empty() {
                                                            file.name.clone()
@@ -57,16 +53,13 @@ impl eframe::App for MyApp {
 
                                                        let mut additional_info = vec![];
                                                        if !file.mime.is_empty() {
-                                                           additional_info.push(format!("type: {}",
-                                                                                        file.mime));
+                                                           additional_info.push(format!("type: {}", file.mime));
                                                        }
                                                        if let Some(bytes) = &file.bytes {
-                                                           additional_info.push(format!("{} bytes",
-                                                                                      bytes.len()));
+                                                           additional_info.push(format!("{} bytes", bytes.len()));
                                                        }
                                                        if !additional_info.is_empty() {
-                                                           info += &format!(" ({})",
-                                                                      additional_info.join(", "));
+                                                           info += &format!(" ({})", additional_info.join(", "));
                                                        }
 
                                                        ui.label(info);
@@ -107,8 +100,7 @@ fn preview_files_being_dropped(ctx: &egui::Context) {
                           text
                       });
 
-        let painter =
-            ctx.layer_painter(LayerId::new(Order::Foreground, Id::new("file_drop_target")));
+        let painter = ctx.layer_painter(LayerId::new(Order::Foreground, Id::new("file_drop_target")));
 
         let screen_rect = ctx.screen_rect();
         painter.rect_filled(screen_rect, 0.0, Color32::from_black_alpha(192));

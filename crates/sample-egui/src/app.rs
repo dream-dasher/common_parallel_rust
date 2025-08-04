@@ -60,44 +60,37 @@ impl eframe::App for SampleApp {
                                                   // The top panel is often a good place for a menu bar:
 
                                                   egui::MenuBar::new().ui(ui, |ui| {
-                                    // NOTE: no File->Quit on web pages!
-                                    ui.menu_button("File", |ui| {
-                                          if ui.button("Quit").clicked() {
-                                              ctx.send_viewport_cmd(egui::ViewportCommand::Close);
-                                          }
-                                      });
-                                    ui.add_space(16.0);
+                                                      // NOTE: no File->Quit on web pages!
+                                                      ui.menu_button("File", |ui| {
+                                                            if ui.button("Quit").clicked() {
+                                                                ctx.send_viewport_cmd(egui::ViewportCommand::Close);
+                                                            }
+                                                        });
+                                                      ui.add_space(16.0);
 
-                                    egui::widgets::global_theme_preference_buttons(ui);
-                                });
+                                                      egui::widgets::global_theme_preference_buttons(ui);
+                                                  });
 
                                                   // Miscellaneous tips and tricks
 
                                                   ui.horizontal_wrapped(|ui| {
                                                         ui.spacing_mut().item_spacing.x = 0.0; // remove spacing between widgets
                                                         // `radio_value` also works for enums, integers, and more.
-                                                        ui.radio_value(&mut self.some_bool,
-                                                                       false,
-                                                                       "Off");
-                                                        ui.radio_value(&mut self.some_bool,
-                                                                       true,
-                                                                       "On");
+                                                        ui.radio_value(&mut self.some_bool, false, "Off");
+                                                        ui.radio_value(&mut self.some_bool, true, "On");
                                                     });
 
                                                   ui.group(|ui| {
                                                         ui.label("Within a frame");
                                                         ui.set_min_height(200.0);
                                                         ui.push_id(1, |ui| {
-                                                              ui.collapsing("Same header",
-                                                                            |_ui| {}); // this is fine!
+                                                              ui.collapsing("Same header", |_ui| {}); // this is fine!
                                                           });
                                                         ui.push_id(2, |ui| {
-                                                              ui.collapsing("Same header",
-                                                                            |_ui| {}); // this is fine!
+                                                              ui.collapsing("Same header", |_ui| {}); // this is fine!
                                                           });
                                                         ui.push_id(3, |ui| {
-                                                              ui.collapsing("Same header",
-                                                                            |_ui| {}); // this is fine!
+                                                              ui.collapsing("Same header", |_ui| {}); // this is fine!
                                                           });
                                                     });
 
@@ -121,31 +114,31 @@ impl eframe::App for SampleApp {
                                               });
 
         egui::CentralPanel::default().show(ctx, |ui| {
-                     // The central panel the region left after adding TopPanel's and SidePanel's
-                     ui.heading("Egui Xp");
+                                         // The central panel the region left after adding TopPanel's and SidePanel's
+                                         ui.heading("Egui Xp");
 
-                     ui.horizontal(|ui| {
-                            ui.label("Write something: ");
-                            ui.text_edit_singleline(&mut self.label);
-                     });
+                                         ui.horizontal(|ui| {
+                                               ui.label("Write something: ");
+                                               ui.text_edit_singleline(&mut self.label);
+                                           });
 
-                     ui.add(egui::Slider::new(&mut self.value, 0.0..=10.0).text("value"));
-                     if ui.button("Increment").clicked() {
-                            self.value += 1.0;
-                     }
+                                         ui.add(egui::Slider::new(&mut self.value, 0.0..=10.0).text("value"));
+                                         if ui.button("Increment").clicked() {
+                                             self.value += 1.0;
+                                         }
 
-                     ui.separator();
+                                         ui.separator();
 
-                     ui.add(egui::github_link_file!(
+                                         ui.add(egui::github_link_file!(
                             "https://github.com/dream-dasher/common_parallel_rust/tree/workspace_init/",
                             "Source code."
                      ));
 
-                     // info lines at bottom of panel
-                     ui.with_layout(egui::Layout::bottom_up(egui::Align::LEFT), |ui| {
-                            egui::warn_if_debug_build(ui);
-                     });
-              });
+                                         // info lines at bottom of panel
+                                         ui.with_layout(egui::Layout::bottom_up(egui::Align::LEFT), |ui| {
+                                               egui::warn_if_debug_build(ui);
+                                           });
+                                     });
     }
 }
 

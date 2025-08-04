@@ -37,8 +37,7 @@ impl ClipboardTest {
         ui.label("Try copy-cut-pasting text in the text edit below.");
 
         let text_edit_response = ui.horizontal(|ui| {
-                                       let text_edit_response =
-                                           ui.text_edit_singleline(&mut self.text);
+                                       let text_edit_response = ui.text_edit_singleline(&mut self.text);
                                        if ui.button("📋").clicked() {
                                            ui.ctx().copy_text(self.text.clone());
                                        }

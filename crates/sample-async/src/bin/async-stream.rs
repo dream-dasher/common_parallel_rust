@@ -102,8 +102,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
                 let now_resp = time::Instant::now();
                 let resp = client.get("https://httpbin.org/get").send().await.unwrap();
                 let elapsed_resp = now_resp.elapsed();
-                tx.send((i, resp, elapsed_resp))
-                  .expect("send should be received");
+                tx.send((i, resp, elapsed_resp)).expect("send should be received");
             });
         }
         Ok::<(), reqwest::Error>(())

@@ -155,35 +155,35 @@ impl FuturesApp {
         // ....................... [ update-atomic-counter ] ....................... //
         atomic_counter.fetch_add(requests_to_queue.get() as usize, Ordering::Relaxed);
         // ----------------------------- [ spawn-semaphore-gated-reqwest-task ] ----------------------------- //
-        self.task_gen_tracker.spawn(async move {
-                     // let mut interval = interval(request_period);
-                     for i in 0..requests_to_queue.get() {
-                            tokio::select! {
-                                    _ = interval.tick() => {
-                                            trace!(i, "tick");
-                                            let mut join_set_caged = arc_mutex.lock().unwrap();
-                                            FuturesApp::queue_request(
-                                                    endpoint_delay,
-                                                    client.clone(),
-                                                    semaphore.clone(),
-                                                    tx.clone(),
-                                                    &mut join_set_caged,
-                                                    ctx.clone(),
-                                            );
-                                            drop(join_set_caged);
-                                            atomic_counter.fetch_sub(1, Ordering::Relaxed);
-                                    }
-                                    _ = cancel_token.cancelled() => {
-                                            let remaining_dropped = (requests_to_queue.get() - i) as usize;
-                                            info!(iteration = i, remaining_dropped, "cancelled");
-                                            atomic_counter.fetch_sub(remaining_dropped, Ordering::Relaxed);
-                                            return;
-                                    }
-                            }
-                            ctx.request_repaint();
-                     }
-              }
-              .instrument(debug_span!("metered request spawner", ?endpoint_delay)));
+        self.task_gen_tracker
+            .spawn(async move {
+                       // let mut interval = interval(request_period);
+                       for i in 0..requests_to_queue.get() {
+                           tokio::select! {
+                                   _ = interval.tick() => {
+                                           trace!(i, "tick");
+                                           let mut join_set_caged = arc_mutex.lock().unwrap();
+                                           FuturesApp::queue_request(
+                                                   endpoint_delay,
+                                                   client.clone(),
+                                                   semaphore.clone(),
+                                                   tx.clone(),
+                                                   &mut join_set_caged,
+                                                   ctx.clone(),
+                                           );
+                                           drop(join_set_caged);
+                                           atomic_counter.fetch_sub(1, Ordering::Relaxed);
+                                   }
+                                   _ = cancel_token.cancelled() => {
+                                           let remaining_dropped = (requests_to_queue.get() - i) as usize;
+                                           info!(iteration = i, remaining_dropped, "cancelled");
+                                           atomic_counter.fetch_sub(remaining_dropped, Ordering::Relaxed);
+                                           return;
+                                   }
+                           }
+                           ctx.request_repaint();
+                       }
+                   }.instrument(debug_span!("metered request spawner", ?endpoint_delay)));
     }
 }
 // ///////////////////////////////// [ app accessory ] ///////////////////////////////// //
@@ -262,55 +262,59 @@ impl eframe::App for FuturesApp {
                 });
         // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [ left-control-pane ] ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
         egui::SidePanel::left("left_panel").show(ctx, |ui| {
-                     ui.heading("Metered Future Generation");
-                     let mut request_period_ms = self.request_period.as_millis() as u64;
-                     if ui.add(egui::Slider::new(&mut request_period_ms, 10..=10000).logarithmic(true).text("Request Period (ms)"))
-                            .changed()
-                     {
-                            self.request_period = Duration::from_millis(request_period_ms);
-                     }
-                     if ui.button(format!("Queue {} Request(s) every {} ms", self.requests_to_queue, self.request_period.as_millis()))
-                            .clicked()
-                     {
-                            info!("Queueing metered requests");
-                            self.metered_queue_request(ctx.clone());
-                            ctx.request_repaint();
-                     }
-                     if ui.button("Drop Requests").clicked() {
-                            info!("Aborting requests");
-                            if let Ok(mut join_set_caged) = self.join_set_caged.lock() {
-                                   join_set_caged.abort_all();
-                                   while join_set_caged.try_join_next().is_some() {
-                                          trace!("Clearing finished/aborted task from JoinSet")
-                                   }
-                                   ctx.request_repaint();
-                            }
-                     }
-                     if ui.button("Drop Request Generator(s)").clicked() {
-                            info!("Cancelling request generators");
-                            self.generator_cancel.cancel();
-                            // the cancellation state will persist (and appears irreversible): we provide the app with a new canellation token; (safe?)
-                            self.generator_cancel = CancellationToken::new();
-                            // note: no need to drain the generator queue, because it uses `TaskTracker` not `JoinSet`
-                            ctx.request_repaint();
-                     }
-              });
+            ui.heading("Metered Future Generation");
+            let mut request_period_ms = self.request_period.as_millis() as u64;
+            if ui.add(egui::Slider::new(&mut request_period_ms, 10..=10000).logarithmic(true)
+                                                                           .text("Request Period (ms)"))
+                 .changed()
+            {
+                self.request_period = Duration::from_millis(request_period_ms);
+            }
+            if ui.button(format!("Queue {} Request(s) every {} ms",
+                                 self.requests_to_queue,
+                                 self.request_period.as_millis()))
+                 .clicked()
+            {
+                info!("Queueing metered requests");
+                self.metered_queue_request(ctx.clone());
+                ctx.request_repaint();
+            }
+            if ui.button("Drop Requests").clicked() {
+                info!("Aborting requests");
+                if let Ok(mut join_set_caged) = self.join_set_caged.lock() {
+                    join_set_caged.abort_all();
+                    while join_set_caged.try_join_next().is_some() {
+                        trace!("Clearing finished/aborted task from JoinSet")
+                    }
+                    ctx.request_repaint();
+                }
+            }
+            if ui.button("Drop Request Generator(s)").clicked() {
+                info!("Cancelling request generators");
+                self.generator_cancel.cancel();
+                // the cancellation state will persist (and appears irreversible): we provide the app with a new canellation token; (safe?)
+                self.generator_cancel = CancellationToken::new();
+                // note: no need to drain the generator queue, because it uses `TaskTracker` not `JoinSet`
+                ctx.request_repaint();
+            }
+        });
         // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [ display-pane ] ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
         egui::CentralPanel::default().show(ctx, |ui| {
-                     ui.heading("Data Display");
-                     ui.label(format!("200 count: {}", self.count_200));
-                     ui.label(format!("400 count: {}", self.count_400));
-                     ui.label(format!("Other count: {}", self.count_other));
-                     ui.add_space(10.0);
-                     ui.label(format!("Semaphore available: {}", self.semaphore.available_permits()));
-                     ui.label(format!("Queued Requests: {}", self.join_set.len()));
-                     ui.label(format!("Queued Requests metered: {}", self.join_set_caged.lock().unwrap().len()));
-                     ui.label(format!("Request-Task Generators active: {}", self.task_gen_tracker.len()));
-                     ui.label(format!("Request-Tasks to Create: {}", self.request_tasks_to_create.load(Ordering::Relaxed)));
-                     ui.add(egui::Slider::new(&mut self.delay_sec, 0..=10).text("Server Response Delay (sec)"));
-                     ui.add(egui::Slider::new(&mut self.requests_to_queue, NON_ZERO_MIN..=NON_ZERO_MAX)
+            ui.heading("Data Display");
+            ui.label(format!("200 count: {}", self.count_200));
+            ui.label(format!("400 count: {}", self.count_400));
+            ui.label(format!("Other count: {}", self.count_other));
+            ui.add_space(10.0);
+            ui.label(format!("Semaphore available: {}", self.semaphore.available_permits()));
+            ui.label(format!("Queued Requests: {}", self.join_set.len()));
+            ui.label(format!("Queued Requests metered: {}", self.join_set_caged.lock().unwrap().len()));
+            ui.label(format!("Request-Task Generators active: {}", self.task_gen_tracker.len()));
+            ui.label(format!("Request-Tasks to Create: {}",
+                             self.request_tasks_to_create.load(Ordering::Relaxed)));
+            ui.add(egui::Slider::new(&mut self.delay_sec, 0..=10).text("Server Response Delay (sec)"));
+            ui.add(egui::Slider::new(&mut self.requests_to_queue, NON_ZERO_MIN..=NON_ZERO_MAX)
                             .logarithmic(true)
                             .text("Number of requests to queue"));
-              });
+        });
     }
 }

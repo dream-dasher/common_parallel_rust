@@ -41,42 +41,42 @@ impl eframe::App for SimpleEguiApp {
         // -- Menu Bar --
         egui::TopBottomPanel::top("top_panel").show(ctx, |ui| {
                                                   egui::MenuBar::new().ui(ui, |ui| {
-                            ui.menu_button("File", |ui| {
-                                   if ui.button("Quit").clicked() {
-                                          ctx.send_viewport_cmd(egui::ViewportCommand::Close);
-                                   }
-                            });
-                            ui.add_space(16.0);
-                            egui::widgets::global_theme_preference_buttons(ui);
-                     });
+                                                      ui.menu_button("File", |ui| {
+                                                            if ui.button("Quit").clicked() {
+                                                                ctx.send_viewport_cmd(egui::ViewportCommand::Close);
+                                                            }
+                                                        });
+                                                      ui.add_space(16.0);
+                                                      egui::widgets::global_theme_preference_buttons(ui);
+                                                  });
                                               });
 
         // -- Input and Results Strip --
         egui::CentralPanel::default().show(ctx, |ui| {
-            ui.heading("Simple Native Example App");
-            ui.label("text-one");
-            ui.text_edit_singleline(&mut self.text_one);
-            ui.separator();
-            ui.label("text-two");
-            ui.text_edit_multiline(&mut self.text_two);
-            if ui.button("crab!").clicked() {
-                self.crab = !self.crab; // toggle
-            }
-            if self.crab {
-                ui.image(egui::include_image!("../../assets/exampleimage-ferris.gif"))
-                  .on_hover_text_at_pointer("tippity-taps! - gif");
-            }
-            // if ui.button("load image from web").clicked() {
-            //         self.uri_image = !self.uri_image; // toggle
-            // }
-            // if self.uri_image {
-            //         // would require the following crate: https://github.com/image-rs/image
-            //         let url = "https://picsum.photos/1024";
-            //         // let url = "https://picsum.photos/seed/1.759706314/1024";
-            //         ui.add(egui::Image::from_uri(url).corner_radius(10))
-            //                 .on_hover_text_at_pointer(url);
-            // }
-        });
+                                         ui.heading("Simple Native Example App");
+                                         ui.label("text-one");
+                                         ui.text_edit_singleline(&mut self.text_one);
+                                         ui.separator();
+                                         ui.label("text-two");
+                                         ui.text_edit_multiline(&mut self.text_two);
+                                         if ui.button("crab!").clicked() {
+                                             self.crab = !self.crab; // toggle
+                                         }
+                                         if self.crab {
+                                             ui.image(egui::include_image!("../../assets/exampleimage-ferris.gif"))
+                                               .on_hover_text_at_pointer("tippity-taps! - gif");
+                                         }
+                                         // if ui.button("load image from web").clicked() {
+                                         //         self.uri_image = !self.uri_image; // toggle
+                                         // }
+                                         // if self.uri_image {
+                                         //         // would require the following crate: https://github.com/image-rs/image
+                                         //         let url = "https://picsum.photos/1024";
+                                         //         // let url = "https://picsum.photos/seed/1.759706314/1024";
+                                         //         ui.add(egui::Image::from_uri(url).corner_radius(10))
+                                         //                 .on_hover_text_at_pointer(url);
+                                         // }
+                                     });
 
         // if self.crab {
         //         egui::Modal::new("hi".into()).show(ctx, |ui| {

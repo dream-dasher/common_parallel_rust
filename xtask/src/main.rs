@@ -102,9 +102,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             };
             let lower_bound = None;
             let found_primes = prime_sieve(lower_bound, upper_bound);
-            println!("Number of primes found <= {}: {}",
-                     upper_bound,
-                     found_primes.len());
+            println!("Number of primes found <= {}: {}", upper_bound, found_primes.len());
             println!("which makes the range ({}..={}) {:.1}% prime.",
                      0, // lower_bound.unwrap_or(0),
                      upper_bound,

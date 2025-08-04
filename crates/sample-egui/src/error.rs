@@ -70,8 +70,7 @@ pub enum ErrKind {
     #[display("eframe (egui) error: {}", source)]
     EFrame { source: eframe::Error },
 
-    #[display("Error with tracing_subscriber::EnvFilter parsing env directive: {}",
-              source)]
+    #[display("Error with tracing_subscriber::EnvFilter parsing env directive: {}", source)]
     EnvError {
         source: tracing_subscriber::filter::FromEnvError,
     },
@@ -109,7 +108,7 @@ impl ErrKind {
     pub fn into_dyn_error<E>(error: E) -> Self
         where E: Into<Box<dyn std::error::Error + Send + Sync>>
     {
-        Self::OtherDynError { source: error.into(), }
+        Self::OtherDynError { source: error.into() }
     }
 }
 
@@ -163,6 +162,6 @@ impl<E> ToOther for E where E: Into<Box<dyn std::error::Error + Send + Sync>>
 {
     #[instrument(skip_all)]
     fn to_other(self) -> Box<ErrWrapper> {
-        Box::new(ErrKind::OtherDynError { source: self.into(), }.into())
+        Box::new(ErrKind::OtherDynError { source: self.into() }.into())
     }
 }

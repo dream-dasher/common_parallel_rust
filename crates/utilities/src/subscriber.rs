@@ -60,9 +60,8 @@ pub fn activate_global_default_tracing_subscriber(default_logging_level: Option<
     let env_default_level = default_logging_level.unwrap_or(DEFAULT_LOGGING_LEVEL);
     let error_default_level = error_logging_level.unwrap_or(DEFAULT_ERROR_LOGGING_LEVEL);
     // filter-layer: filters events
-    let envfilter_layer =
-        tracing_subscriber::EnvFilter::builder().with_default_directive(env_default_level.into())
-                                                .from_env_lossy();
+    let envfilter_layer = tracing_subscriber::EnvFilter::builder().with_default_directive(env_default_level.into())
+                                                                  .from_env_lossy();
     // subscriber-layer: captures spantraces
     let error_layer = ErrorLayer::default().with_filter(error_default_level);
     // log to file or stderr
@@ -89,9 +88,8 @@ pub fn activate_global_default_tracing_subscriber(default_logging_level: Option<
                                                              // .with_span_events(FmtSpan::FULL)
                                                              .with_writer(non_blocking_writer);
     // combien various subscriber & filter layers
-    let subscriber =
-        tracing_subscriber::Registry::default().with(error_layer)
-                                               .with(fmt_layer.with_filter(envfilter_layer));
+    let subscriber = tracing_subscriber::Registry::default().with(error_layer)
+                                                            .with(fmt_layer.with_filter(envfilter_layer));
 
     // *side-effect* : subscribe
     tracing::subscriber::set_global_default(subscriber)?;

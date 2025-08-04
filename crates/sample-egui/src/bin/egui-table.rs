@@ -28,34 +28,43 @@ impl TableDemo {
         let mut reset = false;
 
         ui.vertical(|ui| {
-                     ui.horizontal(|ui| {
-                            ui.checkbox(&mut self.striped, "Striped");
-                            ui.checkbox(&mut self.resizable, "Resizable columns");
-                            ui.checkbox(&mut self.clickable, "Clickable rows");
-                     });
+              ui.horizontal(|ui| {
+                    ui.checkbox(&mut self.striped, "Striped");
+                    ui.checkbox(&mut self.resizable, "Resizable columns");
+                    ui.checkbox(&mut self.clickable, "Clickable rows");
+                });
 
-                     ui.label("Table type:");
-                     ui.radio_value(&mut self.demo, DemoType::Manual, "Few, manual rows");
-                     ui.radio_value(&mut self.demo, DemoType::ManyHomogeneous, "Thousands of rows of same height");
-                     ui.radio_value(&mut self.demo, DemoType::ManyHeterogenous, "Thousands of rows of differing heights");
+              ui.label("Table type:");
+              ui.radio_value(&mut self.demo, DemoType::Manual, "Few, manual rows");
+              ui.radio_value(&mut self.demo,
+                             DemoType::ManyHomogeneous,
+                             "Thousands of rows of same height");
+              ui.radio_value(&mut self.demo,
+                             DemoType::ManyHeterogenous,
+                             "Thousands of rows of differing heights");
 
-                     if self.demo != DemoType::Manual {
-                            ui.add(egui::Slider::new(&mut self.num_rows, 0..=100_000).logarithmic(true).text("Num rows"));
-                     }
+              if self.demo != DemoType::Manual {
+                  ui.add(egui::Slider::new(&mut self.num_rows, 0..=100_000).logarithmic(true)
+                                                                           .text("Num rows"));
+              }
 
-                     {
-                            let max_rows = if self.demo == DemoType::Manual { NUM_MANUAL_ROWS } else { self.num_rows };
+              {
+                  let max_rows = if self.demo == DemoType::Manual {
+                      NUM_MANUAL_ROWS
+                  } else {
+                      self.num_rows
+                  };
 
-                            let slider_response = ui.add(egui::Slider::new(&mut self.scroll_to_row_slider, 0..=max_rows)
-                                   .logarithmic(true)
-                                   .text("Row to scroll to"));
-                            if slider_response.changed() {
-                                   self.scroll_to_row = Some(self.scroll_to_row_slider);
-                            }
-                     }
+                  let slider_response =
+                      ui.add(egui::Slider::new(&mut self.scroll_to_row_slider, 0..=max_rows).logarithmic(true)
+                                                                                            .text("Row to scroll to"));
+                  if slider_response.changed() {
+                      self.scroll_to_row = Some(self.scroll_to_row_slider);
+                  }
+              }
 
-                     reset = ui.button("Reset").clicked();
-              });
+              reset = ui.button("Reset").clicked();
+          });
 
         ui.separator();
 
@@ -67,8 +76,7 @@ impl TableDemo {
                              .vertical(|mut strip| {
                                  strip.cell(|ui| {
                                           egui::ScrollArea::horizontal().show(ui, |ui| {
-                                                                            self.table_ui(ui,
-                                                                                          reset);
+                                                                            self.table_ui(ui, reset);
                                                                         });
                                       });
                                  strip.cell(|ui| {
@@ -87,19 +95,16 @@ impl TableDemo {
                                                .max(ui.spacing().interact_size.y);
 
         let available_height = ui.available_height();
-        let mut table =
-            TableBuilder::new(ui).striped(self.striped)
-                                 .resizable(self.resizable)
-                                 .cell_layout(egui::Layout::left_to_right(egui::Align::Center))
-                                 .column(Column::auto())
-                                 .column(Column::remainder().at_least(40.0)
-                                                            .clip(true)
-                                                            .resizable(true))
-                                 .column(Column::auto())
-                                 .column(Column::remainder())
-                                 .column(Column::remainder())
-                                 .min_scrolled_height(0.0)
-                                 .max_scroll_height(available_height);
+        let mut table = TableBuilder::new(ui).striped(self.striped)
+                                             .resizable(self.resizable)
+                                             .cell_layout(egui::Layout::left_to_right(egui::Align::Center))
+                                             .column(Column::auto())
+                                             .column(Column::remainder().at_least(40.0).clip(true).resizable(true))
+                                             .column(Column::auto())
+                                             .column(Column::remainder())
+                                             .column(Column::remainder())
+                                             .min_scrolled_height(0.0)
+                                             .max_scroll_height(available_height);
 
         if self.clickable {
             table = table.sense(egui::Sense::click());

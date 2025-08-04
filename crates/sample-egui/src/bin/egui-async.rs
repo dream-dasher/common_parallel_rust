@@ -95,51 +95,51 @@ impl eframe::App for ChannelApp {
             ctx.request_repaint();
         }
         egui::CentralPanel::default().show(ctx, |ui| {
-            ui.heading("Async Fetch Example - grabs TODOs from Typicode");
-            ui.label("Press the button to initiate an HTTP request.");
-            if self.loading {
-                ui.spinner();
-                ui.label("Loading...");
-            } else if let Some(err) = &self.error {
-                ui.colored_label(egui::Color32::RED, format!("Error: {}", err));
-            } else if self.todos.is_empty() {
-                ui.label("No todos to display");
-            } else {
-                ui.label(format!("Loaded {} todos", self.todos.len()));
-            }
-            ui.add_space(10.0);
-            for i in 1..=4 {
-                if ui.button(format!("Request id: {}", i)).clicked() && !self.loading {
-                    self.loading = true;
-                    send_request(self.client.clone(), i, self.tx.clone(), ctx.clone());
-                }
-            }
-            // ui.horizontal(|ui| {
-            //         for user_id in 1..=5 {
-            //                 if ui.button(format!("User {}", user_id)).clicked() && !self.loading {
-            //                         self.fetch_todos(Some(user_id), ctx.clone());
-            //                 }
-            //         }
-            // });
-        });
+                                         ui.heading("Async Fetch Example - grabs TODOs from Typicode");
+                                         ui.label("Press the button to initiate an HTTP request.");
+                                         if self.loading {
+                                             ui.spinner();
+                                             ui.label("Loading...");
+                                         } else if let Some(err) = &self.error {
+                                             ui.colored_label(egui::Color32::RED, format!("Error: {}", err));
+                                         } else if self.todos.is_empty() {
+                                             ui.label("No todos to display");
+                                         } else {
+                                             ui.label(format!("Loaded {} todos", self.todos.len()));
+                                         }
+                                         ui.add_space(10.0);
+                                         for i in 1..=4 {
+                                             if ui.button(format!("Request id: {}", i)).clicked() && !self.loading {
+                                                 self.loading = true;
+                                                 send_request(self.client.clone(), i, self.tx.clone(), ctx.clone());
+                                             }
+                                         }
+                                         // ui.horizontal(|ui| {
+                                         //         for user_id in 1..=5 {
+                                         //                 if ui.button(format!("User {}", user_id)).clicked() && !self.loading {
+                                         //                         self.fetch_todos(Some(user_id), ctx.clone());
+                                         //                 }
+                                         //         }
+                                         // });
+                                     });
         egui::SidePanel::right("panel").show(ctx, |ui| {
                                            ui.heading("Todos");
                                            if self.todos.is_empty() {
                                                ui.label("No todos to display");
                                            } else {
                                                egui::ScrollArea::vertical().show(ui, |ui| {
-                                                   for todo in &self.todos {
-                                                       ui.horizontal(|ui| {
-                                                             ui.checkbox(&mut todo.completed
+                                                                               for todo in &self.todos {
+                                                                                   ui.horizontal(|ui| {
+                                                                                         ui.checkbox(&mut todo.completed
                                                                                   .clone(),
                                                                          "");
-                                                             let text = format!("{} - {}",
-                                                                                todo.id,
-                                                                                todo.title);
-                                                             ui.label(text);
-                                                         });
-                                                   }
-                                               });
+                                                                                         let text = format!("{} - {}",
+                                                                                                            todo.id,
+                                                                                                            todo.title);
+                                                                                         ui.label(text);
+                                                                                     });
+                                                                               }
+                                                                           });
                                            }
                                        });
         // // valiant, but doomed attempt to get sync code to yield to single-threaded runtime
@@ -159,10 +159,7 @@ impl eframe::App for ChannelApp {
     }
 }
 // ///////////////////////////////// [ loop methods ] ///////////////////////////////// //
-fn send_request(client: Client,
-                req_id: u8,
-                tx: std::sync::mpsc::Sender<Vec<Todo>>,
-                ctx: egui::Context) {
+fn send_request(client: Client, req_id: u8, tx: std::sync::mpsc::Sender<Vec<Todo>>, ctx: egui::Context) {
     const URL_TYPICODE: &str = "https://jsonplaceholder.typicode.com";
     let todos_typicode = Url::parse(URL_TYPICODE).unwrap().join("/todos").unwrap();
     tokio::task::spawn(async move {
