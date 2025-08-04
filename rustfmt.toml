@@ -12,16 +12,16 @@ style_edition = "2024"
 # -------------------------------------------------------------------------------------------------------------------- #
 ##                                              -Stable-
 # ## general spacing
-max_width =            140
-tab_spaces =           7                # easy glance spacing, prime
-use_small_heuristics = "Max"
-# array_width = 140                     # arrays
-# attr_fn_like_width = 140              # attributes
-# fn_call_width = 140                   # function calls
-# struct_lit_width = 140                # raw struct instantiation
-# struct_variant_width = 140            # enum struct variant instantiation
-# single_line_if_else_max_width = 140   # ¡doesn't always work!
-# single_line_let_else_max_width = 140  # ¡doesn't always work!
+# max_width =            140
+# tab_spaces =           5                # easy glance spacing, prime
+# use_small_heuristics = "Max"
+# array_width = 100                     # arrays
+# attr_fn_like_width = 100              # attributes
+# fn_call_width = 100                   # function calls
+# struct_lit_width = 100                # raw struct instantiation
+# struct_variant_width = 100            # enum struct variant instantiation
+# single_line_if_else_max_width = 100   # ¡doesn't always work!
+# single_line_let_else_max_width = 100  # ¡doesn't always work!
 
 ## struct/enum related
 use_field_init_shorthand = true  #  some_struct {x: var, y: y, z: z} ~~> some_struct {x: var, y, z}
@@ -34,12 +34,15 @@ use_field_init_shorthand = true  #  some_struct {x: var, y: y, z: z} ~~> some_st
 unstable_features = true
 
 ##  general spacing (unstable)
-fn_single_line = true # creates false "unnecessary braces" lint
+# fn_single_line = true # creates false "unnecessary braces" lint
 
 ## import organization (unstable)
 imports_granularity = "Crate"             # group all imports for a crate together
 group_imports =       "StdExternalCrate"  # category style grouping of imports (ala isort in python)
+
+## visual indenting
 imports_indent =      "Visual"
+indent_style =        "Visual"
 
 ## struct/enum related (unstable)
 struct_field_align_threshold = 40  # move distance to seek type alignment in struct fields
