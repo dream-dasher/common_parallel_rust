@@ -1,62 +1,43 @@
-# ################################# -package features- ################################# #
 [package]
-name = "sample-async"
-version.workspace = true
-edition.workspace = true
-authors.workspace = true
-keywords.workspace = true
-# ################################# -lints- ################################# #
+publish =     false
+name =        "sample-async"
+description = "Sample (example), basic async code with tokio."
+
+version =     {workspace=true}
+edition =     {workspace=true}
+authors =     {workspace=true}
+categories  = {workspace=true}
+keywords =    {workspace=true}
+
 [lints]
 workspace = true
-# ################################# -compile profiles- ################################# #
-# ################################# -user dependencies- ################################# #
-[dependencies]
-## ------------ -local- ------------ #
-utilities = { path = "../utilities" }
-## ~~~~~~~~~~~~ -async- ~~~~~~~~~~~~ #
-async-stream = { workspace = true}
-futures = { workspace = true }
-tokio = { workspace = true, features = ["rt", "process"]  }# "fs","io-std","io-util","net","parking_lot","process","rt","rt-multi-thread","signal","sync","time",
-tokio-stream = { workspace = true , features = []} # "fs","io-util","net","signal","sync","tokio-util"
-### ......... -remote- ......... #
-reqwest = { workspace = true, features = ["json"] } # "cookies","json",
-### ......... -accessory- ......... #
-governor = { workspace = true }
-url = { workspace = true }
-## ~~~~~~~~~~~~ -diagnostics- ~~~~~~~~~~~~ #
-tracing = { workspace = true }  # features = ["release_max_level_warn"] | ["release_max_level_off"]
-tracing-error = { workspace = true }
-tracing-subscriber = { workspace = true , features = [] } # "env-filter","json"
-## ~~~~~~~~~~~~ -env & files- ~~~~~~~~~~~~ #
-### ......... -config- ......... #
-### ......... -proceses- ......... #
-## ~~~~~~~~~~~~ -ergonomics- ~~~~~~~~~~~~ #
-derive_more = { workspace = true , features = ["error", "from", "display"] }
-indoc = { workspace = true }
-thiserror = { workspace = true }
-## ~~~~~~~~~~~~ -interface- ~~~~~~~~~~~~ #
-### ......... -cli- ......... #
-clap = { workspace = true, features = [] } # "env", "string", "unicode", "wrap_help",
-owo-colors = { workspace = true }
-### ......... -egui- ......... #
-## ~~~~~~~~~~~~ -math & science- ~~~~~~~~~~~~ #
-### ......... -data- ......... #
-### ......... -math- ......... #
-rand = { workspace = true }
-## ~~~~~~~~~~~~ -parsing- ~~~~~~~~~~~~ #
-serde = { workspace = true }
-serde_json = { workspace = true }
-## ~~~~~~~~~~~~ -time- ~~~~~~~~~~~~ #
 
-# ################################# -dev dependencies- ################################# #
-[dev-dependencies]
-## ~~~~~~~~~~~~ -benchmarking- ~~~~~~~~~~~~ #
-divan = "0.1"
-## ~~~~~~~~~~~~ -test ergonomics- ~~~~~~~~~~~~ #
-pretty_assertions = "1"
-test-log = { version = "0.2", features = ["trace"] }
-## ~~~~~~~~~~~~ -property sample testing- ~~~~~~~~~~~~ #
-quickcheck = "1"
-quickcheck_macros = "1"
-## ~~~~~~~~~~~~ snapshot testing- ~~~~~~~~~~~~ #
-insta = { version = "1", features = [] } # "clap","csv","json","redactions","serde","toml","walkdir",
+[dependencies]
+utilities = { path = "../utilities" }
+
+async-stream =             "0.3"
+futures =                  "0.3"
+tokio =        { version = "1", features = ["macros","rt",]  } # "fs","io-std","io-util","macros,"net","parking_lot","process","rt","rt-multi-thread","signal","sync","time", (wasm-compatible: sync,macros,io-util,rt,time)
+tokio-stream = { version = "0.1", features = [] }  # "fs","io-util","net","signal","sync","tokio-util"
+tokio-util =   { version = "0.7", features = [] }  # "codec","compat","futures-io","futures-util","hashbrown","io-util","rt","slab","time","tracing"
+
+governor = { version = "0.10", default-features = false, features = ["jitter","std","quanta",] }  # "dashmap","jitter","no_std","quanta","std"
+reqwest =  { version = "0.12", features = ["json","rustls-tls",] }  # "cookies","json","rustls-tls"
+url =      { version = "2" }
+
+rand = { version = "0.9", features = [] }  # "log","serde","simd_support"
+serde = { version = "1", features = ["derive"] }  # "derive"
+serde_json = "1"
+
+derive_more = { version = "2", features = ["full"] }  # "add","add_assign","as_ref","constructor","debug","deref","deref_mut","display","error","from","from_str","index","index_mut","into","into_iterator","is_variant","mul","mul_assign","not","sum","try_from","try_into","try_unwrap","unwrap",
+indoc =                   "2"
+
+clap =       {workspace=true}
+owo-colors = {workspace=true}
+thiserror =  {workspace=true}
+
+tracing =            { workspace = true }  # "release_max_level_warn"^"release_max_level_off"
+tracing-error =      { workspace = true }
+tracing-subscriber = { workspace = true, features = ["env-filter"] } # "env-filter","json"
+
+# [dev-dependencies]

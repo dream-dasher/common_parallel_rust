@@ -1,50 +1,26 @@
-# ################################# -package features- ################################# #
 [package]
-name = "utilities"
-version.workspace = true
-edition.workspace = true
-authors.workspace = true
-keywords.workspace = true
-# ################################# -lints- ################################# #
+publish =     false
+name =        "utilities"
+description = "Sample (example), basic async code with tokio."
+
+version =     {workspace=true}
+edition =     {workspace=true}
+authors =     {workspace=true}
+categories  = {workspace=true}
+keywords =    {workspace=true}
+
 [lints]
 workspace = true
-# ################################# -compile profiles- ################################# #
-# ################################# -user dependencies- ################################# #
-[dependencies]
-## ------------ -local- ------------ #
-## ~~~~~~~~~~~~ -async- ~~~~~~~~~~~~ #
-### ......... -remote- ......... #
-### ......... -accessory- ......... #
-## ~~~~~~~~~~~~ -diagnostics- ~~~~~~~~~~~~ #
-tracing = { workspace = true }  # features = ["release_max_level_warn"] | ["release_max_level_off"]
-tracing-appender = { workspace = true }
-tracing-error = { workspace = true }
-tracing-subscriber = { workspace = true, features = ["env-filter"] } # "env-filter","json"
-## ~~~~~~~~~~~~ -env & files- ~~~~~~~~~~~~ #
-dotenvy = { workspace = true }
-### ......... -config- ......... #
-### ......... -proceses- ......... #
-## ~~~~~~~~~~~~ -ergonomics- ~~~~~~~~~~~~ #
-bon = { workspace = true }
-thiserror = { workspace = true }
-## ~~~~~~~~~~~~ -interface- ~~~~~~~~~~~~ #
-### ......... -cli- ......... #
-### ......... -egui- ......... #
-## ~~~~~~~~~~~~ -math & science- ~~~~~~~~~~~~ #
-### ......... -data- ......... #
-### ......... -math- ......... #
-## ~~~~~~~~~~~~ -parsing- ~~~~~~~~~~~~ #
-## ~~~~~~~~~~~~ -time- ~~~~~~~~~~~~ #
 
-# ################################# -dev dependencies- ################################# #
-[dev-dependencies]
-## ~~~~~~~~~~~~ -benchmarking (workspace)- ~~~~~~~~~~~~ #
-divan = "0.1"
-## ~~~~~~~~~~~~ -test ergonomics (workspace)- ~~~~~~~~~~~~ #
-pretty_assertions = "1"
-test-log = { version = "0.2", features = ["trace"] }
-## ~~~~~~~~~~~~ -property sample testing (workspace)- ~~~~~~~~~~~~ #
-quickcheck = "1"
-quickcheck_macros = "1"
-## ~~~~~~~~~~~~ snapshot testing (workspace)- ~~~~~~~~~~~~ #
-insta = { version = "1", features = [] } # "clap","csv","json","redactions","serde","toml","walkdir",
+[dependencies]
+dotenvy = "0.15"
+bon = "3"
+
+thiserror =  {workspace=true}
+
+tracing =            { workspace = true }  # "release_max_level_warn"^"release_max_level_off"
+tracing-appender =   { workspace = true }
+tracing-error =      { workspace = true }
+tracing-subscriber = { workspace = true, features = ["env-filter"] } # "env-filter","json"
+
+# [dev-dependencies]

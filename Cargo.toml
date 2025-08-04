@@ -1,132 +1,136 @@
 # Settings for Rust Workspace
 # [Cargo Manifest Configuration Reference](https://doc.rust-lang.org/stable/cargo/reference/manifest.html#the-lints-section)
 
-# ################################# -workspace info (workspace)- ################################# #
 [workspace]
 members = ["crates/*", "xtask"]
 resolver = "3"
-# ################################# -package features (workspace)- ################################# #
+
 [workspace.package]
-version = "0.1.0"
-edition = "2024"
-authors = ["Ethan Skowronski-Lutz"]
-keywords = []
-# ################################# -lints (workspace)- ################################# #
+# name =        "______"
+version =     "0.1.0"
+edition =     "2024"
+authors =    ["Ethan Skowronski-Lutz <33399972+dream-dasher@users.noreply.github.com>",]
+repository =  "https://github.com/dream-dasher/______"
+description = "______"
+categories = []
+keywords =   []
+
 [workspace.lints.rust]
-unsafe_code = "deny"
+unsafe_code = "forbid"  # (removable default)
 [workspace.lints.clippy]
-uninlined_format_args = "allow"     # allow `"name is {}", name` instead of `"name is {name}"
-allow_attributes = "warn"
-undocumented_unsafe_blocks = "deny" # "forbid" lint level appears buggy
-# ################################# -compile profiles (workspace)- ################################# #
+uninlined_format_args =      "allow" # allow `"name is {}", name` instead of `"name is {name}"`
+allow_attributes =           "warn"  # use `#[expect(...)]` instead
+undocumented_unsafe_blocks = "deny"  # "forbid" lint level appears buggy
+
 [profile.release]
 codegen-units = 1
-lto = true        # true:= "fat"
-[profile.profiling] # for perf-analysis, e.g. `samply`
-inherits = "release"
-debug = true
-[profile.release.package.sample-egui] # for wasm deploy
-# lto = true # VERY slightly smaller wasm
-# opt-level = 's' # 10-20% smaller wasm compared to `opt-level = 3`
-# opt-level = 1 # very slow and big wasm. Don't do this.
-opt-level = 2 # fast and small wasm, basically same as `opt-level = 's'`
-# opt-level = 3 # unnecessarily large wasm for no performance gain
+lto =           true  # true:= "fat"
+[profile.profiling]   # for perf-analysis, e.g. `samply`
+inherits =      "release"
+debug =         true
+# [profile.release.package.egui] # for wasm deploy
+# # lto = true  # VERY slightly smaller wasm
+# # opt-level = 's'  # 10-20% smaller wasm compared to `opt-level = 3`
+# # opt-level = 1  # very slow and big wasm. Don't do this.
+# opt-level = 2  # fast and small wasm, basically same as `opt-level = 's'`
+# # opt-level = 3  # unnecessarily large wasm for no performance gain
 
-# ################################# -user dependencies (workspace)- ################################# #
+
 [workspace.dependencies]
-## ~~~~~~~~~~~~ -async (workspace)- ~~~~~~~~~~~~ #
-async-stream = "0.3"
-futures = "0.3"
-tokio = { version = "1", features = [
-    "macros",
-] } # "fs","io-std","io-util","net","parking_lot","process","rt","rt-multi-thread","signal","sync","time",
-tokio-stream = { version = "0.1", features = [
-] } # "fs","io-util","net","signal","sync","tokio-util"
-tokio-util = { version = "0.7", features = [
-] } # "codec","compat","futures-io","futures-util","hashbrown","io-util","rt","slab","time","tracing"
-# tokio wasm-compatible: "sync","macros","io-util","rt","time"
-### ......... -remote (workspace)- ......... #
-reqwest = { version = "0.12", features = [
-    "json",
-    "rustls-tls",
-] } # "cookies","json","rustls-tls"
-sqlx = { version = "0.8", features = [
-    "tls-rustls",
-] } # "sqlite","runtime-tokio",
-### ......... -accessory (workspace)- ......... #
-governor = { version = "0.10", default-features = false, features = [
-    "jitter",
-    "std",
-    "quanta",
-] } # "dashmap", "no_std"
-url = { version = "2" }
-## ~~~~~~~~~~~~ -diagnostics (workspace)- ~~~~~~~~~~~~ #
-tracing = { version = "0.1", features = [
-] } # "release_max_level_warn"^"release_max_level_off"
+
+clap = { version = "4", features = ["derive","wrap_help",] }  # "derive", "env", "string", "unicode", "wrap_help",
+owo-colors =       "4"
+
+thiserror =        "2"
+
+tracing = { version = "0.1", features = [] }  # "release_max_level_warn"^"release_max_level_off"
 tracing-appender = "0.2"
 tracing-error = "0.2"
-tracing-subscriber = { version = "0.3", features = [] } # "env-filter","json"
-tracing-timing = "0.6"
-## ~~~~~~~~~~~~ -env & files (workspace)- ~~~~~~~~~~~~ #
-arboard = "3"
+tracing-subscriber = { version = "0.3", features = [] }  # "env-filter","json"
+
+# [patch.crates-io]
+
+################### Common Dependencies ###################
+# [workspace.dependencies]
+#
+# ## ~~~~~~~~~~~~ -async (workspace)- ~~~~~~~~~~~~ #
+# async-stream = "0.3"
+# futures = "0.3"
+# tokio = { version = "1", features = ["macros",] }  # "fs","io-std","io-util","macros","net","parking_lot","process","rt","rt-multi-thread","signal","sync","time", (wasm-compatible: sync,macros,io-util,rt,time)
+# tokio-stream = { version = "0.1", features = [] }  # "fs","io-util","net","signal","sync","tokio-util"
+# tokio-util = { version = "0.7", features = [] }  # "codec","compat","futures-io","futures-util","hashbrown","io-util","rt","slab","time","tracing"
+# ### ......... -remote (workspace)- ......... #
+# reqwest = { version = "0.12", features = ["json","rustls-tls",] }  # "cookies","json","rustls-tls"
+# sqlx = { version = "0.8", features = ["tls-rustls",] }  # "sqlite","runtime-tokio","tls-rustls"
+# ### ......... -accessory (workspace)- ......... #
+# governor = { version = "0.10", default-features = false, features = ["jitter","std","quanta",] }  # "dashmap","jitter","no_std","quanta","std"
+# url = { version = "2" }
+
+# ## ~~~~~~~~~~~~ -diagnostics (workspace)- ~~~~~~~~~~~~ #
+# tracing = { version = "0.1", features = [] }  # "release_max_level_warn"^"release_max_level_off"
+# tracing-appender = "0.2"
+# tracing-error = "0.2"
+# tracing-subscriber = { version = "0.3", features = [] }  # "env-filter","json"
+# tracing-timing = "0.6"
+
+# ## ~~~~~~~~~~~~ -env & files (workspace)- ~~~~~~~~~~~~ #
+# arboard = "3"
 # csv = "1"
-dotenvy = "0.15"
-include_dir = "0.7"
-rfd = "0.15"
+# dotenvy = "0.15"
+# include_dir = "0.7"
+# rfd = "0.15"
 # toml = "0.8"
 # walkdir = "2"
-### ......... -config (workspace)- ......... #
+# ### ......... -config (workspace)- ......... #
 # config = "0.15"
 # directories = "6"
-### ......... -proceses (workspace)- ......... #
-# rexpect = { version = "0.6", features = [] } # "which"
-## ~~~~~~~~~~~~ -ergonomics (workspace)- ~~~~~~~~~~~~ #
-bon = "3"
-derive_more = { version = "2", features = [
-] } # "add","add_assign","as_ref","constructor","debug","deref","deref_mut","display","error","from","from_str","index","index_mut","into","into_iterator","is_variant","mul","mul_assign","not","sum","try_from","try_into","try_unwrap","unwrap",
-indoc = "2"
+# ### ......... -proceses (workspace)- ......... #
+# rexpect = { version = "0.6", features = [] }  # "which"
+
+# ## ~~~~~~~~~~~~ -ergonomics (workspace)- ~~~~~~~~~~~~ #
+# bon = "3"
+# derive_more = { version = "2", features = [] }  # "add","add_assign","as_ref","constructor","debug","deref","deref_mut","display","error","from","from_str","index","index_mut","into","into_iterator","is_variant","mul","mul_assign","not","sum","try_from","try_into","try_unwrap","unwrap",
+# indoc = "2"
 # itertools = "0.14"
 # nestify = "0.3"
-thiserror = "2"
-## ~~~~~~~~~~~~ -interface (workspace)- ~~~~~~~~~~~~ #
-### ......... -cli (workspace)- ......... #
-clap = { version = "4", features = [
-    "derive",
-] } # "derive", "env", "string", "unicode", "wrap_help",
+# thiserror = "2"
+
+# ## ~~~~~~~~~~~~ -interface (workspace)- ~~~~~~~~~~~~ #
+# ### ......... -cli (workspace)- ......... #
+# clap = { version = "4", features = [ "derive",] }  # "derive", "env", "string", "unicode", "wrap_help",
 # dialoguer = "0.11"
-owo-colors = "4"
-### ......... -egui (workspace)- ......... #
-eframe = { version = "0.32" } # "default_fonts","glow","persistence","wayland","wgpu" # NOTE: 'wayland' required for linux targets
-# eframe = { version = "0.32", default-features = false, features = ["wayland"] } # "default_fonts","glow","persistence","wayland","wgpu" # NOTE: 'wayland' required for linux targets
-egui = { version = "0.32", features = [] } # "callstack","document-features"
-egui_extras = { version = "0.32", features = [
-] } # "all_loaders","datepicker","document-features","serde","syntect",
+# owo-colors = "4"
+# ### ......... -egui (workspace)- ......... #
+# eframe = { version = "0.32" }  # "default_fonts","glow","persistence","wayland","wgpu" # NOTE: 'wayland' required for linux targets
+# egui = { version = "0.32", features = [] }  # "callstack","document-features"
+# egui_extras = { version = "0.32", features = [] }  # "all_loaders","datepicker","document-features","serde","syntect",
 # egui_table = "0.3"
 # egui_inbox = "0.7"
-## ~~~~~~~~~~~~ -math & science (workspace)- ~~~~~~~~~~~~ #
-### ......... -data (workspace)- ......... #
-# polars = { version = "0.45", features = [] }
-### ......... -math (workspace)- ......... #
-# faer = "0.21"
-rand = { version = "0.9", features = [] } # "log","serde","simd_support"
-## ~~~~~~~~~~~~ -parsing (workspace)- ~~~~~~~~~~~~ #
-# regex = { version = "1", features = [] } # "logging"
-# monostate = "0.1"                                   # serde: constraining, zero-sized type
-serde = { version = "1", features = ["derive"] } # "derive"
-serde_json = "1"
-## ~~~~~~~~~~~~ -time (workspace)- ~~~~~~~~~~~~ #
-# jiff = { version = "0.1", features = [] } # "js","logging","serde"
 
-# ################################# -dev dependencies (workspace)- ################################# #
-# [dev-dependencies] <-- only goes in package Cargo.toml
-## ~~~~~~~~~~~~ -benchmarking (workspace)- ~~~~~~~~~~~~ #
-divan = "0.1"
-## ~~~~~~~~~~~~ -test ergonomics (workspace)- ~~~~~~~~~~~~ #
-pretty_assertions = "1"
-test-log = { version = "0.2", features = ["trace"] } # "trace"
-## ~~~~~~~~~~~~ -property sample testing (workspace)- ~~~~~~~~~~~~ #
-quickcheck = "1"
-quickcheck_macros = "1"
-## ~~~~~~~~~~~~ snapshot testing (workspace)- ~~~~~~~~~~~~ #
-insta = { version = "1", features = [
-] } # "clap","csv","json","redactions","serde","toml","walkdir",
+# ## ~~~~~~~~~~~~ -math & science (workspace)- ~~~~~~~~~~~~ #
+# ### ......... -data (workspace)- ......... #
+# polars = { version = "0.45", features = [] }
+# ### ......... -math (workspace)- ......... #
+# faer = "0.21"
+# rand = { version = "0.9", features = [] }  # "log","serde","simd_support"
+
+# ## ~~~~~~~~~~~~ -parsing (workspace)- ~~~~~~~~~~~~ #
+# regex = { version = "1", features = [] }  # "logging"
+# monostate = "0.1" # serde: constraining, zero-sized type
+# serde = { version = "1", features = ["derive"] }  # "derive"
+# serde_json = "1"
+
+# ## ~~~~~~~~~~~~ -time (workspace)- ~~~~~~~~~~~~ #
+# jiff = { version = "0.1", features = [] }  # "js","logging","serde"
+
+# # ############ [dev-dependencies] <-- only goes in package Cargo.toml ############
+# ## ~~~~~~~~~~~~ -benchmarking (workspace)- ~~~~~~~~~~~~ #
+# divan = "0.1"
+# ## ~~~~~~~~~~~~ -test ergonomics (workspace)- ~~~~~~~~~~~~ #
+# pretty_assertions = "1"
+# test-log = { version = "0.2", features = ["trace"] }  # "trace"
+# ## ~~~~~~~~~~~~ -property sample testing (workspace)- ~~~~~~~~~~~~ #
+# quickcheck = "1"
+# quickcheck_macros = "1"
+# ## ~~~~~~~~~~~~ snapshot testing (workspace)- ~~~~~~~~~~~~ #
+# expect-test = "1"
