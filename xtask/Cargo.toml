@@ -16,8 +16,6 @@ workspace = true
 clap =       {workspace=true}
 owo-colors = {workspace=true}
 
-thiserror =  {workspace=true}
-
 [dev-dependencies]
 pretty_assertions = {workspace=true}
 test-log =          {workspace=true}

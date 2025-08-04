@@ -1213,27 +1213,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "egui_inbox"
-version = "0.9.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8031fefc60b0170b304a8b12df0bd3531359410c3e709a2ccf33f7f58f856428"
-dependencies = [
- "egui",
- "parking_lot",
-]
-
-[[package]]
-name = "egui_table"
-version = "0.4.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "278de54541e82733ac6124a6e809d58c2a64d7b995344c82e3540404a714be8c"
-dependencies = [
- "egui",
- "serde",
- "vec1",
-]
-
-[[package]]
 name = "emath"
 version = "0.32.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3586,7 +3565,6 @@ dependencies = [
  "thiserror 2.0.12",
  "tokio",
  "tokio-stream",
- "tokio-util",
  "tracing",
  "tracing-error",
  "tracing-subscriber",
@@ -3598,26 +3576,17 @@ dependencies = [
 name = "sample-egui"
 version = "0.1.0"
 dependencies = [
- "async-stream",
- "clap",
  "derive_more",
  "eframe",
  "egui",
  "egui_extras",
- "egui_inbox",
- "egui_table",
- "futures",
- "governor",
  "indoc",
- "owo-colors",
  "rand 0.9.2",
  "reqwest",
  "rfd",
  "serde",
  "serde_json",
- "thiserror 2.0.12",
  "tokio",
- "tokio-stream",
  "tokio-util",
  "tracing",
  "tracing-appender",
@@ -4522,12 +4491,6 @@ name = "vcpkg"
 version = "0.2.15"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "accd4ea62f7bb7a82fe23066fb0957d48ef677f6eeb8215f372f52e48bb32426"
-
-[[package]]
-name = "vec1"
-version = "1.12.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "eab68b56840f69efb0fefbe3ab6661499217ffdc58e2eef7c3f6f69835386322"
 
 [[package]]
 name = "version_check"
@@ -5478,7 +5441,6 @@ dependencies = [
  "quickcheck",
  "quickcheck_macros",
  "test-log",
- "thiserror 2.0.12",
 ]
 
 [[package]]
