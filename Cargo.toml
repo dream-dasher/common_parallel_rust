@@ -49,11 +49,11 @@ tracing-error = "0.2"
 tracing-subscriber = { version = "0.3", features = [] }  # "env-filter","json"
 
 # # ------------ [dev-dependencies] ------------
-pretty_assertions = "1"
+pretty_assertions =    "1"
 test-log = { version = "0.2", features = ["trace"] }  # "trace"
-quickcheck = "1"
-quickcheck_macros = "1"
-expect-test = "1"
+quickcheck =           "1"
+quickcheck_macros =    "1"
+insta =                "1"
 
 # [patch.crates-io]
 
@@ -140,4 +140,4 @@ expect-test = "1"
 # quickcheck = "1"
 # quickcheck_macros = "1"
 # ## ~~~~~~~~~~~~ snapshot testing (workspace)- ~~~~~~~~~~~~ #
-# expect-test = "1"
+# insta = "1"

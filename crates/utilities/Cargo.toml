@@ -24,10 +24,8 @@ tracing-error =      { workspace = true }
 tracing-subscriber = { workspace = true, features = ["env-filter"] } # "env-filter","json"
 
 [dev-dependencies]
-insta = "1"
-
 pretty_assertions = {workspace=true}
 test-log =          {workspace=true}
 quickcheck =        {workspace=true}
 quickcheck_macros = {workspace=true}
-# expect-test =       {workspace=true}
+insta =             {workspace=true}
