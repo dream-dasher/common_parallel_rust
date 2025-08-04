@@ -13,9 +13,10 @@ keywords =    {workspace=true}
 workspace = true
 
 [dependencies]
-utilities = { path = "../utilities" }
+# workspace-local
+utilities = {workspace=true}
 
-# async-stream =             "0.3"
+# external
 tokio =        { version = "1", features = ["macros","process","rt-multi-thread",]  } # "fs","io-std","io-util","macros,"net","parking_lot","process","rt","rt-multi-thread","signal","sync","time", (wasm-compatible: sync,macros,io-util,rt,time)
 tokio-util =   { version = "0.7", features = ["rt"] }  # "codec","compat","futures-io","futures-util","hashbrown","io-util","rt","slab","time","tracing"
 

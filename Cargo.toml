@@ -4,6 +4,7 @@
 [workspace]
 members = ["crates/*", "xtask"]
 resolver = "3"
+# default-members = ["crates/sample-async"]
 
 [workspace.package]
 # name =        "______"
@@ -37,7 +38,10 @@ debug =         true
 
 
 [workspace.dependencies]
+# workspace-local
+utilities = { path = "crates/utilities" }
 
+# external
 clap = { version = "4", features = ["derive","wrap_help",] }  # "derive", "env", "string", "unicode", "wrap_help",
 owo-colors =       "4"
 
