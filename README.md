@@ -81,6 +81,7 @@ gfa
 rustc --print target-list
 rustc --print cfg
 rustc --print cfg -C target-cpu=native
+delta <(rustc --print cfg -C target-cpu=native) <(rustc --print cfg)
 echo "--------------"
 TRIPLE=''
 rustc --target=${TRIPLE} --print target-features
