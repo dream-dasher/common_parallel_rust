@@ -29,8 +29,8 @@ rfd =      "0.15"
 eframe = { version = "0.32", features = ["persistence"] }  # "default_fonts","glow","persistence","wayland","wgpu" # NOTE: 'wayland' required for linux targets
 egui = { version = "0.32", features = [] }  # "callstack","document-features"
 egui_extras = { version = "0.32", features = [] }  # "all_loaders","datepicker","document-features","serde","syntect",
-egui_table = "0.3"
-egui_inbox = "0.7"
+egui_table = "0.4"
+egui_inbox = "0.9"
 
 rand = { version = "0.9", features = [] }  # "log","serde","simd_support"
 serde = { version = "1", features = ["derive"] }  # "derive"

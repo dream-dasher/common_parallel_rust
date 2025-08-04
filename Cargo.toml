@@ -104,8 +104,8 @@ tracing-subscriber = { version = "0.3", features = [] }  # "env-filter","json"
 # eframe = { version = "0.32" }  # "default_fonts","glow","persistence","wayland","wgpu" # NOTE: 'wayland' required for linux targets
 # egui = { version = "0.32", features = [] }  # "callstack","document-features"
 # egui_extras = { version = "0.32", features = [] }  # "all_loaders","datepicker","document-features","serde","syntect",
-# egui_table = "0.3"
-# egui_inbox = "0.7"
+# egui_table = "0.4"
+# egui_inbox = "0.9"
 
 # ## ~~~~~~~~~~~~ -math & science (workspace)- ~~~~~~~~~~~~ #
 # ### ......... -data (workspace)- ......... #
