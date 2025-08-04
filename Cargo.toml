@@ -1,5 +1,15 @@
 # Settings for Rust Workspace
 # [Cargo Manifest Configuration Reference](https://doc.rust-lang.org/stable/cargo/reference/manifest.html#the-lints-section)
+[package]
+name =        "common_parallel_rust"
+version =     "0.1.0"
+edition =     "2024"
+authors =    ["Ethan Skowronski-Lutz <33399972+dream-dasher@users.noreply.github.com>",]
+repository =  "https://github.com/dream-dasher/______"
+description = "______"
+categories = []
+keywords =   []
+
 
 [workspace]
 members = ["crates/*", "xtask"]
@@ -36,7 +46,12 @@ debug =         true
 # # opt-level = 3  # unnecessarily large wasm for no performance gain
 
 
+[dependencies]
+utilities = { path = "crates/utilities" }
+
 [workspace.dependencies]
+
+utilities = { path = "crates/utilities" }
 
 clap = { version = "4", features = ["derive","wrap_help",] }  # "derive", "env", "string", "unicode", "wrap_help",
 owo-colors =       "4"
