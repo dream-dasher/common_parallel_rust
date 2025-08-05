@@ -79,7 +79,7 @@ test-log = { version = "0.2", features = ["trace"] }  # "trace"
 # tracing-appender =               "0.2"
 # tracing-error =                  "0.2"
 # tracing-subscriber = { version = "0.3", features = [] }  # "env-filter","json"
-# tracing-timing =                 "0.6"
+# tracing-timing =                 "0.7"
 
 # ## ~~~~~~~~~~~~ -env & files (workspace)- ~~~~~~~~~~~~ #
 # arboard =     "3"
