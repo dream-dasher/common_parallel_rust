@@ -17,7 +17,7 @@ categories = []
 keywords =   []
 
 [workspace.lints.rust]
-unsafe_code = "warn"  # (removable default)
+unsafe_code =                "warn"  # (removable default)
 [workspace.lints.clippy]
 uninlined_format_args =      "allow" # allow `"name is {}", name` instead of `"name is {name}"`
 allow_attributes =           "warn"  # use `#[expect(...)]` instead
@@ -27,7 +27,7 @@ undocumented_unsafe_blocks = "deny"  # "forbid" lint level appears buggy
 codegen-units = 1
 lto =           true  # true:= "fat"
 [profile.profiling]   # for perf-analysis, e.g. `samply`
-inherits =      "release"
+inherits =     "release"
 debug =         true
 # [profile.release.package.egui] # for wasm deploy
 # # lto = true  # VERY slightly smaller wasm
@@ -38,110 +38,111 @@ debug =         true
 
 
 [workspace.dependencies]
-# workspace-local
 utilities = { path = "crates/utilities" }
 
-# external
-clap = { version = "4", features = ["derive","wrap_help",] }  # "derive", "env", "string", "unicode", "wrap_help",
-owo-colors =       "4"
-
-thiserror =        "2"
-
-tracing = { version = "0.1", features = [] }  # "release_max_level_warn"^"release_max_level_off"
-tracing-appender = "0.2"
-tracing-error = "0.2"
+clap =               { version = "4", features = ["derive","wrap_help",] }  # "derive", "env", "string", "unicode", "wrap_help",
+thiserror =                      "2"
+tracing =            { version = "0.1", features = [] }  # "release_max_level_warn"^"release_max_level_off"
+tracing-appender =               "0.2"
+tracing-error =                  "0.2"
 tracing-subscriber = { version = "0.3", features = [] }  # "env-filter","json"
+owo-colors =                     "4"
 
-# # ------------ [dev-dependencies] ------------
+# ------------ [dev-dependencies] ------------
+insta =                "1"
 pretty_assertions =    "1"
-test-log = { version = "0.2", features = ["trace"] }  # "trace"
 quickcheck =           "1"
 quickcheck_macros =    "1"
-insta =                "1"
+test-log = { version = "0.2", features = ["trace"] }  # "trace"
 
 # [patch.crates-io]
 
 ################### Common Dependencies ###################
 # [workspace.dependencies]
 #
-# ## ~~~~~~~~~~~~ -async (workspace)- ~~~~~~~~~~~~ #
-# async-stream = "0.3"
-# futures = "0.3"
-# tokio = { version = "1", features = ["macros",] }  # "fs","io-std","io-util","macros","net","parking_lot","process","rt","rt-multi-thread","signal","sync","time", (wasm-compatible: sync,macros,io-util,rt,time)
+# ## ~~~~~~~~~~~~ -async & associated (workspace)- ~~~~~~~~~~~~ #
+# async-stream =             "0.3"
+# futures =                  "0.3"
+# tokio =        { version = "1", features = ["macros",] }  # "fs","io-std","io-util","macros","net","parking_lot","process","rt","rt-multi-thread","signal","sync","time", (wasm-compatible: sync,macros,io-util,rt,time)
 # tokio-stream = { version = "0.1", features = [] }  # "fs","io-util","net","signal","sync","tokio-util"
-# tokio-util = { version = "0.7", features = [] }  # "codec","compat","futures-io","futures-util","hashbrown","io-util","rt","slab","time","tracing"
+# tokio-util =   { version = "0.7", features = [] }  # "codec","compat","futures-io","futures-util","hashbrown","io-util","rt","slab","time","tracing"
 # ### ......... -remote (workspace)- ......... #
-# reqwest = { version = "0.12", features = ["json","rustls-tls",] }  # "cookies","json","rustls-tls"
-# sqlx = { version = "0.8", features = ["tls-rustls",] }  # "sqlite","runtime-tokio","tls-rustls"
+# reqwest =      { version = "0.12", features = ["json","rustls-tls",] }  # "cookies","json","rustls-tls"
+# sqlx =         { version = "0.8", features = ["tls-rustls",] }  # "sqlite","runtime-tokio","tls-rustls"
+# ureq = { version = "3", features = ["rustls"] } # "cookies","json","rustls"
 # ### ......... -accessory (workspace)- ......... #
-# governor = { version = "0.10", default-features = false, features = ["jitter","std","quanta",] }  # "dashmap","jitter","no_std","quanta","std"
-# url = { version = "2" }
+# governor =     { version = "0.10", default-features = false, features = ["jitter","std","quanta",] }  # "dashmap","jitter","no_std","quanta","std"
+# url =          { version = "2" }
 
 # ## ~~~~~~~~~~~~ -diagnostics (workspace)- ~~~~~~~~~~~~ #
-# tracing = { version = "0.1", features = [] }  # "release_max_level_warn"^"release_max_level_off"
-# tracing-appender = "0.2"
-# tracing-error = "0.2"
+# tracing =            { version = "0.1", features = [] }  # "release_max_level_warn"^"release_max_level_off"
+# tracing-appender =               "0.2"
+# tracing-error =                  "0.2"
 # tracing-subscriber = { version = "0.3", features = [] }  # "env-filter","json"
-# tracing-timing = "0.6"
+# tracing-timing =                 "0.6"
 
 # ## ~~~~~~~~~~~~ -env & files (workspace)- ~~~~~~~~~~~~ #
-# arboard = "3"
-# csv = "1"
-# dotenvy = "0.15"
+# arboard =     "3"
+# csv =         "1"
+# dotenvy =     "0.15"
 # include_dir = "0.7"
-# rfd = "0.15"
-# toml = "0.8"
-# walkdir = "2"
+# rfd =         "0.15"
+# toml =        "0.8"
+# walkdir =     "2"
 # ### ......... -config (workspace)- ......... #
-# config = "0.15"
+# config =      "0.15"
 # directories = "6"
 # ### ......... -proceses (workspace)- ......... #
 # rexpect = { version = "0.6", features = [] }  # "which"
 
 # ## ~~~~~~~~~~~~ -ergonomics (workspace)- ~~~~~~~~~~~~ #
-# bon = "3"
+# bon =                     "3"
+# borrow =                  "1"
+# crabtime =                "1"
 # derive_more = { version = "2", features = [] }  # "add","add_assign","as_ref","constructor","debug","deref","deref_mut","display","error","from","from_str","index","index_mut","into","into_iterator","is_variant","mul","mul_assign","not","sum","try_from","try_into","try_unwrap","unwrap",
-# indoc = "2"
-# itertools = "0.14"
-# nestify = "0.3"
-# thiserror = "2"
+# indoc =                   "2"
+# itertools =               "0.14"
+# nestify =                 "0.3"
+# thiserror =               "2"
 
 # ## ~~~~~~~~~~~~ -interface (workspace)- ~~~~~~~~~~~~ #
 # ### ......... -cli (workspace)- ......... #
 # clap = { version = "4", features = [ "derive",] }  # "derive", "env", "string", "unicode", "wrap_help",
-# dialoguer = "0.11"
-# owo-colors = "4"
+# dialoguer =        "0.11"
+# owo-colors =       "4"
 # ### ......... -egui (workspace)- ......... #
-# eframe = { version = "0.32" }  # "default_fonts","glow","persistence","wayland","wgpu" # NOTE: 'wayland' required for linux targets
-# egui = { version = "0.32", features = [] }  # "callstack","document-features"
+# eframe =      { version = "0.32" }  # "default_fonts","glow","persistence","wayland","wgpu" # NOTE: 'wayland' required for linux targets
+# egui =        { version = "0.32", features = [] }  # "callstack","document-features"
 # egui_extras = { version = "0.32", features = [] }  # "all_loaders","datepicker","document-features","serde","syntect",
-# egui_table = "0.4"
-# egui_inbox = "0.9"
+# egui_table =              "0.4"
+# egui_inbox =              "0.9"
 
 # ## ~~~~~~~~~~~~ -math & science (workspace)- ~~~~~~~~~~~~ #
 # ### ......... -data (workspace)- ......... #
+# arrow-rs (arrow, arrow-flight, parquet, parquet-derive): https://github.com/apache/arrow-rs  # didn't love, but possibly much improved
 # polars = { version = "0.45", features = [] }
 # ### ......... -math (workspace)- ......... #
-# faer = "0.21"
+# faer =             "0.21"  # may be abandoned
+# fixed_num = {version = "0.1, features  [] }  # "arrow-buffer"
 # rand = { version = "0.9", features = [] }  # "log","serde","simd_support"
 
 # ## ~~~~~~~~~~~~ -parsing (workspace)- ~~~~~~~~~~~~ #
 # regex = { version = "1", features = [] }  # "logging"
-# monostate = "0.1" # serde: constraining, zero-sized type
+# monostate =         "0.1"  # serde: constraining, zero-sized type
 # serde = { version = "1", features = ["derive"] }  # "derive"
-# serde_json = "1"
+# serde_json =        "1"
 
 # ## ~~~~~~~~~~~~ -time (workspace)- ~~~~~~~~~~~~ #
 # jiff = { version = "0.1", features = [] }  # "js","logging","serde"
 
 # # ############ [dev-dependencies] <-- only goes in package Cargo.toml ############
 # ## ~~~~~~~~~~~~ -benchmarking (workspace)- ~~~~~~~~~~~~ #
-# divan = "0.1"
+# divan =               "0.1"
 # ## ~~~~~~~~~~~~ -test ergonomics (workspace)- ~~~~~~~~~~~~ #
-# pretty_assertions = "1"
+# pretty_assertions =    "1"
 # test-log = { version = "0.2", features = ["trace"] }  # "trace"
 # ## ~~~~~~~~~~~~ -property sample testing (workspace)- ~~~~~~~~~~~~ #
-# quickcheck = "1"
-# quickcheck_macros = "1"
+# quickcheck =           "1"
+# quickcheck_macros =    "1"
 # ## ~~~~~~~~~~~~ snapshot testing (workspace)- ~~~~~~~~~~~~ #
-# insta = "1"
+# insta =                "1"
