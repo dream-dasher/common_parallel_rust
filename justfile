@@ -44,7 +44,7 @@ Commands can be inspected in the currently invoked `justfile`.
 init: && list-external-deps _gen-env _gen-git-hooks _date
     cargo clean
     cargo build --workspace
-    cargo doc --all-features --document-private-items
+    cargo doc --workspace --all-features --document-private-items
 
 # Linting, formatting, typo checking, etc.
 check: && _date
@@ -61,7 +61,7 @@ check: && _date
 docs: && _date
     rustup doc
     rustup doc --std
-    cargo doc --all-features --document-private-items --open
+    cargo doc --workspace --all-features --document-private-items --open
 
 # Add a package to workspace // adds and removes a bin to update workspace package register
 packadd name: && _date
