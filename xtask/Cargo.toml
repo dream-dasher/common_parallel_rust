@@ -3,22 +3,24 @@ publish =     false
 name =        "xtask"
 description = "sample 'xtask'"
 version =     "0.1.0"
+edition =     "2024"
+authors =    ["ESL <33399972+dream-dasher@users.noreply.github.com>",]
 
-edition =     {workspace=true}
-authors =     {workspace=true}
-categories  = {workspace=true}
-keywords =    {workspace=true}
-
-[lints]
-workspace = true
+[lints.rust]
+unsafe_code =                "warn"  # (removable default)
+[lints.clippy]
+uninlined_format_args =      "allow" # allow `"name is {}", name` instead of `"name is {name}"`
+allow_attributes =           "warn"  # use `#[expect(...)]` instead
+undocumented_unsafe_blocks = "deny"  # "forbid" lint level appears buggy
 
 [dependencies]
-clap =       {workspace=true}
-owo-colors = {workspace=true}
+clap = { version = "4", features = ["derive","wrap_help",] }
+owo-colors = "4"
+
 
 [dev-dependencies]
-pretty_assertions = {workspace=true}
-test-log =          {workspace=true}
-quickcheck =        {workspace=true}
-quickcheck_macros = {workspace=true}
-# expect-test =       {workspace=true}
+# insta =                "1"
+pretty_assertions =    "1"
+test-log = { version = "0.2", features = ["trace"] }  # "trace"
+quickcheck =           "1"
+quickcheck_macros =    "1"
