@@ -1,5 +1,10 @@
 # rustfmt.toml
 # web description of options: https://rust-lang.github.io/rustfmt/?version=v1.6.0&search=
+#
+# NOTE: use *nightly* rust fmt
+#     ```zsh
+#     cargo +nightly fmt
+#     ```
 
 
 ## --- meta-config ---
