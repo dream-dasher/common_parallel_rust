@@ -63,21 +63,21 @@ impl eframe::App for TwoNumCalc {
     #[expect(unused)]
     fn update(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
         // ............................ [ check for messages ] ............................ //
-        if let Some(receiver) = &self.receiver {
-            if receiver.try_recv().is_ok() {
-                if let (Some(left), Some(right)) = (self.left, self.right) {
-                    self.left = Some(left - 1);
-                    self.right = Some(right + 1);
-                    self.left_text = self.left.unwrap().to_string();
-                    self.right_text = self.right
-                                          .unwrap()
-                                          .to_string();
-                    // **NOTE**: we need to request repaint if we want UI to update even if we're not otherwise interacting with it.
-                    ctx.request_repaint();
-                    // ctx.request_repaint_after(Duration::from_millis(100)); // if there's no other interaction 100ms seems to result in faster update than just repaint alone...
-                }
-            }
+        if let Some(receiver) = &self.receiver
+           && receiver.try_recv().is_ok()
+           && let (Some(left), Some(right)) = (self.left, self.right)
+        {
+            self.left = Some(left - 1);
+            self.right = Some(right + 1);
+            self.left_text = self.left.unwrap().to_string();
+            self.right_text = self.right
+                                  .unwrap()
+                                  .to_string();
+            // **NOTE**: we need to request repaint if we want UI to update even if we're not otherwise interacting with it.
+            ctx.request_repaint();
+            // ctx.request_repaint_after(Duration::from_millis(100)); // if there's no other interaction 100ms seems to result in faster update than just repaint alone...
         }
+
         // ............................ [ regular rendering ] ............................ //
         // -- Menu Bar --
         egui::TopBottomPanel::top("top_panel").show(ctx, |ui| {

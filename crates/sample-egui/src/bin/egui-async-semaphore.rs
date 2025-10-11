@@ -33,7 +33,7 @@ use serde::{Deserialize, Serialize};
 use serde_json::Value as JsonValue;
 use tokio::{sync::Semaphore, task::JoinSet, time::interval};
 use tokio_util::{sync::CancellationToken, task::TaskTracker};
-use tracing::{event, Level as L, Instrument, debug_span, instrument};
+use tracing::{Instrument, Level as L, debug_span, event, instrument};
 use utilities::activate_global_default_tracing_subscriber;
 // ///////////////////////////////// [ main ] ///////////////////////////////// //
 #[tokio::main(flavor = "multi_thread")]

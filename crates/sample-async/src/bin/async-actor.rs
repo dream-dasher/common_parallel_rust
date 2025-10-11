@@ -148,52 +148,48 @@ async fn main() -> Result<(), Box<dyn Error>> {
                       .await?;
                 },
             ["message", n] =>
-                if let Ok(idx) = n.parse::<usize>() {
-                    if let Some((tx, _)) = controls.get(idx) {
-                        println!("Enter message for Actor {}:", idx);
-                        let mut msg = String::new();
-                        std::io::stdin().read_line(&mut msg)
-                                        .unwrap();
-                        tx.send(ActorMessage::SetMessage(msg.trim().to_string()))
-                          .await
-                          .unwrap_or_else(|e| eprintln!("Failed to send message: {}", e));
-                    }
+                if let Ok(idx) = n.parse::<usize>()
+                   && let Some((tx, _)) = controls.get(idx)
+                {
+                    println!("Enter message for Actor {}:", idx);
+                    let mut msg = String::new();
+                    std::io::stdin().read_line(&mut msg)
+                                    .unwrap();
+                    tx.send(ActorMessage::SetMessage(msg.trim().to_string()))
+                      .await
+                      .unwrap_or_else(|e| eprintln!("Failed to send message: {}", e));
                 },
             ["activate", n] =>
-                if let Ok(idx) = n.parse::<usize>() {
-                    if let Some((tx, _)) = controls.get(idx) {
-                        tx.send(ActorMessage::SetActive)
-                          .await
-                          .unwrap_or_else(|e| eprintln!("Failed to activate actor {}: {}", idx, e));
-                    }
+                if let Ok(idx) = n.parse::<usize>()
+                   && let Some((tx, _)) = controls.get(idx)
+                {
+                    tx.send(ActorMessage::SetActive)
+                      .await
+                      .unwrap_or_else(|e| eprintln!("Failed to activate actor {}: {}", idx, e));
                 },
             ["deactivate", n] =>
-                if let Ok(idx) = n.parse::<usize>() {
-                    if let Some((tx, _)) = controls.get(idx) {
-                        tx.send(ActorMessage::SetInactive)
-                          .await
-                          .unwrap_or_else(|e| {
-                              eprintln!("Failed to deactivate actor {}: {}", idx, e)
-                          });
-                    }
+                if let Ok(idx) = n.parse::<usize>()
+                   && let Some((tx, _)) = controls.get(idx)
+                {
+                    tx.send(ActorMessage::SetInactive)
+                      .await
+                      .unwrap_or_else(|e| eprintln!("Failed to deactivate actor {}: {}", idx, e));
                 },
             ["toggle", n] =>
-                if let Ok(idx) = n.parse::<usize>() {
-                    if let Some((tx, _)) = controls.get(idx) {
-                        tx.send(ActorMessage::ToggleActive)
-                          .await
-                          .unwrap_or_else(|e| eprintln!("Failed to toggle actor {}: {}", idx, e));
-                    }
+                if let Ok(idx) = n.parse::<usize>()
+                   && let Some((tx, _)) = controls.get(idx)
+                {
+                    tx.send(ActorMessage::ToggleActive)
+                      .await
+                      .unwrap_or_else(|e| eprintln!("Failed to toggle actor {}: {}", idx, e));
                 },
             ["rate", n, ms] =>
-                if let (Ok(idx), Ok(ms)) = (n.parse::<usize>(), ms.parse::<u64>()) {
-                    if let Some((tx, _)) = controls.get(idx) {
-                        tx.send(ActorMessage::SetPeriod(Duration::from_millis(ms)))
-                          .await
-                          .unwrap_or_else(|e| {
-                              eprintln!("Failed to set rate for actor {}: {}", idx, e)
-                          });
-                    }
+                if let (Ok(idx), Ok(ms)) = (n.parse::<usize>(), ms.parse::<u64>())
+                   && let Some((tx, _)) = controls.get(idx)
+                {
+                    tx.send(ActorMessage::SetPeriod(Duration::from_millis(ms)))
+                      .await
+                      .unwrap_or_else(|e| eprintln!("Failed to set rate for actor {}: {}", idx, e));
                 },
             ["report"] =>
                 for (idx, (tx, _)) in controls.iter().enumerate() {

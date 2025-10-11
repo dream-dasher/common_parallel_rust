@@ -27,8 +27,7 @@ use std::time::Duration;
 use reqwest::{Method, Url,
               header::{self, HeaderMap}};
 use serde::{Deserialize, Serialize};
-use tracing::Level as L;
-use tracing::event;
+use tracing::{Level as L, event};
 use utilities::activate_global_default_tracing_subscriber;
 
 // #[cfg(not(target_arch = "wasm32"))]
@@ -55,7 +54,8 @@ async fn main() -> SampleResult<()> {
     let base_httpbin = Url::parse(URL_HTTPBIN)?;
     let delay_httpbin = base_httpbin.join("/delay/")?;
     let json_httpbin = base_httpbin.join("/json")?;
-    event!(L::DEBUG, ?base_httpbin,
+    event!(L::DEBUG,
+           ?base_httpbin,
            ?base_typicode,
            ?todos_typicode,
            ?delay_httpbin,
@@ -308,8 +308,10 @@ async fn _fetch_with_retry(client: &reqwest::Client,
                 tokio::time::sleep(Duration::from_millis(2u64.pow(retries))).await;
             },
             Err(e) => {
-                event!(L::ERROR, "Request tried {} times without success. Last error returned: {}",
-                       retries, e);
+                event!(L::ERROR,
+                       "Request tried {} times without success. Last error returned: {}",
+                       retries,
+                       e);
                 return Err(e.into());
             },
         }

@@ -27,12 +27,9 @@ impl eframe::App for MyApp {
 
                                          if ui.button("Open file…")
                                               .clicked()
+                                            && let Some(path) = rfd::FileDialog::new().pick_file()
                                          {
-                                             if let Some(path) = rfd::FileDialog::new().pick_file()
-                                             {
-                                                 self.picked_path =
-                                                     Some(path.display().to_string());
-                                             }
+                                             self.picked_path = Some(path.display().to_string());
                                          }
 
                                          if let Some(picked_path) = &self.picked_path {

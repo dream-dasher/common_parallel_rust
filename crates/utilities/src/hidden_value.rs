@@ -55,7 +55,7 @@ use std::{env, ffi::OsStr, num::NonZeroUsize};
 use bon::bon;
 use dotenvy::dotenv;
 use thiserror::Error;
-use tracing::{event, Level as L, instrument as instrument_nobonconflict}; // TODO: instrument_nobonconflict temporary to prevent unavoidable compiler warnings from bon
+use tracing::{Level as L, event, instrument as instrument_nobonconflict}; // TODO: instrument_nobonconflict temporary to prevent unavoidable compiler warnings from bon
 // ///////////////////////////////// [ error ] ///////////////////////////////// //
 #[derive(Debug, Error)]
 pub enum HiddenValueError {
