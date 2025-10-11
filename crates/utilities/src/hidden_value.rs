@@ -35,11 +35,10 @@
 //!         // dotenv()?; // this will prefer existing env vars over .env file
 //!         // let test_key = env::var(TEST_KEY)?;
 //!         // println!("direct read of test_key from env: {}", test_key);
-//!         let asv: HiddenValue<String> = HiddenValue::from_env_builder()
-//!                 .key("TEST_KEY")
-//!                 .load_env_file(true)
-//!                 .reveal_len(NonZeroUsize::new(4).unwrap())
-//!                 .build()?;
+//!         let asv: HiddenValue<String> = HiddenValue::from_env_builder().key("TEST_KEY")
+//!                                                                       .load_env_file(true)
+//!                                                                       .reveal_len(NonZeroUsize::new(4).unwrap())
+//!                                                                       .build()?;
 //!         println!("key:{}\n obfuscated val: {:?}", TEST_KEY, &asv);
 //!         println!("key:{}\n exposed val: {}", TEST_KEY, &asv.expose_value());
 //!         let hnum: HiddenValue<u32> = HiddenValue::builder().value(123_456_789).build()?;
