@@ -2,14 +2,13 @@
 # web description of options: https://rust-lang.github.io/rustfmt/?version=v1.6.0&search=
 
 
-## meta-config
+## --- meta-config ---
 style_edition = "2024"
 unstable_features = true  # `cargo +nightly fmt`
+ignore = []               # files for rustfmt to ignore
 # required_version        # specify rustfmt version requirement
-# ignore = []             # files for rustfmt to ignore
 
-## regular-config
-
+## --- regular-config ---
 brace_style = "PreferSameLine"     # braces start on line of what they connect to
 chain_width = 30                   # default: 60
 control_brace_style = "ClosingNextLine" # e.g. if & else in line with eachother
@@ -25,15 +24,16 @@ reorder_impl_items = true          # assoc_type & const at top of impl
 group_imports = "StdExternalCrate" # category style grouping of imports (ala isort in python)
 struct_field_align_threshold = 20  # move distance to seek type alignment in struct fields
 enum_discrim_align_threshold = 20  # move distance to seek type alignment in enum discriminants
-tab_spaces = 8                     # legible groups! :)
 
-trailing_semicolon = false         # no `;` after continue/break/return
 use_field_init_shorthand = true    # let _ = some_struct {x, y, z}
 where_single_line = true           # where on single line if few types
 
+imports_indent = "Visual"
+indent_style = "Visual"            # nests inline with thing needing verticality
 
+
+## --- previously debated options ---
+# tab_spaces = 8                    # legible groups! (~; and is a lot when combiend iwth "Visual" styles)
 # format_strings = true             # auto line-break strings (easier to read, more annoying to edit)
-# imports_indent = "visual"
-# indent_style = "visual"            # nests inline with thing needing verticality
-
-# inline_attribute_width=50         # distance to allow attributes on same lines a what they tag
+# trailing_semicolon = false        # no `;` after continue/break/return (allows, but doesn't enforce no trailing `;)
+# inline_attribute_width=50         # distance to allow attributes on same lines a what they tag (visually surprising)
