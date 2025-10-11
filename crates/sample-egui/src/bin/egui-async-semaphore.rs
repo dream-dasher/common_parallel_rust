@@ -33,7 +33,7 @@ use serde::{Deserialize, Serialize};
 use serde_json::Value as JsonValue;
 use tokio::{sync::Semaphore, task::JoinSet, time::interval};
 use tokio_util::{sync::CancellationToken, task::TaskTracker};
-use tracing::{Instrument, debug_span, info, instrument, trace};
+use tracing::{event, Level as L, Instrument, debug_span, instrument};
 use utilities::activate_global_default_tracing_subscriber;
 // ///////////////////////////////// [ main ] ///////////////////////////////// //
 #[tokio::main(flavor = "multi_thread")]
@@ -125,12 +125,12 @@ impl FuturesApp {
                            let req = client.request(Method::GET, endpoint)
                                            .build()
                                            .expect("should be valid reqwest");
-                           info!(?req);
+                           event!(L::INFO, ?req);
                            let _permit = semaphore.acquire().await;
                            ctx.request_repaint();
-                           info!(?_permit);
+                           event!(L::INFO, ?_permit);
                            let resp = client.execute(req).await?;
-                           info!(?resp);
+                           event!(L::INFO, ?resp);
                            tx.send(resp.status())?;
                            // REPAINT
                            ctx.request_repaint();
@@ -162,7 +162,7 @@ impl FuturesApp {
                 for i in 0..requests_to_queue.get() {
                     tokio::select! {
                             _ = interval.tick() => {
-                                    trace!(i, "tick");
+                                    event!(L::TRACE, i, "tick");
                                     let mut join_set_caged = arc_mutex.lock().unwrap();
                                     FuturesApp::queue_request(
                                             endpoint_delay,
@@ -177,7 +177,7 @@ impl FuturesApp {
                             }
                             _ = cancel_token.cancelled() => {
                                     let remaining_dropped = (requests_to_queue.get() - i) as usize;
-                                    info!(iteration = i, remaining_dropped, "cancelled");
+                                    event!(L::INFO, teration = i, remaining_dropped, "cancelled");
                                     atomic_counter.fetch_sub(remaining_dropped, Ordering::Relaxed);
                                     return;
                             }
@@ -192,6 +192,7 @@ impl FuturesApp {
 // ///////////////////////////////// [ app accessory ] ///////////////////////////////// //
 /// Struct to pull typicode responses into
 /// Example of using 'typed' JSON with Serde
+#[expect(dead_code)]
 #[derive(Debug, Serialize, Deserialize)]
 struct RemoteDelayResponse {
     data:    String,
@@ -235,12 +236,12 @@ impl eframe::App for FuturesApp {
                 _ => self.count_other += 1,
             }
             let _log = self.join_set.try_join_next();
-            trace!(join_set_clear_result=?_log);
+            event!(L::TRACE, join_set_clear_result=?_log);
             let _log_mutexed = self.join_set_caged
                                    .lock()
                                    .unwrap()
                                    .try_join_next();
-            trace!(join_set_clear_result_mutexed=?_log_mutexed);
+            event!(L::TRACE, join_set_clear_result_mutexed=?_log_mutexed);
             ctx.request_repaint();
         }
         // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [ right-control-pane ] ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
@@ -249,7 +250,7 @@ impl eframe::App for FuturesApp {
                         if ui.button(format!("Queue {} Request(s)", self.requests_to_queue))
                                 .clicked()
                         {
-                                info!("Queueing requests");
+                                event!(L::INFO, "Queueing requests");
                                 for _ in 1..=self.requests_to_queue.get() {
                                         FuturesApp::queue_request(
                                                 self.delay_sec,
@@ -264,10 +265,10 @@ impl eframe::App for FuturesApp {
                         }
                 ui.label("If we used JoinSet instead of TaskTracker we could drop the generators without an explicit cancellation tooken.");
                         if ui.button("Drop Requests").clicked() {
-                                info!("Aborting requests");
+                                event!(L::INFO, "Aborting requests");
                                 self.join_set.abort_all();
                                 while self.join_set.try_join_next().is_some() {
-                                        trace!("Clearing finished/aborted task from JoinSet")
+                                        event!(L::TRACE, "Clearing finished/aborted task from JoinSet")
                                 }
                                 ctx.request_repaint();
                         }
@@ -294,20 +295,20 @@ impl eframe::App for FuturesApp {
                                      .as_millis()))
                  .clicked()
             {
-                info!("Queueing metered requests");
+                event!(L::INFO, "Queueing metered requests");
                 self.metered_queue_request(ctx.clone());
                 ctx.request_repaint();
             }
             if ui.button("Drop Requests")
                  .clicked()
             {
-                info!("Aborting requests");
+                event!(L::INFO, "Aborting requests");
                 if let Ok(mut join_set_caged) = self.join_set_caged.lock() {
                     join_set_caged.abort_all();
                     while join_set_caged.try_join_next()
                                         .is_some()
                     {
-                        trace!("Clearing finished/aborted task from JoinSet")
+                        event!(L::TRACE, "Clearing finished/aborted task from JoinSet")
                     }
                     ctx.request_repaint();
                 }
@@ -315,7 +316,7 @@ impl eframe::App for FuturesApp {
             if ui.button("Drop Request Generator(s)")
                  .clicked()
             {
-                info!("Cancelling request generators");
+                event!(L::INFO, "Cancelling request generators");
                 self.generator_cancel.cancel();
                 // the cancellation state will persist (and appears irreversible): we provide the app with a new canellation token; (safe?)
                 self.generator_cancel = CancellationToken::new();

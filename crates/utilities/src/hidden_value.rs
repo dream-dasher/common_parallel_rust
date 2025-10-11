@@ -55,7 +55,7 @@ use std::{env, ffi::OsStr, num::NonZeroUsize};
 use bon::bon;
 use dotenvy::dotenv;
 use thiserror::Error;
-use tracing::{self, debug, error, info, instrument as instrument_nobonconflict, trace}; // TODO: instrument_nobonconflict temporary to prevent unavoidable compiler warnings from bon
+use tracing::{event, Level as L, instrument as instrument_nobonconflict}; // TODO: instrument_nobonconflict temporary to prevent unavoidable compiler warnings from bon
 // ///////////////////////////////// [ error ] ///////////////////////////////// //
 #[derive(Debug, Error)]
 pub enum HiddenValueError {
@@ -111,20 +111,20 @@ impl HiddenValue<std::string::String> {
                            -> Result<Self, HiddenValueError>
         where K: AsRef<OsStr>
     {
-        trace!(key_lossy=?key.as_ref().to_string_lossy());
+        event!(L::TRACE, key_lossy=?key.as_ref().to_string_lossy());
         // maybe load .env to env
         if load_env_file {
             match dotenv() {
                 Err(dotenv_err) => {
-                    info!(%dotenv_err, "No `.env` file found in local or parent directories..")
+                    event!(L::INFO, %dotenv_err, "No `.env` file found in local or parent directories..")
                 },
-                Ok(_) => tracing::debug!("Found and read .env file."),
+                Ok(_) => event!(L::DEBUG, "Found and read .env file."),
             };
         }
         // look for value in env
         let value = match env::var(&key) {
             Err(env_err) => {
-                error!(%env_err, "Key not found in env.");
+                event!(L::ERROR, %env_err, "Key not found in env.");
                 Err(env_err)?
             },
             Ok(value) => value,
@@ -190,7 +190,8 @@ impl<T> HiddenValue<T> {
                obf_string: Option<String>)
                -> Result<Self, HiddenValueError> {
         if let Some(ref obf_string) = obf_string {
-            debug!(?obf_string,
+            event!(L::DEBUG,
+                   ?obf_string,
                    "note: Due to generality of value types we cannot check that the 'obfuscated string' actually obfuscates.");
         };
         Ok(Self { value, obf_string })
@@ -206,7 +207,7 @@ impl<T> HiddenValue<T> {
     #[must_use]
     #[instrument_nobonconflict(skip_all)]
     pub fn expose_value(&self) -> &T {
-        trace!("exposing hidden value");
+        event!(L::TRACE, "exposing hidden value");
         &self.value
     }
 }

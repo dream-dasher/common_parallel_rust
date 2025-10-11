@@ -27,7 +27,8 @@ use std::time::Duration;
 use reqwest::{Method, Url,
               header::{self, HeaderMap}};
 use serde::{Deserialize, Serialize};
-use tracing::{debug, error, info, warn};
+use tracing::Level as L;
+use tracing::event;
 use utilities::activate_global_default_tracing_subscriber;
 
 // #[cfg(not(target_arch = "wasm32"))]
@@ -54,12 +55,12 @@ async fn main() -> SampleResult<()> {
     let base_httpbin = Url::parse(URL_HTTPBIN)?;
     let delay_httpbin = base_httpbin.join("/delay/")?;
     let json_httpbin = base_httpbin.join("/json")?;
-    debug!(?base_httpbin,
+    event!(L::DEBUG, ?base_httpbin,
            ?base_typicode,
            ?todos_typicode,
            ?delay_httpbin,
            ?json_httpbin);
-    info!(a_url=?json_httpbin.as_str());
+    event!(L::INFO, a_url=?json_httpbin.as_str());
 
     // # Header-module
     // - `HeaderMap`
@@ -87,7 +88,7 @@ async fn main() -> SampleResult<()> {
         // headers.insert(header::DATE, _);
         headers
     };
-    debug!(?default_headers);
+    event!(L::DEBUG, ?default_headers);
 
     // # `Client`
     // - prefer `::builder()`
@@ -100,7 +101,7 @@ async fn main() -> SampleResult<()> {
                                            .default_headers(default_headers)
                                            .timeout(Duration::from_secs(30)) // default is *no* timeout
                                            .build()?;
-    debug!(?client);
+    event!(L::DEBUG, ?client);
 
     // # `Request`
     // see RequestBuilder
@@ -110,7 +111,7 @@ async fn main() -> SampleResult<()> {
                         .query(&[("query_key", "query_value")])
                         .body("the exact body that is sent")
                         .build()?;
-    debug!(?request);
+    event!(L::DEBUG, ?request);
 
     // # Response:
     // - status
@@ -121,8 +122,8 @@ async fn main() -> SampleResult<()> {
     // - json
     let response = client.execute(request)
                          .await?;
-    debug!(?response);
-    info!(resp_status=?response.status());
+    event!(L::DEBUG, ?response);
+    event!(L::INFO, resp_status=?response.status());
 
     // # JSON, typed
     // (see struct `Todo` below)
@@ -133,9 +134,9 @@ async fn main() -> SampleResult<()> {
                              .await?;
 
         let todos_type_matched: Vec<Todo> = response.json().await?;
-        info!("Retrieved {} todos", todos_type_matched.len());
-        debug!(two_todos = ?todos_type_matched.get(0..=1));
-        debug!(?todos_type_matched);
+        event!(L::INFO, "Retrieved {} todos", todos_type_matched.len());
+        event!(L::DEBUG, two_todos = ?todos_type_matched.get(0..=1));
+        event!(L::DEBUG, ?todos_type_matched);
         println!("-------,\nFirst Todo, Type-Matched:\n{:#?}\n-------",
                  todos_type_matched.first());
     }
@@ -147,7 +148,7 @@ async fn main() -> SampleResult<()> {
                              .await?;
 
         let todos_ad_hoc: serde_json::Value = response.json().await?;
-        debug!(?todos_ad_hoc);
+        event!(L::DEBUG, ?todos_ad_hoc);
         println!("-------,\nFirst Todo, Ad Hoc Construction:\n{:#?}\n-------",
                  todos_ad_hoc.get(0));
     }
@@ -184,10 +185,10 @@ async fn main() -> SampleResult<()> {
             let start_time = std::time::Instant::now();
             let results = future::join_all(futures).await;
             for result in results.iter() {
-                debug!(?result);
+                event!(L::DEBUG, ?result);
             }
             let time_passed = start_time.elapsed();
-            info!("All requests completed in {:?}", time_passed);
+            event!(L::INFO, "All requests completed in {:?}", time_passed);
             println!("`Join_All`: {} results returned, each with a delay of 2 or 3 seconds, in a total of {} seconds.",
                      results.len(),
                      time_passed.as_secs_f64());
@@ -210,10 +211,10 @@ async fn main() -> SampleResult<()> {
                          start_time.elapsed()
                                    .as_secs_f64());
                 count += 1;
-                debug!(?result);
+                event!(L::DEBUG, ?result);
             }
             let time_passed = start_time.elapsed();
-            debug!("All requests completed in {:?}", time_passed);
+            event!(L::DEBUG, "All requests completed in {:?}", time_passed);
             println!("`Stream.buffer_unordered({})`: {} results streamed back, each with a delay of 2 or 3 seconds, in a total of {} seconds.",
                      BUFFER_SIZE,
                      count,
@@ -273,7 +274,7 @@ async fn main() -> SampleResult<()> {
                                .as_secs_f64(),
                      call_time.elapsed().as_secs() as f64);
             count += 1;
-            debug!(?result);
+            event!(L::DEBUG, ?result);
             call_time = std::time::Instant::now();
         }
     }
@@ -302,12 +303,12 @@ async fn _fetch_with_retry(client: &reqwest::Client,
         match client.get(url).send().await {
             Ok(response) => return Ok(response),
             Err(e) if retries < max_retries => {
-                warn!("Request failed, retrying: {}", e);
+                event!(L::WARN, "Request failed, retrying: {}", e);
                 retries += 1;
                 tokio::time::sleep(Duration::from_millis(2u64.pow(retries))).await;
             },
             Err(e) => {
-                error!("Request tried {} times without success. Last error returned: {}",
+                event!(L::ERROR, "Request tried {} times without success. Last error returned: {}",
                        retries, e);
                 return Err(e.into());
             },
