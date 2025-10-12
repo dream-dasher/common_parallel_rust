@@ -2,16 +2,16 @@
 # [Cargo Manifest Configuration Reference](https://doc.rust-lang.org/stable/cargo/reference/manifest.html#the-lints-section)
 
 [workspace]
-resolver = "2"
+resolver = "3"
 members = [
   "src-crate",
   "xtask",
 ]
 
+
 [workspace.package]
 edition =     "2024"
 authors =    ["ESL <33399972+dream-dasher@users.noreply.github.com>",]
-repository =  "https://github.com/dream-dasher/______"
 
 
 [workspace.lints.rust]
@@ -22,8 +22,16 @@ allow_attributes =           "warn"  # use `#[expect(...)]` instead
 undocumented_unsafe_blocks = "deny"  # "forbid" lint level appears buggy
 
 
+[profile.release]
+codegen-units = 1
+lto =           true  # true:= "fat"
+[profile.profiling]   # for perf-analysis, e.g. `samply`
+inherits =     "release"
+debug =         true
+
+
 [workspace.dependencies]
-# --- user0deps ---
+# --- user-deps ---
 clap =               { version = "4", features = ["derive","wrap_help",] }  # "derive", "env", "string", "unicode", "wrap_help",
 thiserror =                      "2"
 tracing =            { version = "0.1", features = [] }  # "release_max_level_warn"^"release_max_level_off"
@@ -40,7 +48,6 @@ indoc =                   "2"
 
 
 # --- dev-deps ---
-[dev-dependencies]
 insta =                "1"
 pretty_assertions =    "1"
 quickcheck =           "1"
