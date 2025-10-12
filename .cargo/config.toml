@@ -4,5 +4,5 @@
 # [Cargo Book: Configuration](https://doc.rust-lang.org/cargo/reference/config.html#env)
 
 [alias]
-# xtask = "run --package xtask --"
-xtask = "run --manifest-path ./xtask/Cargo.toml --"
+xtask = "run --package xtask --"
+# xtask = "run --manifest-path ./xtask/Cargo.toml --"
