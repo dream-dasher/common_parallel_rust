@@ -2,7 +2,9 @@
 #
 # Configuration options *separate* from `cargo.toml`
 # [Cargo Book: Configuration](https://doc.rust-lang.org/cargo/reference/config.html#env)
+#
+# in non-workspace:
+# xtask = "run --manifest-path ./xtask/Cargo.toml --"
 
 [alias]
 xtask = "run --package xtask --"
-# xtask = "run --manifest-path ./xtask/Cargo.toml --"
