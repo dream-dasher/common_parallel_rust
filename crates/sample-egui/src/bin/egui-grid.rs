@@ -86,8 +86,7 @@ impl GridApp {
                 // Preserve existing cell values where possible
                 if i < self.grid.len() && j < self.grid[i].len() {
                     row.push(self.grid[i][j]);
-                }
-                else {
+                } else {
                     row.push(false);
                 }
             }
@@ -192,8 +191,7 @@ impl eframe::App for GridApp {
                                                  // Fill cell with color or black based on its state
                                                  let fill_color = if self.grid[row][col] {
                                                      self.cell_color
-                                                 }
-                                                 else {
+                                                 } else {
                                                      Color32::BLACK
                                                  };
 

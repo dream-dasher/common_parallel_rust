@@ -48,11 +48,9 @@ impl eframe::App for MyApp {
                                                        let mut info = if let Some(path) = &file.path
                                                        {
                                                            path.display().to_string()
-                                                       }
-                                                       else if !file.name.is_empty() {
+                                                       } else if !file.name.is_empty() {
                                                            file.name.clone()
-                                                       }
-                                                       else {
+                                                       } else {
                                                            "???".to_owned()
                                                        };
 
@@ -100,11 +98,9 @@ fn preview_files_being_dropped(ctx: &egui::Context) {
                           for file in &i.raw.hovered_files {
                               if let Some(path) = &file.path {
                                   write!(text, "\n{}", path.display()).ok();
-                              }
-                              else if !file.mime.is_empty() {
+                              } else if !file.mime.is_empty() {
                                   write!(text, "\n{}", file.mime).ok();
-                              }
-                              else {
+                              } else {
                                   text += "\n???";
                               }
                           }

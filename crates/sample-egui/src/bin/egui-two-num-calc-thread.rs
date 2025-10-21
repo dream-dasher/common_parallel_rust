@@ -45,8 +45,7 @@ impl TwoNumCalc {
                 // **NOTE**: we're sending a null signal - sending is the signal...
                 if tx.send(()).is_err() {
                     println!("Failed to send message");
-                }
-                else {
+                } else {
                     println!("Send is still good.");
                 }
             }

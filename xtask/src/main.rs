@@ -86,8 +86,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                 Ok(n) =>
                     if n <= MAX_PRIME_TILL {
                         n
-                    }
-                    else {
+                    } else {
                         eprintln!("Primes not listed.  {}'s max value ({}) will take a long time for us to calculate with the current method.",
                                   t_deets.name.green(),
                                   t_deets.max.blue(),);

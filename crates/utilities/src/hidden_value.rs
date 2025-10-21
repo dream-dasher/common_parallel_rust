@@ -109,8 +109,7 @@ impl HiddenValue<std::string::String> {
                            /// This will error if the reveal length is not *strictly* *less* than the UTF-8 character length of the value.
                            reveal_len: Option<NonZeroUsize>)
                            -> Result<Self, HiddenValueError>
-        where K: AsRef<OsStr>
-    {
+        where K: AsRef<OsStr> {
         event!(L::TRACE, key_lossy=?key.as_ref().to_string_lossy());
         // maybe load .env to env
         if load_env_file {
@@ -140,8 +139,7 @@ impl HiddenValue<std::string::String> {
             Some(value.chars()
                       .skip(value.len() - reveal_len)
                       .collect())
-        }
-        else {
+        } else {
             None
         };
 
@@ -318,8 +316,7 @@ mod quickcheck_tests {
                                                             .build();
                 if reveal_len.get() >= value_len as usize {
                     hidden.is_err()
-                }
-                else {
+                } else {
                     hidden.is_ok()
                 }
             },

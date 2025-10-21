@@ -106,14 +106,11 @@ impl eframe::App for ChannelApp {
             if self.loading {
                 ui.spinner();
                 ui.label("Loading...");
-            }
-            else if let Some(err) = &self.error {
+            } else if let Some(err) = &self.error {
                 ui.colored_label(egui::Color32::RED, format!("Error: {}", err));
-            }
-            else if self.todos.is_empty() {
+            } else if self.todos.is_empty() {
                 ui.label("No todos to display");
-            }
-            else {
+            } else {
                 ui.label(format!("Loaded {} todos", self.todos.len()));
             }
             ui.add_space(10.0);
@@ -138,8 +135,7 @@ impl eframe::App for ChannelApp {
                                            ui.heading("Todos");
                                            if self.todos.is_empty() {
                                                ui.label("No todos to display");
-                                           }
-                                           else {
+                                           } else {
                                                egui::ScrollArea::vertical().show(ui, |ui| {
                                                    for todo in &self.todos {
                                                        ui.horizontal(|ui| {

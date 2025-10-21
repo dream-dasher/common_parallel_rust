@@ -1,6 +1,4 @@
 //! Table example from egui demo
-//!
-//!
 
 use eframe::egui;
 use egui::{TextStyle, TextWrapMode};
@@ -51,8 +49,7 @@ impl TableDemo {
               {
                   let max_rows = if self.demo == DemoType::Manual {
                       NUM_MANUAL_ROWS
-                  }
-                  else {
+                  } else {
                       self.num_rows
                   };
 
@@ -136,8 +133,7 @@ impl TableDemo {
                                                        self.reversed ^=
                                                            ui.button(if self.reversed {
                                                                          "⬆"
-                                                                     }
-                                                                     else {
+                                                                     } else {
                                                                          "⬇"
                                                                      })
                                                              .clicked();
@@ -161,8 +157,7 @@ impl TableDemo {
                      for row_index in 0..NUM_MANUAL_ROWS {
                          let row_index = if self.reversed {
                              NUM_MANUAL_ROWS - 1 - row_index
-                         }
-                         else {
+                         } else {
                              row_index
                          };
 
@@ -188,8 +183,7 @@ impl TableDemo {
                                         ui.style_mut().wrap_mode = Some(egui::TextWrapMode::Extend);
                                         if is_thick {
                                             ui.heading("Extra thick row");
-                                        }
-                                        else {
+                                        } else {
                                             ui.label("Normal row");
                                         }
                                     });
@@ -201,8 +195,7 @@ impl TableDemo {
                      body.rows(text_height, self.num_rows, |mut row| {
                              let row_index = if self.reversed {
                                  self.num_rows - 1 - row.index()
-                             }
-                             else {
+                             } else {
                                  row.index()
                              };
 
@@ -236,8 +229,7 @@ impl TableDemo {
                      body.heterogeneous_rows((0..self.num_rows).map(row_height), |mut row| {
                              let row_index = if self.reversed {
                                  self.num_rows - 1 - row.index()
-                             }
-                             else {
+                             } else {
                                  row.index()
                              };
 
@@ -260,8 +252,7 @@ impl TableDemo {
                                     ui.style_mut().wrap_mode = Some(egui::TextWrapMode::Extend);
                                     if thick_row(row_index) {
                                         ui.heading("Extra thick row");
-                                    }
-                                    else {
+                                    } else {
                                         ui.label("Normal row");
                                     }
                                 });
@@ -279,8 +270,7 @@ impl TableDemo {
             {
                 self.selection
                     .remove(&row_index);
-            }
-            else {
+            } else {
                 self.selection
                     .insert(row_index);
             }

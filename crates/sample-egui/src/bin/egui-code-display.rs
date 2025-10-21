@@ -93,7 +93,8 @@ impl CodeVarsExample {
     }
 
     fn code(&mut self, ui: &mut egui::Ui) {
-        rust_view_ui(ui, indoc! {r"
+        rust_view_ui(ui,
+                     indoc! {r"
                         pub struct CodeExample {
                                 name: String,
                                 age: u32,

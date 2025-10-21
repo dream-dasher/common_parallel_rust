@@ -40,6 +40,7 @@ const DEFAULT_ERROR_LOGGING_LEVEL: LevelFilter = LevelFilter::WARN;
 /// ## Use:
 /// ```no_run
 /// use std::error::Error;
+///
 /// use tracing_subscriber::filter::LevelFilter;
 ///
 /// fn main() -> Result<(), Box<dyn Error>> {
