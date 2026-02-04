@@ -24,7 +24,7 @@ tokio =        { version = "1", features = ["macros","rt",]  } # "fs","io-std","
 tokio-stream = { version = "0.1", features = [] }  # "fs","io-util","net","signal","sync","tokio-util"
 
 governor = { version = "0.10", default-features = false, features = ["jitter","std","quanta",] }  # "dashmap","jitter","no_std","quanta","std"
-reqwest =  { version = "0.12", features = ["json","rustls-tls",] }  # "cookies","json","rustls-tls"
+reqwest =  { version = "0.13", features = ["json","query"] }  # "cookies","json","query","form"
 url =      { version = "2" }
 
 rand = { version = "0.9", features = [] }  # "log","serde","simd_support"

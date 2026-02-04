@@ -67,7 +67,7 @@ test-log = { version = "0.2", features = ["trace"] }  # "trace"
 # tokio-stream = { version = "0.1", features = [] }  # "fs","io-util","net","signal","sync","tokio-util"
 # tokio-util =   { version = "0.7", features = [] }  # "codec","compat","futures-io","futures-util","hashbrown","io-util","rt","slab","time","tracing"
 # ### ......... -remote (workspace)- ......... #
-# reqwest =      { version = "0.12", features = ["json","rustls-tls",] }  # "cookies","json","rustls-tls"
+# reqwest =  { version = "0.13", features = ["json"] }  # "cookies","json","query","form"
 # sqlx =         { version = "0.8", features = ["tls-rustls",] }  # "sqlite","runtime-tokio","tls-rustls"
 # ureq = { version = "3", features = ["rustls"] } # "cookies","json","rustls"
 # ### ......... -accessory (workspace)- ......... #
@@ -86,7 +86,7 @@ test-log = { version = "0.2", features = ["trace"] }  # "trace"
 # csv =         "1"
 # dotenvy =     "0.15"
 # include_dir = "0.7"
-# rfd =         "0.15"
+# rfd =         "0.17"
 # toml =        "0.8"
 # walkdir =     "2"
 # ### ......... -config (workspace)- ......... #
@@ -111,9 +111,9 @@ test-log = { version = "0.2", features = ["trace"] }  # "trace"
 # dialoguer =        "0.11"
 # owo-colors =       "4"
 # ### ......... -egui (workspace)- ......... #
-# eframe =      { version = "0.32" }  # "default_fonts","glow","persistence","wayland","wgpu" # NOTE: 'wayland' required for linux targets
-# egui =        { version = "0.32", features = [] }  # "callstack","document-features"
-# egui_extras = { version = "0.32", features = [] }  # "all_loaders","datepicker","document-features","serde","syntect",
+# eframe =      { version = "0.33" }  # "default_fonts","glow","persistence","wayland","wgpu" # NOTE: 'wayland' required for linux targets
+# egui =        { version = "0.33", features = [] }  # "callstack","document-features"
+# egui_extras = { version = "0.33", features = [] }  # "all_loaders","datepicker","document-features","serde","syntect",
 # egui_table =              "0.4"
 # egui_inbox =              "0.9"
 
