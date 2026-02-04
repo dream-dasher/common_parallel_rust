@@ -67,7 +67,7 @@ impl eframe::App for CodeEditorExample {
                                                                                  string.as_str(),
                                                                                  language);
                 layout_job.wrap.max_width = wrap_width;
-                ui.fonts(|f| f.layout_job(layout_job))
+                ui.fonts_mut(|f| f.layout_job(layout_job))
             };
 
             egui::ScrollArea::vertical().show(ui, |ui| {
@@ -123,7 +123,7 @@ impl eframe::App for CodeEditorExample {
                                         language,
                                 );
                                 layout_job.wrap.max_width = wrap_width;
-                                ui.fonts(|f| f.layout_job(layout_job))
+                                ui.fonts_mut(|f| f.layout_job(layout_job))
                         };
                         egui::ScrollArea::vertical().show(ui, |ui| {
                                 ui.add(egui::TextEdit::multiline(code)

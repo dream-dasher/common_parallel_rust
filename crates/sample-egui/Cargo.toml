@@ -22,11 +22,11 @@ tokio-util =   { version = "0.7", features = ["rt"] }  # "codec","compat","futur
 
 reqwest =  { version = "0.13", features = ["json"] }  # "cookies","json","query","form"
 url =      { version = "2" }
-rfd =      "0.15"
+rfd =      "0.17"
 
-eframe = { version = "0.32", features = ["persistence"] }  # "default_fonts","glow","persistence","wayland","wgpu" # NOTE: 'wayland' required for linux targets
-egui = { version = "0.32", features = [] }  # "callstack","document-features"
-egui_extras = { version = "0.32", features = [] }  # "all_loaders","datepicker","document-features","serde","syntect",
+eframe = { version = "0.33", features = ["persistence"] }  # "default_fonts","glow","persistence","wayland","wgpu" # NOTE: 'wayland' required for linux targets
+egui = { version = "0.33", features = [] }  # "callstack","document-features"
+egui_extras = { version = "0.33", features = [] }  # "all_loaders","datepicker","document-features","serde","syntect",
 
 rand = { version = "0.9", features = [] }  # "log","serde","simd_support"
 serde = { version = "1", features = ["derive"] }  # "derive"
