@@ -28,7 +28,7 @@ eframe = { version = "0.33", features = ["persistence"] }  # "default_fonts","gl
 egui = { version = "0.33", features = [] }  # "callstack","document-features"
 egui_extras = { version = "0.33", features = [] }  # "all_loaders","datepicker","document-features","serde","syntect",
 
-rand = { version = "0.9", features = [] }  # "log","serde","simd_support"
+rand = { version = "0.10", features = [] }  # "log","serde","simd_support"
 serde = { version = "1", features = ["derive"] }  # "derive"
 serde_json = "1"
 
