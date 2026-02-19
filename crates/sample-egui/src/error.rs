@@ -90,9 +90,10 @@ pub enum ErrKind {
 
     // `other` errors //
     #[from(ignore)] // use `make_dyn_error` instead; would conflict with auto-derives
-    #[display("Uncategorized Error (dyn error object): {}", source)]
+    #[display("Uncategorized Error (dyn error object). Custom message: {}", source)]
     OtherDynError {
-        source: Box<dyn std::error::Error + Send + Sync>,
+        source:         Box<dyn std::error::Error + Send + Sync>,
+        custom_message: Option<String>,
     },
 
     #[display(r#"Uncategorized string err: "{}""#, source_string)]
@@ -106,9 +107,11 @@ impl ErrKind {
     /// let clip = arboard::Clipboard::new().map_err(ErrKind::into_dyn_error)?;
     /// ```
     #[instrument(skip_all)]
-    pub fn into_dyn_error<E>(error: E) -> Self
-        where E: Into<Box<dyn std::error::Error + Send + Sync>> {
-        Self::OtherDynError { source: error.into(), }
+    pub fn into_dyn_error<E, S>(error: E, maybe_message: Option<S>) -> Self
+        where E: Into<Box<dyn std::error::Error + Send + Sync>>,
+              S: Into<String> {
+        Self::OtherDynError { source:         error.into(),
+                              custom_message: maybe_message.map(|s| s.into()) }
     }
 }
 
@@ -154,11 +157,11 @@ impl<T> From<T> for Box<ErrWrapper> where T: Into<ErrKind> {
 }
 
 pub trait ToOther {
-    fn to_other(self) -> Box<ErrWrapper>;
+    fn to_other(self, message: String) -> Box<ErrWrapper>;
 }
 impl<E> ToOther for E where E: Into<Box<dyn std::error::Error + Send + Sync>> {
     #[instrument(skip_all)]
-    fn to_other(self) -> Box<ErrWrapper> {
-        Box::new(ErrKind::OtherDynError { source: self.into(), }.into())
+    fn to_other(self, custom_message: String) -> Box<ErrWrapper> {
+        Box::new(ErrKind::OtherDynError { source: self.into(), custom_message: Some(custom_message) }.into())
     }
 }
