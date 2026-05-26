@@ -53,125 +53,98 @@
 use std::io;
 
 use derive_more::{
-     Display,
-     Error,
-     From,
+       Display,
+       Error,
+       From,
 };
 use tracing::{
-     instrument,
-     subscriber::SetGlobalDefaultError,
+       instrument,
+       subscriber::SetGlobalDefaultError,
 };
 
 // use derive_more::{Display, Error, derive::From};
 #[derive(Debug, Display, From, Error)]
 pub enum ErrKind {
-     // `custom` errors //
-     #[from(ignore)] // manually generate; would conflict with `OtherStringError` auto-derive
-     #[display(
-          "Error splitting on ':' : {}",
-          source_input
-     )]
-     InputNoColon {
-          source_input: String,
-     },
+       // `custom` errors //
+       #[from(ignore)] // manually generate; would conflict with `OtherStringError` auto-derive
+       #[display("Error splitting on ':' : {}", source_input)]
+       InputNoColon {
+              source_input: String,
+       },
 
-     #[from(ignore)] // manually generate; would conflict with `OtherStringError` auto-derive
-     #[display(
-          "Error extracting lines from input: {}",
-          source_input
-     )]
-     InputNoLines {
-          source_input: String,
-     },
+       #[from(ignore)] // manually generate; would conflict with `OtherStringError` auto-derive
+       #[display("Error extracting lines from input: {}", source_input)]
+       InputNoLines {
+              source_input: String,
+       },
 
-     #[display(
-          "eframe (egui) error: {}",
-          source
-     )]
-     EFrame {
-          source: eframe::Error,
-     },
+       #[display("eframe (egui) error: {}", source)]
+       EFrame {
+              source: eframe::Error,
+       },
 
-     #[display(
-          "Error with tracing_subscriber::EnvFilter parsing env directive: {}",
-          source
-     )]
-     EnvError {
-          source: tracing_subscriber::filter::FromEnvError,
-     },
+       #[display(
+              "Error with tracing_subscriber::EnvFilter parsing env directive: {}",
+              source
+       )]
+       EnvError {
+              source: tracing_subscriber::filter::FromEnvError,
+       },
 
-     #[display(
-          "hiddenvalue error: {}",
-          source
-     )]
-     HiddenValError {
-          source: utilities::HiddenValueError,
-     },
+       #[display("hiddenvalue error: {}", source)]
+       HiddenValError {
+              source: utilities::HiddenValueError,
+       },
 
-     #[display(
-          "io error: {}",
-          source
-     )]
-     Io {
-          source: io::Error,
-     },
+       #[display("io error: {}", source)]
+       Io {
+              source: io::Error,
+       },
 
-     #[display(
-          "parse error: {}",
-          source
-     )]
-     ParseInt {
-          source: std::num::ParseIntError,
-     },
+       #[display("parse error: {}", source)]
+       ParseInt {
+              source: std::num::ParseIntError,
+       },
 
-     #[display(
-          "Error setting tracing subscriber default: {}",
-          source
-     )]
-     TracingSubscriber {
-          source: SetGlobalDefaultError,
-     },
+       #[display("Error setting tracing subscriber default: {}", source)]
+       TracingSubscriber {
+              source: SetGlobalDefaultError,
+       },
 
-     // `other` errors //
-     #[from(ignore)] // use `make_dyn_error` instead; would conflict with auto-derives
-     #[display(
-          "Uncategorized Error (dyn error object). Custom message: {}",
-          source
-     )]
-     OtherDynError {
-          source:         Box<dyn std::error::Error + Send + Sync>,
-          custom_message: Option<String>,
-     },
+       // `other` errors //
+       #[from(ignore)] // use `make_dyn_error` instead; would conflict with auto-derives
+       #[display("Uncategorized Error (dyn error object). Custom message: {}", source)]
+       OtherDynError {
+              source:         Box<dyn std::error::Error + Send + Sync>,
+              custom_message: Option<String>,
+       },
 
-     #[display(
-          r#"Uncategorized string err: "{}""#,
-          source_string
-     )]
-     OtherStringError {
-          source_string: String,
-     },
+       #[display(r#"Uncategorized string err: "{}""#, source_string)]
+       OtherStringError {
+              source_string: String,
+       },
 }
 impl ErrKind {
-     /// Convenience asscfunction for transforming an error into a compabtible *dyn error*.
-     ///
-     /// ```ignore
-     /// use support::ErrKind;
-     /// let clip = arboard::Clipboard::new().map_err(ErrKind::into_dyn_error)?;
-     /// ```
-     #[instrument(skip_all)]
-     pub fn into_dyn_error<E, S>(
-          error: E,
-          maybe_message: Option<S>,
-     ) -> Self
-     where
-          E: Into<Box<dyn std::error::Error + Send + Sync>>,
-          S: Into<String>,
-     {
-          Self::OtherDynError {
-               source:         error.into(),
-               custom_message: maybe_message.map(|s| s.into()),
-          }
-     }
+       /// Convenience asscfunction for transforming an error into a compabtible *dyn error*.
+       ///
+       /// ```ignore
+       /// use support::ErrKind;
+       /// let clip = arboard::Clipboard::new().map_err(ErrKind::into_dyn_error)?;
+       /// ```
+       #[instrument(skip_all)]
+       pub fn into_dyn_error<E, S>(
+              error: E,
+              maybe_message: Option<S>,
+       ) -> Self
+       where
+              E: Into<Box<dyn std::error::Error + Send + Sync>>,
+              S: Into<String>,
+       {
+              Self::OtherDynError {
+                     source:         error.into(),
+                     custom_message: maybe_message.map(|s| s.into()),
+              }
+       }
 }
 
 #[derive(Display, Error, From)]
@@ -182,75 +155,69 @@ impl ErrKind {
         spantrace,
 )]
 pub struct ErrWrapper {
-     source:    ErrKind,
-     spantrace: tracing_error::SpanTrace,
-     // backtrace: backtrace::Backtrace,
+       source:    ErrKind,
+       spantrace: tracing_error::SpanTrace,
+       // backtrace: backtrace::Backtrace,
 }
 // Using custom display as debug so we can get SpanTrace auto printed.
 impl std::fmt::Debug for ErrWrapper {
-     #[instrument(skip_all)]
-     fn fmt(
-          &self,
-          f: &mut std::fmt::Formatter<'_>,
-     ) -> std::fmt::Result {
-          write!(
-               f,
-               "{}",
-               self
-          )
-     }
+       #[instrument(skip_all)]
+       fn fmt(
+              &self,
+              f: &mut std::fmt::Formatter<'_>,
+       ) -> std::fmt::Result {
+              write!(f, "{}", self)
+       }
 }
 impl<T> From<T> for ErrWrapper
 where
-     T: Into<ErrKind>,
+       T: Into<ErrKind>,
 {
-     #[instrument(skip_all)]
-     fn from(error: T) -> Self {
-          Self {
-               source:    error.into(),
-               spantrace: tracing_error::SpanTrace::capture(),
-               // backtrace: backtrace::Backtrace::capture(),
-          }
-     }
+       #[instrument(skip_all)]
+       fn from(error: T) -> Self {
+              Self {
+                     source:    error.into(),
+                     spantrace: tracing_error::SpanTrace::capture(),
+                     // backtrace: backtrace::Backtrace::capture(),
+              }
+       }
 }
 
 impl<T> From<T> for Box<ErrWrapper>
 where
-     T: Into<ErrKind>,
+       T: Into<ErrKind>,
 {
-     #[instrument(skip_all)]
-     fn from(error: T) -> Self {
-          Box::new(
-               ErrWrapper {
-                    source:    error.into(),
-                    spantrace: tracing_error::SpanTrace::capture(),
-                    // backtrace: backtrace::Backtrace::capture(),
-               },
-          )
-     }
+       #[instrument(skip_all)]
+       fn from(error: T) -> Self {
+              Box::new(ErrWrapper {
+                     source:    error.into(),
+                     spantrace: tracing_error::SpanTrace::capture(),
+                     // backtrace: backtrace::Backtrace::capture(),
+              })
+       }
 }
 
 pub trait ToOther {
-     fn to_other(
-          self,
-          message: String,
-     ) -> Box<ErrWrapper>;
+       fn to_other(
+              self,
+              message: String,
+       ) -> Box<ErrWrapper>;
 }
 impl<E> ToOther for E
 where
-     E: Into<Box<dyn std::error::Error + Send + Sync>>,
+       E: Into<Box<dyn std::error::Error + Send + Sync>>,
 {
-     #[instrument(skip_all)]
-     fn to_other(
-          self,
-          custom_message: String,
-     ) -> Box<ErrWrapper> {
-          Box::new(
-               ErrKind::OtherDynError {
-                    source:         self.into(),
-                    custom_message: Some(custom_message),
-               }
-               .into(),
-          )
-     }
+       #[instrument(skip_all)]
+       fn to_other(
+              self,
+              custom_message: String,
+       ) -> Box<ErrWrapper> {
+              Box::new(
+                     ErrKind::OtherDynError {
+                            source:         self.into(),
+                            custom_message: Some(custom_message),
+                     }
+                     .into(),
+              )
+       }
 }

@@ -20,15 +20,15 @@ combine_control_expr = false
 
 imports_layout = "Vertical"
 fn_params_layout = "Vertical"
-# width_heuristics = "Off"
-fn_call_width = 0
-attr_fn_like_width = 0
+# width_heuristics = "Off"  <-- because not working (Wed May 27 2026)
+# fn_call_width = 0
+# attr_fn_like_width = 0
 struct_lit_width = 0
 struct_variant_width = 0
 array_width = 0
 chain_width = 0
-single_line_if_else_max_width = 0
+# single_line_if_else_max_width = 0
 
 match_arm_leading_pipes = "Always"
 
-tab_spaces = 5    # prime_num
+tab_spaces = 7    # prime_num
