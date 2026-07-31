@@ -20,9 +20,7 @@ use tokio::time::{
 #[tokio::main(flavor = "multi_thread")]
 async fn main() -> Result<(), Box<dyn Error>> {
        // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [ classic ] ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
-       let mut stream = tokio_stream::iter(&[
-              0, 1, 2,
-       ]);
+       let mut stream = tokio_stream::iter(&[0, 1, 2]);
 
        while let Some(value) = stream
               .next()

@@ -70,10 +70,7 @@ enum Args {
 
 fn main() -> Result<(), Box<dyn Error>> {
        match Args::parse() {
-              | Args::Add {
-                     a,
-                     b,
-              } => {
+              | Args::Add { a, b } => {
                      let sum = a + b;
                      let sum = sum.green();
                      let a = a.red();
@@ -83,9 +80,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                      println!("The (oct) sum of {a:>16o}  and {b:>16o} is {sum:>16o}");
                      println!("The (bin) sum of {a:>16b}  and {b:>16b} is {sum:>16b}");
               }
-              | Args::TypeInfo {
-                     t,
-              } => {
+              | Args::TypeInfo { t } => {
                      const MAX_PRIME_TILL: usize = 10_000_000;
                      let t_deets = t.get_details_as_strings();
                      println!("{}", t_deets);

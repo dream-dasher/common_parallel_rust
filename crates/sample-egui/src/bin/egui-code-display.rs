@@ -154,24 +154,15 @@ impl eframe::App for CodeVarsExample {
                      //         ui.label("⚠ Warning: Progress bar shows odd behavior when adjusting");
                      //         ui.label("left scroll position or changing l_size values.");
                      // });
+                     ui.add_sized([self.l_val, self.r_val], egui::Label::new("Hello World!"));
                      ui.add_sized(
-                            [
-                                   self.l_val, self.r_val,
-                            ],
-                            egui::Label::new("Hello World!"),
-                     );
-                     ui.add_sized(
-                            [
-                                   self.l_val, self.r_val,
-                            ],
+                            [self.l_val, self.r_val],
                             egui::DragValue::new(&mut self.l_val)
                                    .range(5.0..=f32::MAX)
                                    .prefix("x"),
                      );
                      ui.add_sized(
-                            [
-                                   self.l_val, self.r_val,
-                            ],
+                            [self.l_val, self.r_val],
                             egui::DragValue::new(&mut self.r_val)
                                    .range(5.0..=f32::MAX)
                                    .prefix("y"),

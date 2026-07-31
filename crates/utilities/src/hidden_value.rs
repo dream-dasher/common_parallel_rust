@@ -216,10 +216,7 @@ impl<T> HiddenValue<T> {
                             "note: Due to generality of value types we cannot check that the 'obfuscated string' actually obfuscates."
                      );
               };
-              Ok(Self {
-                     value,
-                     obf_string,
-              })
+              Ok(Self { value, obf_string })
        }
 
        /// Expose the value of the key.

@@ -22,11 +22,7 @@ fn main() {
               "☰ Table",
               native_options,
               //
-              Box::new(|_cc| {
-                     Ok(Box::new(TableDemo {
-                            ..Default::default()
-                     }))
-              }),
+              Box::new(|_cc| Ok(Box::new(TableDemo { ..Default::default() }))),
        )
        .unwrap();
 }

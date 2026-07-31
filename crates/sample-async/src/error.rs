@@ -133,9 +133,7 @@ impl ErrKind {
        where
               E: Into<Box<dyn std::error::Error + Send + Sync>>,
        {
-              Self::OtherDynError {
-                     source: error.into(),
-              }
+              Self::OtherDynError { source: error.into() }
        }
 }
 

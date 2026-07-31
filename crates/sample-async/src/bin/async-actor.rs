@@ -112,14 +112,10 @@ impl PrintingActor {
                      | ActorMessage::SetActive => self.active = true,
                      | ActorMessage::SetInactive => self.active = false,
                      | ActorMessage::ToggleActive => self.active = !self.active,
-                     | ActorMessage::GetPrintCount {
-                            resp_channel,
-                     } => resp_channel
+                     | ActorMessage::GetPrintCount { resp_channel } => resp_channel
                             .send(self.print_count)
                             .unwrap(),
-                     | ActorMessage::GetStatus {
-                            resp_channel,
-                     } => resp_channel
+                     | ActorMessage::GetStatus { resp_channel } => resp_channel
                             .send(self.active)
                             .unwrap(),
               }
@@ -181,10 +177,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
                                           .await?;
                             }
                      }
-                     | [
-                            "message",
-                            n,
-                     ] => {
+                     | ["message", n] => {
                             if let Ok(idx) = n.parse::<usize>()
                                    && let Some((tx, _)) = controls.get(idx)
                             {
@@ -201,10 +194,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
                                    .unwrap_or_else(|e| eprintln!("Failed to send message: {}", e));
                             }
                      }
-                     | [
-                            "activate",
-                            n,
-                     ] => {
+                     | ["activate", n] => {
                             if let Ok(idx) = n.parse::<usize>()
                                    && let Some((tx, _)) = controls.get(idx)
                             {
@@ -218,10 +208,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
                                           });
                             }
                      }
-                     | [
-                            "deactivate",
-                            n,
-                     ] => {
+                     | ["deactivate", n] => {
                             if let Ok(idx) = n.parse::<usize>()
                                    && let Some((tx, _)) = controls.get(idx)
                             {
@@ -235,10 +222,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
                                           });
                             }
                      }
-                     | [
-                            "toggle",
-                            n,
-                     ] => {
+                     | ["toggle", n] => {
                             if let Ok(idx) = n.parse::<usize>()
                                    && let Some((tx, _)) = controls.get(idx)
                             {
@@ -249,11 +233,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
                                           });
                             }
                      }
-                     | [
-                            "rate",
-                            n,
-                            ms,
-                     ] => {
+                     | ["rate", n, ms] => {
                             if let (Ok(idx), Ok(ms)) = (n.parse::<usize>(), ms.parse::<u64>())
                                    && let Some((tx, _)) = controls.get(idx)
                             {
@@ -273,16 +253,14 @@ async fn main() -> Result<(), Box<dyn Error>> {
                                    .enumerate()
                             {
                                    let (otx, orx) = oneshot::channel();
-                                   tx.send(ActorMessage::GetStatus {
-                                          resp_channel: otx,
-                                   })
-                                   .await
-                                   .unwrap_or_else(|e| {
-                                          eprintln!(
-                                                 "Failed to report status for actor {}: {}",
-                                                 idx, e
-                                          )
-                                   });
+                                   tx.send(ActorMessage::GetStatus { resp_channel: otx })
+                                          .await
+                                          .unwrap_or_else(|e| {
+                                                 eprintln!(
+                                                        "Failed to report status for actor {}: {}",
+                                                        idx, e
+                                                 )
+                                          });
                                    let active_status = orx.await?;
                                    println!(
                                           "Actor {}: {}",

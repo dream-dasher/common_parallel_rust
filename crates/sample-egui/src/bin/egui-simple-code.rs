@@ -38,10 +38,7 @@ impl eframe::App for CodeEditorExample {
               _frame: &mut eframe::Frame,
        ) {
               egui::CentralPanel::default().show(ctx, |ui| {
-                     let Self {
-                            language,
-                            code,
-                     } = self;
+                     let Self { language, code } = self;
 
                      ui.horizontal(|ui| {
                             ui.set_height(0.0);
