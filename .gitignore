@@ -17,7 +17,7 @@ Cargo.lock
 # Custom GitIgnore, Boilerplate
 
 # general security exclusions (api keys, etc.)
-**/.env*
+**/*.env*
 **/*.log
 
 # designate a directory that won't have its contents synced
@@ -30,6 +30,8 @@ Cargo.lock
 .output/logging/**
 .output/profiling/**
 
+/.logs/**
+
 # support scratch notes or other localized ephemera at arbitrary depths
 **/no-sync*.md
 
@@ -39,8 +41,7 @@ Cargo.lock
 #         -- `dir/*` will     allow .gitkeep to be tracked
 #         -- `dir/`  will NOT allow tracking
 !**.gitkeep
-!.output/logging/
-!.output/profiling/
+!**template.env
 
 # ===================================
 # Tooling-specific GitIgnore

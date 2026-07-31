@@ -8,7 +8,8 @@
 
 
 ## --- meta-config ---
-style_edition = "2024"
+edition = "2024"          # rust edition to use for parsing
+style_edition = "2024"    # formatting 'edition', separate from `edution`
 unstable_features = true  # `cargo +nightly fmt`
 ignore = []               # files for rustfmt to ignore
 # required_version        # specify rustfmt version requirement
@@ -23,12 +24,21 @@ fn_params_layout = "Vertical"
 # width_heuristics = "Off"  <-- because not working (Wed May 27 2026)
 # fn_call_width = 0
 # attr_fn_like_width = 0
-struct_lit_width = 0
+struct_lit_width = 30
 struct_variant_width = 0
-array_width = 0
+array_width = 30
 chain_width = 0
 # single_line_if_else_max_width = 0
+
 
 match_arm_leading_pipes = "Always"
 
 tab_spaces = 7    # prime_num
+# tab_spaces = 3    # prime_num
+
+blank_lines_upper_bound = 13
+
+# indent_style = "Visual"
+# imports_indent = "Visual"
+# brace_style = "AlwaysNextLine"
+
