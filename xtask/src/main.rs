@@ -85,6 +85,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                      let t_deets = t.get_details_as_strings();
                      println!("{}", t_deets);
                      // What follows is a bit silly (with current primes implementation, but I'll keep around for now.)
+                     // TODO: this is too small to accept u128 or i128
                      type TForPrimes = usize;
                      let upper_bound = match t_deets
                             .max
